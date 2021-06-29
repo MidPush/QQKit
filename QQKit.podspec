@@ -13,7 +13,7 @@ Pod::Spec.new do |s|
   s.subspec 'QQCore' do |ss|
     ss.source_files = 'QQKit/QQCore/*.{h,m}'
     ss.resources = 'QQKit/QQCore/QQUIKit.bundle'
-    ss.dependency 'QQKit/QQExtensions/UIDevice+QQExtension.{h.m}'
+    ss.dependency 'QQKit/QQExtensions/UIDevice+QQExtension.{h,m}'
   end
 
   s.subspec 'QQComponents' do |ss|
