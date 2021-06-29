@@ -485,14 +485,14 @@
 		042ED37E268AD91E00300BA7 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				042ED37F268AD91E00300BA7 /* QQCropScrollView.h */,
-				042ED380268AD91E00300BA7 /* QQCropView.h */,
-				042ED381268AD91E00300BA7 /* QQCropToolBar.m */,
 				042ED382268AD91E00300BA7 /* QQCropOverlayView.h */,
-				042ED383268AD91E00300BA7 /* QQCropToolBar.h */,
-				042ED384268AD91E00300BA7 /* QQCropView.m */,
-				042ED385268AD91E00300BA7 /* QQCropScrollView.m */,
 				042ED386268AD91E00300BA7 /* QQCropOverlayView.m */,
+				042ED37F268AD91E00300BA7 /* QQCropScrollView.h */,
+				042ED385268AD91E00300BA7 /* QQCropScrollView.m */,
+				042ED383268AD91E00300BA7 /* QQCropToolBar.h */,
+				042ED381268AD91E00300BA7 /* QQCropToolBar.m */,
+				042ED380268AD91E00300BA7 /* QQCropView.h */,
+				042ED384268AD91E00300BA7 /* QQCropView.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
