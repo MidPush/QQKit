@@ -1,0 +1,152 @@
+//
+//  UIColor+QQExtension.m
+//  NNKit
+//
+//  Created by Mac on 2021/3/1.
+//
+
+#import "UIColor+QQExtension.h"
+
+@implementation UIColor (QQExtension)
+
+- (NSString *)qq_hexStringWithAlpha:(BOOL)withAlpha {
+    CGColorRef color = self.CGColor;
+    size_t count = CGColorGetNumberOfComponents(color);
+    const CGFloat *components = CGColorGetComponents(color);
+    static NSString *stringFormat = @"%02x%02x%02x";
+    NSString *hex = nil;
+    if (count == 2) {
+        NSUInteger white = (NSUInteger)(components[0] * 255.0f);
+        hex = [NSString stringWithFormat:stringFormat, white, white, white];
+    } else if (count == 4) {
+        hex = [NSString stringWithFormat:stringFormat,
+               (NSUInteger)(components[0] * 255.0f),
+               (NSUInteger)(components[1] * 255.0f),
+               (NSUInteger)(components[2] * 255.0f)];
+    }
+    
+    if (hex && withAlpha) {
+        hex = [hex stringByAppendingFormat:@"%02lx",
+               (unsigned long)(self.qq_alpha * 255.0 + 0.5)];
+    }
+    return hex;
+}
+
++ (UIColor *)qq_colorWithHexString:(NSString *)hexString {
+    if (hexString.length <= 0) return nil;
+    NSString *colorString = [[hexString stringByReplacingOccurrencesOfString:@"#" withString: @""] uppercaseString];
+    CGFloat alpha, red, blue, green;
+    switch ([colorString length]) {
+        case 3: // #RGB
+            alpha = 1.0f;
+            red   = [self colorComponentFrom: colorString start: 0 length: 1];
+            green = [self colorComponentFrom: colorString start: 1 length: 1];
+            blue  = [self colorComponentFrom: colorString start: 2 length: 1];
+            break;
+        case 4: // #ARGB
+            alpha = [self colorComponentFrom: colorString start: 0 length: 1];
+            red   = [self colorComponentFrom: colorString start: 1 length: 1];
+            green = [self colorComponentFrom: colorString start: 2 length: 1];
+            blue  = [self colorComponentFrom: colorString start: 3 length: 1];
+            break;
+        case 6: // #RRGGBB
+            alpha = 1.0f;
+            red   = [self colorComponentFrom: colorString start: 0 length: 2];
+            green = [self colorComponentFrom: colorString start: 2 length: 2];
+            blue  = [self colorComponentFrom: colorString start: 4 length: 2];
+            break;
+        case 8: // #AARRGGBB
+            alpha = [self colorComponentFrom: colorString start: 0 length: 2];
+            red   = [self colorComponentFrom: colorString start: 2 length: 2];
+            green = [self colorComponentFrom: colorString start: 4 length: 2];
+            blue  = [self colorComponentFrom: colorString start: 6 length: 2];
+            break;
+        default: {
+            NSAssert(NO, @"Color value %@ is invalid. It should be a hex value of the form #RBG, #ARGB, #RRGGBB, or #AARRGGBB", hexString);
+            return nil;
+        }
+            break;
+    }
+    return [UIColor colorWithRed: red green: green blue: blue alpha: alpha];
+}
+
+- (NSString *)qq_hexString {
+    return [self qq_hexStringWithAlpha:NO];
+}
+
+- (NSString *)qq_hexStringWithAlpha {
+    return [self qq_hexStringWithAlpha:YES];
+}
+
+- (CGFloat)qq_red {
+    CGFloat r;
+    if ([self getRed:&r green:0 blue:0 alpha:0]) {
+        return r;
+    }
+    return 0;
+}
+
+- (CGFloat)qq_green {
+    CGFloat g;
+    if ([self getRed:0 green:&g blue:0 alpha:0]) {
+        return g;
+    }
+    return 0;
+}
+
+- (CGFloat)qq_blue {
+    CGFloat b;
+    if ([self getRed:0 green:0 blue:&b alpha:0]) {
+        return b;
+    }
+    return 0;
+}
+
+- (CGFloat)qq_alpha {
+    CGFloat a;
+    if ([self getRed:0 green:0 blue:0 alpha:&a]) {
+        return a;
+    }
+    return 0;
+}
+
+- (CGFloat)qq_hue {
+    CGFloat h;
+    if ([self getHue:&h saturation:0 brightness:0 alpha:0]) {
+        return h;
+    }
+    return 0;
+}
+
+- (CGFloat)qq_saturation {
+    CGFloat s;
+    if ([self getHue:0 saturation:&s brightness:0 alpha:0]) {
+        return s;
+    }
+    return 0;
+}
+
+- (CGFloat)qq_brightness {
+    CGFloat b;
+    if ([self getHue:0 saturation:0 brightness:&b alpha:0]) {
+        return b;
+    }
+    return 0;
+}
+
++ (CGFloat)colorComponentFrom:(NSString *)string start:(NSUInteger)start length:(NSUInteger)length {
+    NSString *substring = [string substringWithRange: NSMakeRange(start, length)];
+    NSString *fullHex = length == 2 ? substring : [NSString stringWithFormat: @"%@%@", substring, substring];
+    unsigned hexComponent;
+    [[NSScanner scannerWithString: fullHex] scanHexInt: &hexComponent];
+    return hexComponent / 255.0;
+}
+
++ (UIColor *)qq_randomColor {
+    CGFloat red = ( arc4random() % 255 / 255.0 );
+    CGFloat green = ( arc4random() % 255 / 255.0 );
+    CGFloat blue = ( arc4random() % 255 / 255.0 );
+    return [UIColor colorWithRed:red green:green blue:blue alpha:1.0];
+}
+
+@end
