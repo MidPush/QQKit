@@ -112,6 +112,7 @@
 		042ED4BA268AD95200300BA7 /* DMFakeNavigationBarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 042ED4A3268AD95200300BA7 /* DMFakeNavigationBarViewController.m */; };
 		042ED4BB268AD95200300BA7 /* DMComponentsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 042ED4A4268AD95200300BA7 /* DMComponentsViewController.m */; };
 		042ED4BC268AD95200300BA7 /* DMCircularProgressViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 042ED4A5268AD95200300BA7 /* DMCircularProgressViewController.m */; };
+		187C7F42268CD1B600DF007A /* DMUIConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 187C7F41268CD1B600DF007A /* DMUIConfiguration.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -146,7 +147,6 @@
 		042ED365268AD8B600300BA7 /* QQKitDemoUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = QQKitDemoUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		042ED369268AD8B600300BA7 /* QQKitDemoUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QQKitDemoUITests.m; sourceTree = "<group>"; };
 		042ED36B268AD8B600300BA7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		042ED37C268AD91E00300BA7 /* QQCropViewConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QQCropViewConstants.h; sourceTree = "<group>"; };
 		042ED37D268AD91E00300BA7 /* QQImageCropViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QQImageCropViewController.h; sourceTree = "<group>"; };
 		042ED37F268AD91E00300BA7 /* QQCropScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QQCropScrollView.h; sourceTree = "<group>"; };
 		042ED380268AD91E00300BA7 /* QQCropView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QQCropView.h; sourceTree = "<group>"; };
@@ -345,6 +345,8 @@
 		042ED4A4268AD95200300BA7 /* DMComponentsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DMComponentsViewController.m; sourceTree = "<group>"; };
 		042ED4A5268AD95200300BA7 /* DMCircularProgressViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DMCircularProgressViewController.m; sourceTree = "<group>"; };
 		042ED4BD268AD98800300BA7 /* QQKitPrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QQKitPrefixHeader.pch; sourceTree = "<group>"; };
+		187C7F40268CD1B600DF007A /* DMUIConfiguration.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DMUIConfiguration.h; sourceTree = "<group>"; };
+		187C7F41268CD1B600DF007A /* DMUIConfiguration.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DMUIConfiguration.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -468,18 +470,9 @@
 				042ED37D268AD91E00300BA7 /* QQImageCropViewController.h */,
 				042ED38A268AD91E00300BA7 /* QQImageCropViewController.m */,
 				042ED387268AD91E00300BA7 /* Categories */,
-				042ED37B268AD91E00300BA7 /* Constants */,
 				042ED37E268AD91E00300BA7 /* Views */,
 			);
 			path = ImageEdit;
-			sourceTree = "<group>";
-		};
-		042ED37B268AD91E00300BA7 /* Constants */ = {
-			isa = PBXGroup;
-			children = (
-				042ED37C268AD91E00300BA7 /* QQCropViewConstants.h */,
-			);
-			path = Constants;
 			sourceTree = "<group>";
 		};
 		042ED37E268AD91E00300BA7 /* Views */ = {
@@ -783,6 +776,8 @@
 		042ED473268AD95100300BA7 /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				187C7F40268CD1B600DF007A /* DMUIConfiguration.h */,
+				187C7F41268CD1B600DF007A /* DMUIConfiguration.m */,
 				042ED476268AD95100300BA7 /* DMActivityIndicatorView.h */,
 				042ED47A268AD95100300BA7 /* DMActivityIndicatorView.m */,
 				042ED47E268AD95100300BA7 /* DMGridViewController.h */,
@@ -1063,6 +1058,7 @@
 				042ED427268AD91E00300BA7 /* QQCropView.m in Sources */,
 				042ED4A6268AD95200300BA7 /* DMViewController.m in Sources */,
 				042ED46B268AD91F00300BA7 /* QQTextView.m in Sources */,
+				187C7F42268CD1B600DF007A /* DMUIConfiguration.m in Sources */,
 				042ED4BB268AD95200300BA7 /* DMComponentsViewController.m in Sources */,
 				042ED45A268AD91F00300BA7 /* UIScrollView+QQExtension.m in Sources */,
 				042ED4A8268AD95200300BA7 /* UIColor+QQKitDemo.m in Sources */,

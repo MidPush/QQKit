@@ -8,7 +8,6 @@
 #import <Foundation/Foundation.h>
 #import "QQAsset.h"
 #import "QQAssetsGroup.h"
-#import "QQCropViewConstants.h"
 
 typedef NS_ENUM(NSInteger, QQAuthorizationStatus) {
     QQAuthorizationStatusNotDetermined = 0, // 还不确定有没有授权
@@ -23,6 +22,29 @@ typedef NS_ENUM(NSInteger, QQPickerFilterType) {
     QQPickerFilterTypeImage,    // 只显示照片
     QQPickerFilterTypeVideo,    // 只显示视频
     QQPickerFilterTypeAudio     // 只显示音频
+};
+
+/**
+ 裁剪类型
+ */
+typedef NS_ENUM(NSInteger, QQImageCropStyle) {
+    QQImageCropStyleDefault,    // 矩形的裁切框
+    QQImageCropStyleCircular,   // 圆形的裁切框
+};
+
+/**
+ 最常见宽高比的预设值
+ */
+typedef NS_ENUM(NSInteger, QQCropViewControllerAspectRatioPreset) {
+    QQCropViewControllerAspectRatioPresetOriginal,
+    QQCropViewControllerAspectRatioPresetSquare,
+    QQCropViewControllerAspectRatioPreset3x2,
+    QQCropViewControllerAspectRatioPreset5x3,
+    QQCropViewControllerAspectRatioPreset4x3,
+    QQCropViewControllerAspectRatioPreset5x4,
+    QQCropViewControllerAspectRatioPreset7x5,
+    QQCropViewControllerAspectRatioPreset16x9,
+    QQCropViewControllerAspectRatioPresetCustom
 };
 
 extern NSNotificationName const QQPickerDidFinishPickingAssetsNotification;

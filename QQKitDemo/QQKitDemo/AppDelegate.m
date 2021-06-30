@@ -7,6 +7,7 @@
 
 #import "AppDelegate.h"
 #import "DMTabBarController.h"
+#import "DMUIConfiguration.h"
 
 @interface AppDelegate ()
 
@@ -15,6 +16,9 @@
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    
+    [[QQUIConfiguration sharedInstance] applyTemplate:[DMUIConfiguration class]];
+    
     DMTabBarController *mainVC = [[DMTabBarController alloc] init];
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     self.window.backgroundColor = [UIColor whiteColor];

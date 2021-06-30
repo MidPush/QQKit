@@ -6,7 +6,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "QQCropViewConstants.h"
+#import "QQAssetsPicker.h"
 #import "QQCropView.h"
 #import "QQCropToolBar.h"
 #import "QQCropView.h"
