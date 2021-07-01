@@ -38,12 +38,14 @@ Pod::Spec.new do |s|
         ssss.source_files = 'QQKit/QQComponents/QQAssetPicker/ImageEdit/**/*.{h,m}'
         ssss.dependency 'QQKit/QQCore'
         ssss.dependency 'QQKit/QQComponents/QQAssetPicker/AssetLibrary'
+        ssss.dependency 'QQKit/QQComponents/QQAssetPicker/Views'
       end
 
       sss.subspec 'VideoEdit' do |ssss|
         ssss.source_files = 'QQKit/QQComponents/QQAssetPicker/VideoEdit/**/*.{h,m}'
         ssss.dependency 'QQKit/QQCore'
         ssss.dependency 'QQKit/QQComponents/QQAssetPicker/AssetLibrary'
+        ssss.dependency 'QQKit/QQComponents/QQAssetPicker/Views'
         ssss.dependency 'QQKit/QQComponents/QQToast'
       end
 
@@ -84,13 +86,8 @@ Pod::Spec.new do |s|
   s.subspec 'QQControllers' do |ss|
     ss.source_files = 'QQKit/QQControllers/*.{h,m}'
     ss.dependency 'QQKit/QQCore'
+    ss.dependency 'QQKit/QQComponents/QQFakeNavigationBar'
   end
-
-  # s.subspec 'QQExtensions' do |ss|
-  #   ss.source_files = 'QQKit/QQExtensions/*.{h,m}'
-  #   ss.dependency 'QQKit/QQCore/QQRuntime.{h,m}'
-  #   ss.dependency 'QQKit/QQCore/QQUIConfiguration.{h,m}'
-  # end
 
   s.subspec 'QQTheme' do |ss|
     ss.source_files = 'QQKit/QQTheme/*.{h,m}'
