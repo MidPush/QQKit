@@ -548,7 +548,7 @@ static NSString *kAssetPreviewCellID = @"NNAssetPreviewCell";
         selectionLimit = NSUIntegerMax;
     }
     if (self.selectedAssets.count >= selectionLimit && !asset.selected) {
-        NSString *msg = [NSString stringWithFormat:@"你最多只能选择%ld张图片", selectionLimit];
+        NSString *msg = [NSString stringWithFormat:@"你最多只能选择%ld张图片", (long)selectionLimit];
         UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:msg preferredStyle:UIAlertControllerStyleAlert];
         UIAlertAction *confirmAction = [UIAlertAction actionWithTitle:@"我知道了" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         }];
@@ -599,7 +599,7 @@ static NSString *kAssetPreviewCellID = @"NNAssetPreviewCell";
     QQAsset *asset = self.currentAsset;
     if (asset.selected) {
         self.navigationBar.checkboxButton.indexLabel.hidden = NO;
-        self.navigationBar.checkboxButton.indexLabel.text = [NSString stringWithFormat:@"%ld", asset.selectedIndex + 1];
+        self.navigationBar.checkboxButton.indexLabel.text = [NSString stringWithFormat:@"%ld", (long)(asset.selectedIndex + 1)];
     } else {
         self.navigationBar.checkboxButton.indexLabel.hidden = YES;
         self.navigationBar.checkboxButton.indexLabel.text = @"";

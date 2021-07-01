@@ -39,7 +39,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  *  @return 代表图片平均颜色的UIColor对象
  */
-- (UIColor *)qq_averageColor;
+- (nullable UIColor *)qq_averageColor;
 
 /**
  *  保持当前图片的形状不变，使用指定的颜色去重新渲染它，生成一张新图片并返回
@@ -52,7 +52,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 /// GIF动图
-+ (UIImage *)qq_imageWithGIFData:(NSData *)data;
++ (nullable UIImage *)qq_imageWithGIFData:(NSData *)data;
 
 /// Resized
 - (UIImage *)qq_resizedImageByWidth:(CGFloat)width;

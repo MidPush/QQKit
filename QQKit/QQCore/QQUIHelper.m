@@ -86,15 +86,16 @@ static CGFloat pixelOne = -1.0f;
         } else {
             height = 44;
         }
-    }
-    if ([self isLandscape]) {
-        if ([UIDevice isNotchedScreen]) {
-            height = 44;
-        } else {
-            height = 32;
-        }
     } else {
-        height = 44;
+        if ([self isLandscape]) {
+            if ([UIDevice isNotchedScreen]) {
+                height = 44;
+            } else {
+                height = 32;
+            }
+        } else {
+            height = 44;
+        }
     }
     return height;
 }

@@ -271,7 +271,7 @@ static NSString * const kQQAssetGridCellReuseID = @"QQAssetGridCell";
 - (void)onCheckboxButtonClicked:(QQAsset *)asset {
     NSInteger selectionLimit = self.selectionLimit;
     if (self.selectedAssets.count >= selectionLimit && !asset.selected) {
-        NSString *msg = [NSString stringWithFormat:@"你最多只能选择%ld张照片", selectionLimit];
+        NSString *msg = [NSString stringWithFormat:@"你最多只能选择%ld张照片", (long)selectionLimit];
         UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:msg preferredStyle:UIAlertControllerStyleAlert];
         UIAlertAction *confirmAction = [UIAlertAction actionWithTitle:@"我知道了" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         }];
@@ -508,7 +508,7 @@ static NSString * const kQQAssetGridCellReuseID = @"QQAssetGridCell";
     _toolBar.leftButton.enabled = enabled;
     _toolBar.doneButton.enabled = enabled;
     _toolBar.countLabel.hidden = !enabled;
-    _toolBar.countLabel.text = [NSString stringWithFormat:@"%ld", selectedCount];
+    _toolBar.countLabel.text = [NSString stringWithFormat:@"%ld", (long)selectedCount];
     if (enabled) {
         [QQAssetsPickerHelper springAnimationForView:_toolBar.countLabel];
     } else {

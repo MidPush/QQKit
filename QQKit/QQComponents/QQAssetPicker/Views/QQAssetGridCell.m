@@ -137,7 +137,7 @@
         _checkboxButton.hidden = NO;
         if (asset.selected) {
             _checkboxButton.indexLabel.hidden = NO;
-            _checkboxButton.indexLabel.text = [NSString stringWithFormat:@"%ld", asset.selectedIndex + 1];
+            _checkboxButton.indexLabel.text = [NSString stringWithFormat:@"%ld", (long)(asset.selectedIndex + 1)];
         } else {
             _checkboxButton.indexLabel.hidden = YES;
             _checkboxButton.indexLabel.text = @"";

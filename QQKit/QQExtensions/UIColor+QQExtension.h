@@ -14,7 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  16进制字符串转颜色
  */
-+ (UIColor *)qq_colorWithHexString:(NSString *)hexString;
++ (nullable UIColor *)qq_colorWithHexString:(NSString *)hexString;
 
 /**
  将当前色值 RGB 转换为hex字符串，不包含 alpha

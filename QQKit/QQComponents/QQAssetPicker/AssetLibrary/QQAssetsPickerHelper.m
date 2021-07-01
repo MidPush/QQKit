@@ -80,9 +80,9 @@ static NSString *const QQAssetsPickerSpringAnimationKey = @"imagePickerActionSpr
 }
 
 + (NSString *)formatTime:(NSTimeInterval)duration {
-    NSUInteger minute = (duration / 60);
-    NSUInteger second = (duration - minute * 60);
-    return [NSString stringWithFormat:@"%02ld:%02ld", minute, second];
+    NSInteger minute = (duration / 60);
+    NSInteger second = (duration - minute * 60);
+    return [NSString stringWithFormat:@"%02ld:%02ld", (long)minute, (long)second];
 }
 
 @end

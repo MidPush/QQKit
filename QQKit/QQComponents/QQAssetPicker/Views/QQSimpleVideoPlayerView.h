@@ -20,8 +20,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface QQSimpleVideoPlayerView : UIView
 
-@property (nonatomic, strong, readonly) AVPlayer *videoPlayer;
-@property (nonatomic, strong) AVAsset *videoAsset;
+@property (nonatomic, strong, readonly, nullable) AVPlayer *videoPlayer;
+@property (nonatomic, strong, nullable) AVAsset *videoAsset;
 @property (nonatomic, assign, readonly, getter=isPlaying) BOOL playing;
 @property (nonatomic, weak) id<QQSimpleVideoPlayerViewDelegate> delegate;
 

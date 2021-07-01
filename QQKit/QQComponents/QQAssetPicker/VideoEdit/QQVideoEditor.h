@@ -23,7 +23,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithAsset:(AVAsset *)asset presetName:(NSString *)presetName;
 
 /// 视频输出资源
-@property (nonatomic, strong, readonly) AVAsset *outputAsset;
+@property (nonatomic, strong, readonly, nullable) AVAsset *outputAsset;
 
 /// 视频输出URL
 @property (nonatomic, copy, nullable) NSURL *outputURL;

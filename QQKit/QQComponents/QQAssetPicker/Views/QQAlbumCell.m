@@ -69,7 +69,7 @@
 - (void)setAlbum:(QQAssetsGroup *)album {
     _album = album;
     _albumNameLabel.text = album.name;
-    _countLabel.text = [NSString stringWithFormat:@"（%ld）", album.numberOfAssets];
+    _countLabel.text = [NSString stringWithFormat:@"（%ld）", (long)album.numberOfAssets];
     [self resizeSubviews];
     if (album.thumbnailImage) {
         _thumbnailImageView.image = album.thumbnailImage;

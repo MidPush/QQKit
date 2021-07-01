@@ -67,8 +67,8 @@
         return;
     }
     
-    BOOL isImageViewShowing = self.currentImage;
-    BOOL isTitleLabelShowing = self.currentTitle || self.currentAttributedTitle;
+    BOOL isImageViewShowing = (self.currentImage != nil);
+    BOOL isTitleLabelShowing = (self.currentTitle.length > 0) || (self.currentAttributedTitle.length > 0);
     CGFloat spacingBetweenImageAndTitle = (isImageViewShowing && isTitleLabelShowing) ? self.spacingBetweenImageAndTitle : 0;
     
     CGSize contentSize = self.bounds.size;
@@ -257,8 +257,8 @@
     
     CGSize resultSize = CGSizeZero;
     
-    BOOL isImageViewShowing = self.currentImage;
-    BOOL isTitleLabelShowing = self.currentTitle || self.currentAttributedTitle;
+    BOOL isImageViewShowing = (self.currentImage != nil);
+    BOOL isTitleLabelShowing = (self.currentTitle.length > 0) || (self.currentAttributedTitle.length > 0);
     CGFloat spacingBetweenImageAndTitle = (isImageViewShowing && isTitleLabelShowing) ? self.spacingBetweenImageAndTitle : 0;
     
     CGSize imageSize = CGSizeZero;

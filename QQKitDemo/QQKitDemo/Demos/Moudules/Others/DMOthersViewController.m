@@ -99,7 +99,7 @@
             }
         }
     }
-    self.navigationItem.title = [NSString stringWithFormat:@"%ld个APP", self.datas.count];
+    self.navigationItem.title = [NSString stringWithFormat:@"%ld个APP", (long)self.datas.count];
     [self.tableView reloadData];
 }
 

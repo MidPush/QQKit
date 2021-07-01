@@ -127,7 +127,10 @@
     unsigned char rgba[4] = {};
     CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
     CGContextRef context = CGBitmapContextCreate(rgba, 1, 1, 8, 4, colorSpace, kCGImageAlphaPremultipliedLast | kCGBitmapByteOrder32Big);
-    if (!context) return nil;
+    if (!context) {
+        CGColorSpaceRelease(colorSpace);
+        return nil;
+    }
     CGContextDrawImage(context, CGRectMake(0, 0, 1, 1), self.CGImage);
     CGColorSpaceRelease(colorSpace);
     CGContextRelease(context);
