@@ -6,6 +6,7 @@
 //
 
 #import "DMFakeNavigationBarViewController.h"
+#import "QQNavigationButton.h"
 
 @interface DMNavBarStyleData : NSObject
 @property (nonatomic, assign) UIBarStyle barStyle;

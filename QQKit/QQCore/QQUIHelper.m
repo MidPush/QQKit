@@ -7,8 +7,23 @@
 
 #import "QQUIHelper.h"
 #import "UIDevice+QQExtension.h"
+#import "NSObject+QQExtension.h"
+
+@interface QQUIHelper ()
+
+@end
 
 @implementation QQUIHelper
+
++ (instancetype)sharedInstance {
+    static QQUIHelper *instance = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        instance = [[QQUIHelper alloc] init];
+        instance.beforeChangingOrientation = UIDeviceOrientationUnknown;
+    });
+    return instance;
+}
 
 static CGFloat pixelOne = -1.0f;
 + (CGFloat)pixelOne {
@@ -128,6 +143,77 @@ static CGFloat pixelOne = -1.0f;
         }
     }
     return height + [UIDevice deviceSafeAreaInsets].bottom;
+}
+
+#pragma mark - 屏幕旋转
+
++ (BOOL)rotateDeviceToOrientation:(UIDeviceOrientation)orientation {
+    if ([UIDevice currentDevice].orientation == orientation) {
+        [UIViewController attemptRotationToDeviceOrientation];
+        return NO;
+    }
+    
+    [[UIDevice currentDevice] qq_setValue:@(orientation) forKey:@"orientation"];
+    return YES;
+}
+
++ (UIDeviceOrientation)deviceOrientationWithInterfaceOrientationMask:(UIInterfaceOrientationMask)mask {
+    if ((mask & UIInterfaceOrientationMaskAll) == UIInterfaceOrientationMaskAll) {
+        return [UIDevice currentDevice].orientation;
+    }
+    if ((mask & UIInterfaceOrientationMaskAllButUpsideDown) == UIInterfaceOrientationMaskAllButUpsideDown) {
+        return [UIDevice currentDevice].orientation;
+    }
+    if ((mask & UIInterfaceOrientationMaskPortrait) == UIInterfaceOrientationMaskPortrait) {
+        return UIDeviceOrientationPortrait;
+    }
+    if ((mask & UIInterfaceOrientationMaskLandscape) == UIInterfaceOrientationMaskLandscape) {
+        return [UIDevice currentDevice].orientation == UIDeviceOrientationLandscapeLeft ? UIDeviceOrientationLandscapeLeft : UIDeviceOrientationLandscapeRight;
+    }
+    if ((mask & UIInterfaceOrientationMaskLandscapeLeft) == UIInterfaceOrientationMaskLandscapeLeft) {
+        return UIDeviceOrientationLandscapeRight;
+    }
+    if ((mask & UIInterfaceOrientationMaskLandscapeRight) == UIInterfaceOrientationMaskLandscapeRight) {
+        return UIDeviceOrientationLandscapeLeft;
+    }
+    if ((mask & UIInterfaceOrientationMaskPortraitUpsideDown) == UIInterfaceOrientationMaskPortraitUpsideDown) {
+        return UIDeviceOrientationPortraitUpsideDown;
+    }
+    return [UIDevice currentDevice].orientation;
+}
+
++ (BOOL)interfaceOrientationMask:(UIInterfaceOrientationMask)mask containsDeviceOrientation:(UIDeviceOrientation)deviceOrientation {
+    if (deviceOrientation == UIDeviceOrientationUnknown) {
+        return YES;// YES 表示不用额外处理
+    }
+    
+    if ((mask & UIInterfaceOrientationMaskAll) == UIInterfaceOrientationMaskAll) {
+        return YES;
+    }
+    if ((mask & UIInterfaceOrientationMaskAllButUpsideDown) == UIInterfaceOrientationMaskAllButUpsideDown) {
+        return UIInterfaceOrientationPortraitUpsideDown != deviceOrientation;
+    }
+    if ((mask & UIInterfaceOrientationMaskPortrait) == UIInterfaceOrientationMaskPortrait) {
+        return UIInterfaceOrientationPortrait == deviceOrientation;
+    }
+    if ((mask & UIInterfaceOrientationMaskLandscape) == UIInterfaceOrientationMaskLandscape) {
+        return UIInterfaceOrientationLandscapeLeft == deviceOrientation || UIInterfaceOrientationLandscapeRight == deviceOrientation;
+    }
+    if ((mask & UIInterfaceOrientationMaskLandscapeLeft) == UIInterfaceOrientationMaskLandscapeLeft) {
+        return UIInterfaceOrientationLandscapeLeft == deviceOrientation;
+    }
+    if ((mask & UIInterfaceOrientationMaskLandscapeRight) == UIInterfaceOrientationMaskLandscapeRight) {
+        return UIInterfaceOrientationLandscapeRight == deviceOrientation;
+    }
+    if ((mask & UIInterfaceOrientationMaskPortraitUpsideDown) == UIInterfaceOrientationMaskPortraitUpsideDown) {
+        return UIInterfaceOrientationPortraitUpsideDown == deviceOrientation;
+    }
+    
+    return YES;
+}
+
++ (BOOL)interfaceOrientationMask:(UIInterfaceOrientationMask)mask containsInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
+    return [self interfaceOrientationMask:mask containsDeviceOrientation:(UIDeviceOrientation)interfaceOrientation];
 }
 
 @end

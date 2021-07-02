@@ -10,6 +10,9 @@
 
 @interface QQUIHelper : NSObject
 
+/// 单例
++ (instancetype)sharedInstance;
+
 /// 获取一个像素
 + (CGFloat)pixelOne;
 
@@ -25,7 +28,7 @@
 /// 设备宽度，跟横竖屏无关
 + (CGFloat)deviceWidth;
 
-/// 设备宽度，跟横竖屏无关
+/// 设备高度，跟横竖屏无关
 + (CGFloat)deviceHeight;
 
 /// 屏幕scale
@@ -45,6 +48,23 @@
 
 /// tabBar的静态高度，如果是 NotchedScreen 设备会加上设备的 safeAreaInsets.bottom 值
 + (CGFloat)tabBarHeight;
+
+#pragma mark - 屏幕旋转
+
+/// 记录手动旋转方向前的设备方向，当值不为 UIDeviceOrientationUnknown 时表示设备方向有经过了手动调整。默认值为 UIDeviceOrientationUnknown。
+@property (nonatomic, assign) UIDeviceOrientation beforeChangingOrientation;
+
+/// 旋转当前设备的方向到指定方向
++ (BOOL)rotateDeviceToOrientation:(UIDeviceOrientation)orientation;
+
+/// 将一个 UIInterfaceOrientationMask 转换成对应的 UIDeviceOrientation
++ (UIDeviceOrientation)deviceOrientationWithInterfaceOrientationMask:(UIInterfaceOrientationMask)mask;
+
+/// 判断一个 UIInterfaceOrientationMask 是否包含某个给定的 UIDeviceOrientation 方向
++ (BOOL)interfaceOrientationMask:(UIInterfaceOrientationMask)mask containsDeviceOrientation:(UIDeviceOrientation)deviceOrientation;
+
+/// 判断一个 UIInterfaceOrientationMask 是否包含某个给定的 UIInterfaceOrientation 方向
++ (BOOL)interfaceOrientationMask:(UIInterfaceOrientationMask)mask containsInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation;
 
 @end
 

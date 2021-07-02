@@ -46,7 +46,7 @@
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
     
-    self.button.frame = CGRectMake((self.view.qq_width - 300) / 2, QQUIHelper.navigationBarMaxY + 20, 300, 40);
+    self.button.frame = CGRectMake((self.view.qq_width - 300) / 2, QQUIHelper.navigationBarMaxY + 60, 300, 40);
     
     CGFloat tabBarHeight = QQUIHelper.tabBarHeight;
     self.tabBar.frame = CGRectMake(0, self.view.qq_height - tabBarHeight, self.view.qq_width, tabBarHeight);

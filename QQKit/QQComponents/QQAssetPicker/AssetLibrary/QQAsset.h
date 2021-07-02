@@ -85,11 +85,20 @@ typedef NS_ENUM(NSUInteger, QQAssetDownloadStatus) {
 @property (nonatomic, assign) BOOL isHidden;
 
 /// 点击完成按钮时才会对以下属性赋值
-@property (nonatomic, strong, nullable) UIImage *previewImage; //未选择原图有值
-@property (nonatomic, strong, nullable) UIImage *originalImage; //选择了原图有值
-@property (nonatomic, strong, nullable) UIImage *GIFImage; //资源是GIF有值
-@property (nonatomic, strong, nullable) PHLivePhoto *livePhoto API_AVAILABLE(ios(9.1)); //资源是PHLivePhoto有值
-@property (nonatomic, strong) AVAsset *avAsset; //资源是视频有值
+// 未选择原图有值
+@property (nonatomic, strong, nullable) UIImage *previewImage;
+
+// 选择了原图有值
+@property (nonatomic, strong, nullable) UIImage *originalImage;
+
+// 资源是GIF有值
+@property (nonatomic, strong, nullable) UIImage *GIFImage;
+
+// 资源是PHLivePhoto有值
+@property (nonatomic, strong, nullable) PHLivePhoto *livePhoto API_AVAILABLE(ios(9.1));
+
+//资源是视频有值
+@property (nonatomic, strong, nullable) AVAsset *avAsset;
 
 @end
 

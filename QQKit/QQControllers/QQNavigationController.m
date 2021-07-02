@@ -7,7 +7,7 @@
 
 #import "QQNavigationController.h"
 #import "QQUIConfiguration.h"
-#import "UIBarButtonItem+QQExtension.h"
+#import "QQNavigationButton.h"
 #import "QQUIHelper.h"
 
 @interface QQNavigationController ()<UIGestureRecognizerDelegate>

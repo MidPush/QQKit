@@ -64,6 +64,34 @@
     return _datas;
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    UIInterfaceOrientation statusBarOrientation = UIApplication.sharedApplication.statusBarOrientation;
+    UIDeviceOrientation beforeChangingOrientation = [QQUIHelper sharedInstance].beforeChangingOrientation;
+    
+    BOOL shouldConsiderBeforeChanging = beforeChangingOrientation != UIDeviceOrientationUnknown;
+    
+    UIDeviceOrientation deviceOrientation = [UIDevice currentDevice].orientation;
+    
+    if (statusBarOrientation == UIInterfaceOrientationUnknown || deviceOrientation == UIDeviceOrientationUnknown) return;
+    
+    // 如果当前设备方向和界面支持的方向不一致，则主动进行旋转
+    UIDeviceOrientation toOrientation = [QQUIHelper interfaceOrientationMask:self.supportedInterfaceOrientations containsDeviceOrientation:deviceOrientation] ? deviceOrientation : [QQUIHelper deviceOrientationWithInterfaceOrientationMask:self.supportedInterfaceOrientations];
+    
+    if (!shouldConsiderBeforeChanging) {
+        if ([QQUIHelper rotateDeviceToOrientation:toOrientation]) {
+            [QQUIHelper sharedInstance].beforeChangingOrientation = deviceOrientation;
+        } else {
+            [QQUIHelper sharedInstance].beforeChangingOrientation = UIDeviceOrientationUnknown;
+        }
+        return;
+    }
+    
+    toOrientation = [QQUIHelper interfaceOrientationMask:self.supportedInterfaceOrientations containsDeviceOrientation:beforeChangingOrientation] ? beforeChangingOrientation : [QQUIHelper deviceOrientationWithInterfaceOrientationMask:self.supportedInterfaceOrientations];
+    [QQUIHelper rotateDeviceToOrientation:toOrientation];
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     

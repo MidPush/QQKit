@@ -1,20 +1,27 @@
 //
-//  UIBarButtonItem+QQExtension.h
-//  JiXinMei
+//  QQNavigationButton.h
+//  QQKitDemo
 //
-//  Created by Mac on 2021/3/2.
+//  Created by Mac on 2021/7/2.
 //
 
-#import <UIKit/UIKit.h>
 #import "QQButton.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface QQNavigationLeftItemButton : QQButton
+typedef NS_ENUM(NSInteger, QQNavigationButtonType) {
+    QQNavigationButtonTypeNormal,
+    QQNavigationButtonTypeBack
+};
+
+@interface QQNavigationButton : QQButton
+
+- (instancetype)initWithType:(QQNavigationButtonType)type;
+@property (nonatomic, assign, readonly) QQNavigationButtonType type;
 
 @end
 
-@interface UIBarButtonItem (QQExtension)
+@interface UIBarButtonItem (QQNavigationButton)
 
 /// LeftItem
 + (UIBarButtonItem *)qq_leftItemWithImage:(nullable UIImage *)image target:(nullable id)target action:(nullable SEL)action;

@@ -112,6 +112,10 @@ static NSString * const QQKIT_VERSION = @"1.0.0";
 #import "QQGhostButton.h"
 #endif
 
+#if __has_include("QQNavigationButton.h")
+#import "QQNavigationButton.h"
+#endif
+
 #if __has_include("QQCollectionView.h")
 #import "QQCollectionView.h"
 #endif

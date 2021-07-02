@@ -9,7 +9,7 @@
 
 @interface UIViewController (QQFakeNavigationBar)
 
-@property(nonatomic, strong) UINavigationBar *qq_fakeNavigationBar;
+@property (nonatomic, strong) UINavigationBar *qq_fakeNavigationBar;
 
 @end
 

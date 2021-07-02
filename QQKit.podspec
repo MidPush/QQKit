@@ -11,7 +11,7 @@ Pod::Spec.new do |s|
   s.source_files  = 'QQKit/QQKit.h'
 
   s.subspec 'QQCore' do |ss|
-    ss.source_files = 'QQKit/QQCore/*.{h,m}', 'QQKit/QQExtensions', 'QQKit/QQViews/QQButton'
+    ss.source_files = 'QQKit/QQCore/*.{h,m}', 'QQKit/QQExtensions'
     ss.resource = 'QQKit/QQCore/QQUIKit.bundle'
   end
 
@@ -22,6 +22,7 @@ Pod::Spec.new do |s|
       sss.subspec 'AssetLibrary' do |ssss|
         ssss.source_files = 'QQKit/QQComponents/QQAssetPicker/AssetLibrary/*.{h,m}'
         ssss.dependency 'QQKit/QQCore'
+        ssss.dependency 'QQKit/QQViews'
       end
 
       sss.subspec 'Picker' do |ssss|
@@ -74,11 +75,12 @@ Pod::Spec.new do |s|
     ss.subspec 'QQPageViewController' do |sss|
       sss.source_files = 'QQKit/QQComponents/QQPageViewController/*.{h,m}'
       sss.dependency 'QQKit/QQCore'
+      sss.dependency 'QQKit/QQViews'
     end
 
     ss.subspec 'QQToast' do |sss|
       sss.source_files = 'QQKit/QQComponents/QQToast/*.{h,m}'
-      sss.resource = 'QQKit/QQCore/QQUIKit.bundle'
+      sss.dependency 'QQKit/QQCore'
     end
 
   end
@@ -87,6 +89,7 @@ Pod::Spec.new do |s|
     ss.source_files = 'QQKit/QQControllers/*.{h,m}'
     ss.dependency 'QQKit/QQCore'
     ss.dependency 'QQKit/QQComponents/QQFakeNavigationBar'
+    ss.dependency 'QQKit/QQViews'
   end
 
   s.subspec 'QQTheme' do |ss|
