@@ -12,7 +12,10 @@ Pod::Spec.new do |s|
 
   s.subspec 'QQCore' do |ss|
     ss.source_files = 'QQKit/QQCore/*.{h,m}', 'QQKit/QQExtensions'
-    ss.resource = 'QQKit/QQCore/QQUIKit.bundle'
+  end
+
+  s.subspec 'QQResources' do |ss|
+    ss.resource_bundles = {'QQResources' => ['QQKit/QQResources/QQUIKit.bundle']}
   end
 
   s.subspec 'QQComponents' do |ss|
@@ -28,6 +31,7 @@ Pod::Spec.new do |s|
       sss.subspec 'Picker' do |ssss|
         ssss.source_files = 'QQKit/QQComponents/QQAssetPicker/Picker/*.{h,m}'
         ssss.dependency 'QQKit/QQCore'
+        ssss.dependency 'QQKit/QQResources'
         ssss.dependency 'QQKit/QQComponents/QQAssetPicker/AssetLibrary'
         ssss.dependency 'QQKit/QQComponents/QQAssetPicker/Views'
         ssss.dependency 'QQKit/QQComponents/QQAssetPicker/ImageEdit'
@@ -38,6 +42,7 @@ Pod::Spec.new do |s|
       sss.subspec 'ImageEdit' do |ssss|
         ssss.source_files = 'QQKit/QQComponents/QQAssetPicker/ImageEdit/**/*.{h,m}'
         ssss.dependency 'QQKit/QQCore'
+        ssss.dependency 'QQKit/QQResources'
         ssss.dependency 'QQKit/QQComponents/QQAssetPicker/AssetLibrary'
         ssss.dependency 'QQKit/QQComponents/QQAssetPicker/Views'
       end
@@ -45,6 +50,7 @@ Pod::Spec.new do |s|
       sss.subspec 'VideoEdit' do |ssss|
         ssss.source_files = 'QQKit/QQComponents/QQAssetPicker/VideoEdit/**/*.{h,m}'
         ssss.dependency 'QQKit/QQCore'
+        ssss.dependency 'QQKit/QQResources'
         ssss.dependency 'QQKit/QQComponents/QQAssetPicker/AssetLibrary'
         ssss.dependency 'QQKit/QQComponents/QQAssetPicker/Views'
         ssss.dependency 'QQKit/QQComponents/QQToast'
@@ -53,6 +59,7 @@ Pod::Spec.new do |s|
       sss.subspec 'Views' do |ssss|
         ssss.source_files = 'QQKit/QQComponents/QQAssetPicker/Views/*.{h,m}'
         ssss.dependency 'QQKit/QQCore'
+        ssss.dependency 'QQKit/QQResources'
         ssss.dependency 'QQKit/QQComponents/QQAssetPicker/AssetLibrary'
       end
 
@@ -81,6 +88,7 @@ Pod::Spec.new do |s|
     ss.subspec 'QQToast' do |sss|
       sss.source_files = 'QQKit/QQComponents/QQToast/*.{h,m}'
       sss.dependency 'QQKit/QQCore'
+      sss.dependency 'QQKit/QQResources'
     end
 
   end
