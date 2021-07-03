@@ -428,6 +428,7 @@
 			isa = PBXGroup;
 			children = (
 				042ED422268AD91E00300BA7 /* QQKit.h */,
+				0479B4C726904FE200046FC0 /* QQResources */,
 				042ED41A268AD91E00300BA7 /* QQCore */,
 				042ED378268AD91E00300BA7 /* QQComponents */,
 				042ED3F7268AD91E00300BA7 /* QQControllers */,
@@ -737,7 +738,6 @@
 				042ED41B268AD91E00300BA7 /* QQUIConfiguration.m */,
 				042ED421268AD91E00300BA7 /* QQUIHelper.h */,
 				042ED41D268AD91E00300BA7 /* QQUIHelper.m */,
-				042ED41C268AD91E00300BA7 /* QQUIKit.bundle */,
 			);
 			path = QQCore;
 			sourceTree = "<group>";
@@ -857,6 +857,14 @@
 				042ED4A2268AD95200300BA7 /* DMToastViewController.m */,
 			);
 			path = Components;
+			sourceTree = "<group>";
+		};
+		0479B4C726904FE200046FC0 /* QQResources */ = {
+			isa = PBXGroup;
+			children = (
+				042ED41C268AD91E00300BA7 /* QQUIKit.bundle */,
+			);
+			path = QQResources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
