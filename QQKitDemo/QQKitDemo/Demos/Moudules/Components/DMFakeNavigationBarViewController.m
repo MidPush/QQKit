@@ -137,7 +137,7 @@
 
 /// 设置导航栏的背景图
 - (UIImage *)navBarBackgroundImage {
-    return [QQUIConfiguration sharedInstance].navBarBackgroundImage;
+    return nil;
 }
 
 /// 设置导航栏底部的分隔线图片，必须在 navigationBar 设置了背景图后才有效（系统限制如此）

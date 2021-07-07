@@ -104,7 +104,7 @@
                     return;
                 }
                 
-                [selfObject renderNavigationBarStyleAnimated:firstArgv];
+                [selfObject renderOriginNavigationBarStyleAnimated:firstArgv];
                 [selfObject addFakeNavigationBarIfNeeded];
                 
                 selfObject.navigationController.navigationBar.qq_backgroundView.layer.mask = [CALayer layer];
@@ -166,7 +166,7 @@ static const void * const kQQFakeNavigationBarKey = &kQQFakeNavigationBarKey;
 
 #pragma mark -
 
-- (void)renderNavigationBarStyleAnimated:(BOOL)animated {
+- (void)renderOriginNavigationBarStyleAnimated:(BOOL)animated {
 
     if (![self.navigationController.viewControllers containsObject:self]) {
         return;

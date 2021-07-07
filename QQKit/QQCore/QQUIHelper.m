@@ -125,7 +125,7 @@ static CGFloat pixelOne = -1.0f;
         if ([UIDevice isNotchedScreen]) {
             height = 65;
         } else {
-            if ([[UIDevice systemVersion] doubleValue] > 12.0) {
+            if ([[UIDevice systemVersion] doubleValue] >= 12.0) {
                 height = 50;
             } else {
                 height = 49;
@@ -133,7 +133,7 @@ static CGFloat pixelOne = -1.0f;
         }
     } else {
         if ([self isLandscape]) {
-            if ([UIDevice isNotchedScreen]) {
+            if ([UIDevice isRegularScreen]) {
                 height = 49;
             } else {
                 height = 32;
@@ -141,6 +141,7 @@ static CGFloat pixelOne = -1.0f;
         } else {
             height = 49;
         }
+        
     }
     return height + [UIDevice deviceSafeAreaInsets].bottom;
 }

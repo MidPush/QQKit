@@ -29,7 +29,6 @@
 
 - (void)layoutSubviews {
     [super layoutSubviews];
-
     [self layoutAnimatedLayer];
 }
 
@@ -238,7 +237,6 @@
 
 @end
 
-
 static const CGFloat QQProgressHUDVerticalSpacing = 12.0f;
 static const CGFloat QQProgressHUDHorizontalSpacing = 12.0f;
 static const CGFloat QQProgressHUDLabelSpacing = 12.0f;
@@ -423,19 +421,14 @@ static const CGFloat QQProgressHUDUndefinedProgress = -1;
     NSTimeInterval animationDuration = 0.0;
     
     self.frame = self.frontWindow.bounds;
-    UIInterfaceOrientation orientation = UIApplication.sharedApplication.statusBarOrientation;
     
-    if(notification) {
-        NSDictionary* keyboardInfo = [notification userInfo];
-        CGRect keyboardFrame = [keyboardInfo[UIKeyboardFrameBeginUserInfoKey] CGRectValue];
+    if (notification) {
+        NSDictionary *keyboardInfo = [notification userInfo];
+        CGRect keyboardFrame = [keyboardInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
         animationDuration = [keyboardInfo[UIKeyboardAnimationDurationUserInfoKey] doubleValue];
         
-        if(notification.name == UIKeyboardWillShowNotification || notification.name == UIKeyboardDidShowNotification) {
-            keyboardHeight = CGRectGetWidth(keyboardFrame);
-            
-            if(UIInterfaceOrientationIsPortrait(orientation)) {
-                keyboardHeight = CGRectGetHeight(keyboardFrame);
-            }
+        if (notification.name == UIKeyboardWillShowNotification || notification.name == UIKeyboardDidShowNotification) {
+            keyboardHeight = CGRectGetHeight(keyboardFrame);
         }
     } else {
         keyboardHeight = self.visibleKeyboardHeight;
@@ -446,7 +439,7 @@ static const CGFloat QQProgressHUDUndefinedProgress = -1;
     
     // Calculate available height for display
     CGFloat activeHeight = CGRectGetHeight(orientationFrame);
-    if(keyboardHeight > 0) {
+    if (keyboardHeight > 0) {
         activeHeight += CGRectGetHeight(statusBarFrame) * 2;
     }
     activeHeight -= keyboardHeight;
@@ -457,7 +450,7 @@ static const CGFloat QQProgressHUDUndefinedProgress = -1;
     CGFloat rotateAngle = 0.0;
     CGPoint newCenter = CGPointMake(posX, posY);
     
-    if(notification) {
+    if (notification) {
         // Animate update if notification was present
         [UIView animateWithDuration:animationDuration
                               delay:0
@@ -555,12 +548,12 @@ static const CGFloat QQProgressHUDUndefinedProgress = -1;
         indefiniteAnimatedView.strokeThickness = self.ringThickness;
         indefiniteAnimatedView.radius = self.ringRadius;
     } else {
-        if(_indefiniteAnimatedView && ![_indefiniteAnimatedView isKindOfClass:[UIActivityIndicatorView class]]){
+        if (_indefiniteAnimatedView && ![_indefiniteAnimatedView isKindOfClass:[UIActivityIndicatorView class]]) {
             [_indefiniteAnimatedView removeFromSuperview];
             _indefiniteAnimatedView = nil;
         }
         
-        if(!_indefiniteAnimatedView){
+        if (!_indefiniteAnimatedView) {
             _indefiniteAnimatedView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
         }
         
@@ -705,6 +698,7 @@ static const CGFloat QQProgressHUDUndefinedProgress = -1;
 }
 
 #pragma mark - Master show/dismiss methods
+
 - (void)showProgress:(CGFloat)progress status:(NSString *)status {
     [self stopDelayTimer];
     
@@ -993,27 +987,22 @@ static const CGFloat QQProgressHUDUndefinedProgress = -1;
 }
 
 - (CGFloat)visibleKeyboardHeight {
-    UIWindow *keyboardWindow = [self keyboardView].window;
-    for (__strong UIView *possibleKeyboard in keyboardWindow.subviews) {
-        NSString *viewName = NSStringFromClass(possibleKeyboard.class);
-        if([viewName hasPrefix:@"UI"]){
-            if([viewName hasSuffix:@"PeripheralHostView"] || [viewName hasSuffix:@"Keyboard"]){
-                return CGRectGetHeight(possibleKeyboard.bounds);
-            } else if ([viewName hasSuffix:@"InputSetContainerView"]){
-                for (__strong UIView *possibleKeyboardSubview in possibleKeyboard.subviews) {
-                    viewName = NSStringFromClass(possibleKeyboardSubview.class);
-                    if([viewName hasPrefix:@"UI"] && [viewName hasSuffix:@"InputSetHostView"]) {
-                        CGRect convertedRect = [possibleKeyboard convertRect:possibleKeyboardSubview.frame toView:self];
-                        CGRect intersectedRect = CGRectIntersection(convertedRect, self.bounds);
-                        if (!CGRectIsNull(intersectedRect)) {
-                            return CGRectGetHeight(intersectedRect);
-                        }
-                    }
-                }
-            }
+    UIView *keyboardView = [self keyboardView];
+    UIWindow *keyboardWindow = keyboardView.window;
+    if (!keyboardView || !keyboardWindow) {
+        return 0;
+    } else {
+        // 开启了系统的“设置→辅助功能→动态效果→减弱动态效果→首选交叉淡出过渡效果”后，键盘动画不再是 slide，而是 fade，此时应该用 alpha 来判断
+        if (keyboardView.alpha <= 0) {
+            return 0;
         }
+        
+        CGRect visibleRect = CGRectIntersection(keyboardWindow.bounds, keyboardView.frame);
+        if (!CGRectIsNull(visibleRect) && !CGRectIsInfinite(visibleRect)) {
+            return CGRectGetHeight(visibleRect);
+        }
+        return 0;
     }
-    return 0;
 }
 
 + (NSTimeInterval)displayDurationForString:(NSString *)string {

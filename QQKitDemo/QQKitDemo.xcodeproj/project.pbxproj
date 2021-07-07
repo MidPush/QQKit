@@ -92,7 +92,6 @@
 		042ED4A7268AD95200300BA7 /* DMTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 042ED477268AD95100300BA7 /* DMTabBarController.m */; };
 		042ED4A8268AD95200300BA7 /* UIColor+QQKitDemo.m in Sources */ = {isa = PBXBuildFile; fileRef = 042ED478268AD95100300BA7 /* UIColor+QQKitDemo.m */; };
 		042ED4A9268AD95200300BA7 /* DMGridViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 042ED479268AD95100300BA7 /* DMGridViewController.m */; };
-		042ED4AA268AD95200300BA7 /* DMActivityIndicatorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 042ED47A268AD95100300BA7 /* DMActivityIndicatorView.m */; };
 		042ED4AB268AD95200300BA7 /* DMNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 042ED47C268AD95100300BA7 /* DMNavigationController.m */; };
 		042ED4AC268AD95200300BA7 /* DMOthersViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 042ED483268AD95200300BA7 /* DMOthersViewController.m */; };
 		042ED4AD268AD95200300BA7 /* DMTextViewViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 042ED486268AD95200300BA7 /* DMTextViewViewController.m */; };
@@ -111,6 +110,8 @@
 		042ED4BA268AD95200300BA7 /* DMFakeNavigationBarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 042ED4A3268AD95200300BA7 /* DMFakeNavigationBarViewController.m */; };
 		042ED4BB268AD95200300BA7 /* DMComponentsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 042ED4A4268AD95200300BA7 /* DMComponentsViewController.m */; };
 		042ED4BC268AD95200300BA7 /* DMCircularProgressViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 042ED4A5268AD95200300BA7 /* DMCircularProgressViewController.m */; };
+		04706D282692D44400474CC4 /* DMViewBorderViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04706D272692D44400474CC4 /* DMViewBorderViewController.m */; };
+		04D8C2B62693EC3700BD5F78 /* CALayer+QQExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 04D8C2B52693EC3600BD5F78 /* CALayer+QQExtension.m */; };
 		04DC3D7F268F0403009D6361 /* QQNavigationButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 04DC3D7E268F0403009D6361 /* QQNavigationButton.m */; };
 		187C7F42268CD1B600DF007A /* DMUIConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 187C7F41268CD1B600DF007A /* DMUIConfiguration.m */; };
 /* End PBXBuildFile section */
@@ -298,11 +299,9 @@
 		042ED425268AD91E00300BA7 /* QQThemeManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QQThemeManager.h; sourceTree = "<group>"; };
 		042ED474268AD95100300BA7 /* DMNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DMNavigationController.h; sourceTree = "<group>"; };
 		042ED475268AD95100300BA7 /* DMViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DMViewController.m; sourceTree = "<group>"; };
-		042ED476268AD95100300BA7 /* DMActivityIndicatorView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DMActivityIndicatorView.h; sourceTree = "<group>"; };
 		042ED477268AD95100300BA7 /* DMTabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DMTabBarController.m; sourceTree = "<group>"; };
 		042ED478268AD95100300BA7 /* UIColor+QQKitDemo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+QQKitDemo.m"; sourceTree = "<group>"; };
 		042ED479268AD95100300BA7 /* DMGridViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DMGridViewController.m; sourceTree = "<group>"; };
-		042ED47A268AD95100300BA7 /* DMActivityIndicatorView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DMActivityIndicatorView.m; sourceTree = "<group>"; };
 		042ED47B268AD95100300BA7 /* DMViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DMViewController.h; sourceTree = "<group>"; };
 		042ED47C268AD95100300BA7 /* DMNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DMNavigationController.m; sourceTree = "<group>"; };
 		042ED47D268AD95100300BA7 /* DMTabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DMTabBarController.h; sourceTree = "<group>"; };
@@ -343,6 +342,10 @@
 		042ED4A4268AD95200300BA7 /* DMComponentsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DMComponentsViewController.m; sourceTree = "<group>"; };
 		042ED4A5268AD95200300BA7 /* DMCircularProgressViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DMCircularProgressViewController.m; sourceTree = "<group>"; };
 		042ED4BD268AD98800300BA7 /* QQKitPrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QQKitPrefixHeader.pch; sourceTree = "<group>"; };
+		04706D262692D44400474CC4 /* DMViewBorderViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DMViewBorderViewController.h; sourceTree = "<group>"; };
+		04706D272692D44400474CC4 /* DMViewBorderViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DMViewBorderViewController.m; sourceTree = "<group>"; };
+		04D8C2B42693EC3600BD5F78 /* CALayer+QQExtension.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CALayer+QQExtension.h"; sourceTree = "<group>"; };
+		04D8C2B52693EC3600BD5F78 /* CALayer+QQExtension.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "CALayer+QQExtension.m"; sourceTree = "<group>"; };
 		04DC3D7D268F0403009D6361 /* QQNavigationButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QQNavigationButton.h; sourceTree = "<group>"; };
 		04DC3D7E268F0403009D6361 /* QQNavigationButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QQNavigationButton.m; sourceTree = "<group>"; };
 		187C7F40268CD1B600DF007A /* DMUIConfiguration.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DMUIConfiguration.h; sourceTree = "<group>"; };
@@ -667,6 +670,8 @@
 				042ED3E2268AD91E00300BA7 /* UITabBarItem+QQExtension.m */,
 				042ED3DB268AD91E00300BA7 /* UIView+QQExtension.h */,
 				042ED3EC268AD91E00300BA7 /* UIView+QQExtension.m */,
+				04D8C2B42693EC3600BD5F78 /* CALayer+QQExtension.h */,
+				04D8C2B52693EC3600BD5F78 /* CALayer+QQExtension.m */,
 				042ED3E3268AD91E00300BA7 /* UIViewController+QQExtension.h */,
 				042ED3F2268AD91E00300BA7 /* UIViewController+QQExtension.m */,
 			);
@@ -778,8 +783,6 @@
 			children = (
 				187C7F40268CD1B600DF007A /* DMUIConfiguration.h */,
 				187C7F41268CD1B600DF007A /* DMUIConfiguration.m */,
-				042ED476268AD95100300BA7 /* DMActivityIndicatorView.h */,
-				042ED47A268AD95100300BA7 /* DMActivityIndicatorView.m */,
 				042ED47E268AD95100300BA7 /* DMGridViewController.h */,
 				042ED479268AD95100300BA7 /* DMGridViewController.m */,
 				042ED474268AD95100300BA7 /* DMNavigationController.h */,
@@ -834,6 +837,8 @@
 				042ED48A268AD95200300BA7 /* DMUIKitViewController.m */,
 				042ED487268AD95200300BA7 /* DMUITabBarItemViewController.h */,
 				042ED48F268AD95200300BA7 /* DMUITabBarItemViewController.m */,
+				04706D262692D44400474CC4 /* DMViewBorderViewController.h */,
+				04706D272692D44400474CC4 /* DMViewBorderViewController.m */,
 			);
 			path = QQKit;
 			sourceTree = "<group>";
@@ -998,6 +1003,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				042ED4AE268AD95200300BA7 /* DMActivityIndicatorViewController.m in Sources */,
+				04D8C2B62693EC3700BD5F78 /* CALayer+QQExtension.m in Sources */,
 				042ED4AF268AD95200300BA7 /* DMSearchBarViewController.m in Sources */,
 				042ED433268AD91E00300BA7 /* QQVideoEditViewController.m in Sources */,
 				042ED42E268AD91E00300BA7 /* QQAssetsGroup.m in Sources */,
@@ -1050,6 +1056,7 @@
 				042ED44A268AD91E00300BA7 /* QQPageTopBar.m in Sources */,
 				042ED43A268AD91E00300BA7 /* QQVideoInfoBar.m in Sources */,
 				042ED434268AD91E00300BA7 /* QQVideoRangeSlider.m in Sources */,
+				04706D282692D44400474CC4 /* DMViewBorderViewController.m in Sources */,
 				042ED4BA268AD95200300BA7 /* DMFakeNavigationBarViewController.m in Sources */,
 				042ED458268AD91F00300BA7 /* UINavigationBar+QQExtension.m in Sources */,
 				042ED466268AD91F00300BA7 /* QQTableView.m in Sources */,
@@ -1057,7 +1064,6 @@
 				042ED42A268AD91E00300BA7 /* UIImage+QQCropRotate.m in Sources */,
 				042ED4A7268AD95200300BA7 /* DMTabBarController.m in Sources */,
 				042ED344268AD8AF00300BA7 /* AppDelegate.m in Sources */,
-				042ED4AA268AD95200300BA7 /* DMActivityIndicatorView.m in Sources */,
 				042ED460268AD91F00300BA7 /* QQButton.m in Sources */,
 				042ED4B8268AD95200300BA7 /* DMPageViewController.m in Sources */,
 				042ED43F268AD91E00300BA7 /* QQAssetPreviewCell.m in Sources */,

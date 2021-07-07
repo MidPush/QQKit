@@ -272,6 +272,10 @@ static NSInteger isNotchedScreen = -1;
     return isNotchedScreen > 0;
 }
 
++ (BOOL)isRegularScreen {
+    return [self isIPad] || (![self isZoomedMode] && ([self is67InchScreen] || [self is65InchScreen] || [self is61InchScreen] || [self is55InchScreen]));
+}
+
 + (CGFloat)deviceWidth {
     return MIN([[UIScreen mainScreen] bounds].size.width, [[UIScreen mainScreen] bounds].size.height);
 }
@@ -280,12 +284,22 @@ static NSInteger isNotchedScreen = -1;
     return MAX([[UIScreen mainScreen] bounds].size.width, [[UIScreen mainScreen] bounds].size.height);
 }
 
-+ (CGSize)screenSizeFor61InchAndiPhone12 {
-    return CGSizeMake(390, 844);
+static NSInteger is67InchScreen = -1;
++ (BOOL)is67InchScreen {
+    if (is67InchScreen < 0) {
+        is67InchScreen = (self.deviceWidth == self.screenSizeFor67Inch.width && self.deviceHeight == self.screenSizeFor67Inch.height) ? 1 : 0;
+    }
+    return is67InchScreen > 0;
 }
 
-+ (CGSize)screenSizeFor67Inch {
-    return CGSizeMake(428, 926);
+static NSInteger is65InchScreen = -1;
++ (BOOL)is65InchScreen {
+    if (is65InchScreen < 0) {
+        // Since iPhone XS Max、iPhone 11 Pro Max and iPhone XR share the same resolution, we have to distinguish them using the model identifiers
+        // 由于 iPhone XS Max、iPhone 11 Pro Max 这两款机型和 iPhone XR 的屏幕宽高是一致的，我们通过机器 Identifier 加以区别
+        is65InchScreen = (self.deviceWidth == self.screenSizeFor65Inch.width && self.deviceHeight == self.screenSizeFor65Inch.height && ([[self deviceModel] isEqualToString:@"iPhone11,4"] || [[self deviceModel] isEqualToString:@"iPhone11,6"] || [[self deviceModel] isEqualToString:@"iPhone12,5"])) ? 1 : 0;
+    }
+    return is65InchScreen > 0;
 }
 
 static NSInteger is61InchScreenAndiPhone12 = -1;
@@ -296,12 +310,102 @@ static NSInteger is61InchScreenAndiPhone12 = -1;
     return is61InchScreenAndiPhone12 > 0;
 }
 
-static NSInteger is67InchScreen = -1;
-+ (BOOL)is67InchScreen {
-    if (is67InchScreen < 0) {
-        is67InchScreen = (self.deviceWidth == self.screenSizeFor67Inch.width && self.deviceHeight == self.screenSizeFor67Inch.height) ? 1 : 0;
+static NSInteger is61InchScreen = -1;
++ (BOOL)is61InchScreen {
+    if (is61InchScreen < 0) {
+        is61InchScreen = (self.deviceWidth == self.screenSizeFor61Inch.width && self.deviceHeight == self.screenSizeFor61Inch.height && ([[self deviceModel] isEqualToString:@"iPhone11,8"] || [[self deviceModel] isEqualToString:@"iPhone12,1"])) ? 1 : 0;
     }
-    return is67InchScreen > 0;
+    return is61InchScreen > 0;
+}
+
+static NSInteger is58InchScreen = -1;
++ (BOOL)is58InchScreen {
+    if (is58InchScreen < 0) {
+        // Both iPhone XS and iPhone X share the same actual screen sizes, so no need to compare identifiers
+        // iPhone XS 和 iPhone X 的物理尺寸是一致的，因此无需比较机器 Identifier
+        is58InchScreen = (self.deviceWidth == self.screenSizeFor58Inch.width && self.deviceHeight == self.screenSizeFor58Inch.height) ? 1 : 0;
+    }
+    return is58InchScreen > 0;
+}
+
+static NSInteger is55InchScreen = -1;
++ (BOOL)is55InchScreen {
+    if (is55InchScreen < 0) {
+        is55InchScreen = (self.deviceWidth == self.screenSizeFor55Inch.width && self.deviceHeight == self.screenSizeFor55Inch.height) ? 1 : 0;
+    }
+    return is55InchScreen > 0;
+}
+
+static NSInteger is54InchScreen = -1;
++ (BOOL)is54InchScreen {
+    if (is54InchScreen < 0) {
+        is54InchScreen = (self.deviceWidth == self.screenSizeFor54Inch.width && self.deviceHeight == self.screenSizeFor54Inch.height) ? 1 : 0;
+    }
+    return is54InchScreen > 0;
+}
+
+static NSInteger is47InchScreen = -1;
++ (BOOL)is47InchScreen {
+    if (is47InchScreen < 0) {
+        is47InchScreen = (self.deviceWidth == self.screenSizeFor47Inch.width && self.deviceHeight == self.screenSizeFor47Inch.height) ? 1 : 0;
+    }
+    return is47InchScreen > 0;
+}
+
+static NSInteger is40InchScreen = -1;
++ (BOOL)is40InchScreen {
+    if (is40InchScreen < 0) {
+        is40InchScreen = (self.deviceWidth == self.screenSizeFor40Inch.width && self.deviceHeight == self.screenSizeFor40Inch.height) ? 1 : 0;
+    }
+    return is40InchScreen > 0;
+}
+
+static NSInteger is35InchScreen = -1;
++ (BOOL)is35InchScreen {
+    if (is35InchScreen < 0) {
+        is35InchScreen = (self.deviceWidth == self.screenSizeFor35Inch.width && self.deviceHeight == self.screenSizeFor35Inch.height) ? 1 : 0;
+    }
+    return is35InchScreen > 0;
+}
+
++ (CGSize)screenSizeFor67Inch {
+    return CGSizeMake(428, 926);
+}
+
++ (CGSize)screenSizeFor65Inch {
+    return CGSizeMake(414, 896);
+}
+
++ (CGSize)screenSizeFor61InchAndiPhone12 {
+    return CGSizeMake(390, 844);
+}
+
++ (CGSize)screenSizeFor61Inch {
+    return CGSizeMake(414, 896);
+}
+
++ (CGSize)screenSizeFor58Inch {
+    return CGSizeMake(375, 812);
+}
+
++ (CGSize)screenSizeFor55Inch {
+    return CGSizeMake(414, 736);
+}
+
++ (CGSize)screenSizeFor54Inch {
+    return CGSizeMake(375, 812);
+}
+
++ (CGSize)screenSizeFor47Inch {
+    return CGSizeMake(375, 667);
+}
+
++ (CGSize)screenSizeFor40Inch {
+    return CGSizeMake(320, 568);
+}
+
++ (CGSize)screenSizeFor35Inch {
+    return CGSizeMake(320, 480);
 }
 
 + (UIEdgeInsets)deviceSafeAreaInsets {

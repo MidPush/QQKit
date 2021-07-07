@@ -17,4 +17,8 @@
     [super viewDidLoad];
 }
 
+- (UIImage *)navBarBackgroundImage {
+    return [UIImage qq_imageWithStartColor:[UIColor.qq_randomColor colorWithAlphaComponent:0.98] endColor:[UIColor.qq_randomColor colorWithAlphaComponent:0.98] size:CGSizeMake(QQUIHelper.screenWidth, QQUIHelper.navigationBarMaxY)];
+}
+
 @end

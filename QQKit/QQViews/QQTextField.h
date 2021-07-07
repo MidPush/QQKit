@@ -21,6 +21,5 @@
 /// placeholder在输入框内的 padding
 @property (nonatomic, assign) UIEdgeInsets placeholderInsets;
 
-
 @end
 

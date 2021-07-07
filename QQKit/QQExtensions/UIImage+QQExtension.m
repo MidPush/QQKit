@@ -33,6 +33,32 @@
     }];
 }
 
++ (UIImage *)qq_imageWithStartColor:(UIColor *)startColor endColor:(UIColor *)endColor size:(CGSize)size {
+    return [self qq_imageWithStartColor:startColor endColor:endColor size:size direction:QQGradientDirectionLeftToRight];
+}
+
++ (UIImage *)qq_imageWithStartColor:(UIColor *)startColor endColor:(UIColor *)endColor size:(CGSize)size direction:(QQGradientDirection)direction {
+    if (!startColor || !endColor) return nil;
+    BOOL opaque = ([startColor qq_alpha] == 1.0 && [endColor qq_alpha] == 1.0);
+    return [UIImage qq_imageWithSize:size opaque:opaque scale:0 actions:^(CGContextRef contextRef) {
+        NSArray *colors = @[(id)startColor.CGColor, (id)endColor.CGColor];
+        CGColorSpaceRef colorSpace = CGColorGetColorSpace([endColor CGColor]);
+        CGGradientRef gradient = CGGradientCreateWithColors(colorSpace, (CFArrayRef)colors, NULL);
+        CGPoint startPoint = CGPointZero;
+        CGPoint endPoint = CGPointZero;
+        if (direction == QQGradientDirectionTopToBottom) {
+            startPoint = CGPointMake(0, 0);
+            endPoint = CGPointMake(0, size.height);
+        } else if (direction == QQGradientDirectionLeftToRight) {
+            startPoint = CGPointMake(0, 0);
+            endPoint = CGPointMake(size.width, 0);
+        }
+        CGContextDrawLinearGradient(contextRef, gradient, startPoint, endPoint, kCGGradientDrawsBeforeStartLocation | kCGGradientDrawsAfterEndLocation);
+        CGColorSpaceRelease(colorSpace);
+        CGGradientRelease(gradient);
+    }];
+}
+
 - (UIImage *)qq_imageWithImageAbove:(UIImage *)image atPoint:(CGPoint)point {
     return [UIImage qq_imageWithSize:self.size opaque:self.qq_opaque scale:self.scale actions:^(CGContextRef contextRef) {
         [self drawInRect:CGRectMake(0, 0, self.size.width, self.size.height)];
@@ -158,6 +184,21 @@
         }
         CGContextSetFillColorWithColor(contextRef, tintColor.CGColor);
         CGContextFillRect(contextRef, CGRectMake(0, 0, self.size.width, self.size.height));
+    }];
+}
+
++ (UIImage *)qq_imageWithView:(UIView *)view {
+    if (view.bounds.size.width <= 0 || view.bounds.size.height <= 0) return nil;
+    return [UIImage qq_imageWithSize:view.bounds.size opaque:NO scale:0 actions:^(CGContextRef contextRef) {
+        [view.layer renderInContext:contextRef];
+    }];
+}
+
++ (UIImage *)qq_imageWithView:(UIView *)view afterScreenUpdates:(BOOL)afterUpdates {
+    // iOS 7 截图新方式，性能好会好一点，不过不一定适用，因为这个方法的使用条件是：界面要已经render完，否则截到得图将会是empty。
+    if (view.bounds.size.width <= 0 || view.bounds.size.height <= 0) return nil;
+    return [UIImage qq_imageWithSize:view.bounds.size opaque:NO scale:0 actions:^(CGContextRef contextRef) {
+        [view drawViewHierarchyInRect:CGRectMake(0, 0, view.bounds.size.width, view.bounds.size.height) afterScreenUpdates:afterUpdates];
     }];
 }
 

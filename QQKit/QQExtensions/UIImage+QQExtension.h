@@ -6,6 +6,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "UIView+QQExtension.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -15,6 +16,10 @@ NS_ASSUME_NONNULL_BEGIN
 + (UIImage *)qq_imageWithColor:(UIColor *)color;
 + (UIImage *)qq_imageWithColor:(UIColor *)color size:(CGSize)size;
 + (UIImage *)qq_imageWithColor:(UIColor *)color size:(CGSize)size cornerRadius:(CGFloat)cornerRadius;
+
+/// 创建渐变色的图片, direction 默认为 QQGradientDirectionLeftToRight
++ (UIImage *)qq_imageWithStartColor:(UIColor *)startColor endColor:(UIColor *)endColor size:(CGSize)size;
++ (UIImage *)qq_imageWithStartColor:(UIColor *)startColor endColor:(UIColor *)endColor size:(CGSize)size direction:(QQGradientDirection)direction;
 
 /**
  *  在当前图片的基础上叠加一张图片，并指定绘制叠加图片的起始位置
@@ -50,6 +55,12 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (nullable UIImage *)qq_imageWithTintColor:(nullable UIColor *)tintColor;
 
+/**
+ * 对传进来的 `UIView` 截图，生成一个 `UIImage` 并返回
+ * afterUpdates 是否要在界面更新完成后才截图
+ */
++ (nullable UIImage *)qq_imageWithView:(UIView *)view;
++ (nullable UIImage *)qq_imageWithView:(UIView *)view afterScreenUpdates:(BOOL)afterUpdates;
 
 /// GIF动图
 + (nullable UIImage *)qq_imageWithGIFData:(NSData *)data;
