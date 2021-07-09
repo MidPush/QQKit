@@ -146,6 +146,10 @@ static CGFloat pixelOne = -1.0f;
     return height + [UIDevice deviceSafeAreaInsets].bottom;
 }
 
++ (UIEdgeInsets)deviceSafeAreaInsets {
+    return [UIDevice deviceSafeAreaInsets];
+}
+
 #pragma mark - 屏幕旋转
 
 + (BOOL)rotateDeviceToOrientation:(UIDeviceOrientation)orientation {

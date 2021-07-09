@@ -10,6 +10,8 @@
 #import <OpenGLES/OpenGLESAvailability.h>
 #import <Photos/Photos.h>
 #import <PhotosUI/PhotosUI.h>
+#import <SafariServices/SafariServices.h>
+#import "QQWebViewController.h"
 
 @interface AppInfo : NSObject
 
@@ -130,6 +132,31 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    NSArray *testURLs = @[
+                         @"https:www.baidu.com",
+                         @"https://taoke.zswx141319.com/wap/?uid=4",
+                         @"https://www.jianshu.com/p/176537b0d9dd"];
+    
+    NSURL *url = [NSURL URLWithString:testURLs[1]];
+
+    if (indexPath.row == 0) {
+        QQWebViewController *vc = [[QQWebViewController alloc] initWithURL:url];
+        [self.navigationController pushViewController:vc animated:YES];
+        vc.showsToolbar = YES;
+        vc.hidesToolbarOnSwipe = YES;
+        vc.progressTintColor = UIColor.dm_tintColor;
+    } else {
+        SFSafariViewControllerConfiguration *c = [[SFSafariViewControllerConfiguration alloc] init];
+        c.entersReaderIfAvailable = NO;
+        c.barCollapsingEnabled = NO;
+        
+        SFSafariViewController *v = [[SFSafariViewController alloc] initWithURL:url];
+        v.preferredControlTintColor = UIColor.dm_tintColor;
+        v.dismissButtonStyle = SFSafariViewControllerDismissButtonStyleClose;
+        [self presentViewController:v animated:YES completion:nil];
+    }
+    return;
     AppInfo *appInfo = self.datas[indexPath.row];
     [_workspace performSelector:@selector(openApplicationWithBundleID:) withObject:appInfo.bundleID];
 }
@@ -140,6 +167,20 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
     return 0.01f;
+}
+
+- (void)push {
+    
+    [SFSafariViewController qq_enumratePropertiesUsingBlock:^(objc_property_t  _Nonnull property, NSString * _Nonnull propertyName) {
+        NSLog(@"%@", propertyName);
+    }];
+    
+    [SFSafariViewController qq_enumrateIvarsUsingBlock:^(Ivar  _Nonnull ivar, NSString * _Nonnull ivarDescription) {
+        NSLog(@"%@", ivarDescription);
+    }];
+    
+    
+    
 }
 
 @end

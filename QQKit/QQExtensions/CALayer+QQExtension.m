@@ -17,48 +17,48 @@ static NSString *kMaskName = @"QQ_CornerRadius_Mask";
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         
-        OverrideImplementation([CALayer class], @selector(layoutSublayers), ^id(__unsafe_unretained Class originClass, SEL originCMD, IMP (^originalIMPProvider)(void)) {
-            return ^(CALayer *selfObject) {
-                
-                void (*originSelectorIMP)(id, SEL);
-                originSelectorIMP = (void (*)(id, SEL))originalIMPProvider();
-                originSelectorIMP(selfObject, originCMD);
-                
-                if (@available(iOS 11.0, *)) {
-                } else {
-                    if (selfObject.mask && ![selfObject.mask.name isEqualToString:kMaskName]) {
-                        return;
-                    }
-                    if (selfObject.qq_maskedCorners) {
-                        if (selfObject.qq_cornerRadius <= 0) {
-                            if (selfObject.mask) {
-                                selfObject.mask = nil;
-                            }
-                        } else {
-                            CAShapeLayer *cornerMaskLayer = [CAShapeLayer layer];
-                            cornerMaskLayer.name = kMaskName;
-                            UIRectCorner rectCorner = 0;
-                            if ((selfObject.qq_maskedCorners & QQLayerMinXMinYCorner) == QQLayerMinXMinYCorner) {
-                                rectCorner |= UIRectCornerTopLeft;
-                            }
-                            if ((selfObject.qq_maskedCorners & QQLayerMaxXMinYCorner) == QQLayerMaxXMinYCorner) {
-                                rectCorner |= UIRectCornerTopRight;
-                            }
-                            if ((selfObject.qq_maskedCorners & QQLayerMinXMaxYCorner) == QQLayerMinXMaxYCorner) {
-                                rectCorner |= UIRectCornerBottomLeft;
-                            }
-                            if ((selfObject.qq_maskedCorners & QQLayerMaxXMaxYCorner) == QQLayerMaxXMaxYCorner) {
-                                rectCorner |= UIRectCornerBottomRight;
-                            }
-                            UIBezierPath *path = [UIBezierPath bezierPathWithRoundedRect:selfObject.bounds byRoundingCorners:rectCorner cornerRadii:CGSizeMake(selfObject.qq_cornerRadius, selfObject.qq_cornerRadius)];
-                            cornerMaskLayer.frame = CGRectMake(0, 0, selfObject.bounds.size.width, selfObject.bounds.size.height);
-                            cornerMaskLayer.path = path.CGPath;
-                            selfObject.mask = cornerMaskLayer;
-                        }
-                    }
-                }
-            };
-        });
+//        OverrideImplementation([CALayer class], @selector(layoutSublayers), ^id(__unsafe_unretained Class originClass, SEL originCMD, IMP (^originalIMPProvider)(void)) {
+//            return ^(CALayer *selfObject) {
+//                
+//                void (*originSelectorIMP)(id, SEL);
+//                originSelectorIMP = (void (*)(id, SEL))originalIMPProvider();
+//                originSelectorIMP(selfObject, originCMD);
+//                
+//                if (@available(iOS 11.0, *)) {
+//                } else {
+//                    if (selfObject.mask && ![selfObject.mask.name isEqualToString:kMaskName]) {
+//                        return;
+//                    }
+//                    if (selfObject.qq_maskedCorners) {
+//                        if (selfObject.qq_cornerRadius <= 0) {
+//                            if (selfObject.mask) {
+//                                selfObject.mask = nil;
+//                            }
+//                        } else {
+//                            CAShapeLayer *cornerMaskLayer = [CAShapeLayer layer];
+//                            cornerMaskLayer.name = kMaskName;
+//                            UIRectCorner rectCorner = 0;
+//                            if ((selfObject.qq_maskedCorners & QQLayerMinXMinYCorner) == QQLayerMinXMinYCorner) {
+//                                rectCorner |= UIRectCornerTopLeft;
+//                            }
+//                            if ((selfObject.qq_maskedCorners & QQLayerMaxXMinYCorner) == QQLayerMaxXMinYCorner) {
+//                                rectCorner |= UIRectCornerTopRight;
+//                            }
+//                            if ((selfObject.qq_maskedCorners & QQLayerMinXMaxYCorner) == QQLayerMinXMaxYCorner) {
+//                                rectCorner |= UIRectCornerBottomLeft;
+//                            }
+//                            if ((selfObject.qq_maskedCorners & QQLayerMaxXMaxYCorner) == QQLayerMaxXMaxYCorner) {
+//                                rectCorner |= UIRectCornerBottomRight;
+//                            }
+//                            UIBezierPath *path = [UIBezierPath bezierPathWithRoundedRect:selfObject.bounds byRoundingCorners:rectCorner cornerRadii:CGSizeMake(selfObject.qq_cornerRadius, selfObject.qq_cornerRadius)];
+//                            cornerMaskLayer.frame = CGRectMake(0, 0, selfObject.bounds.size.width, selfObject.bounds.size.height);
+//                            cornerMaskLayer.path = path.CGPath;
+//                            selfObject.mask = cornerMaskLayer;
+//                        }
+//                    }
+//                }
+//            };
+//        });
         
     });
 }

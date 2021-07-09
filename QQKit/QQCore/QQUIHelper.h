@@ -31,6 +31,9 @@
 /// 设备高度，跟横竖屏无关
 + (CGFloat)deviceHeight;
 
+/// 设备 safeAreaInsets
++ (UIEdgeInsets)deviceSafeAreaInsets;
+
 /// 屏幕scale
 + (CGFloat)screenScale;
 
@@ -48,6 +51,7 @@
 
 /// tabBar的静态高度，如果是 NotchedScreen 设备会加上设备的 safeAreaInsets.bottom 值
 + (CGFloat)tabBarHeight;
+
 
 #pragma mark - 屏幕旋转
 

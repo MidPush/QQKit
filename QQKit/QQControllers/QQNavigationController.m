@@ -54,7 +54,7 @@
 
 #pragma mark - 全屏返回手势
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
-    if ([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
+    if (gestureRecognizer == self.fullScreenPopGesture) {
         CGPoint point = [(UIPanGestureRecognizer *)gestureRecognizer translationInView:self.view];
         CGPoint location = [gestureRecognizer locationInView:self.view];
         CGFloat navigationBarMaxY = [QQUIHelper navigationBarMaxY];

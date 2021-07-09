@@ -263,26 +263,26 @@
 + (void)load {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        OverrideImplementation([UIView class], @selector(layoutSublayersOfLayer:), ^id(__unsafe_unretained Class originClass, SEL originCMD, IMP (^originalIMPProvider)(void)) {
-            return ^(UIView *selfObject, CALayer *firstArgv) {
-
-                // call super
-                void (*originSelectorIMP)(id, SEL, CALayer *);
-                originSelectorIMP = (void (*)(id, SEL, CALayer *))originalIMPProvider();
-                originSelectorIMP(selfObject, originCMD, firstArgv);
-
-                if (selfObject.qq_borderLayer && !selfObject.qq_borderLayer.hidden) {
-                    selfObject.qq_borderLayer.frame = selfObject.bounds;
-                    [selfObject.layer qq_bringSublayerToFront:selfObject.qq_borderLayer];
-                    [selfObject.qq_borderLayer setNeedsLayout];// 把布局刷新逻辑剥离到 layer 内，方便在子线程里直接刷新 layer，如果放在 UIView 内，子线程里就无法主动请求刷新了
-                }
-
-                if (selfObject.qq_gradientLayer && !selfObject.qq_gradientLayer.hidden) {
-                    selfObject.qq_gradientLayer.frame = selfObject.bounds;
-                    [selfObject.layer qq_sendSublayerToBack:selfObject.qq_gradientLayer];
-                }
-            };
-        });
+//        OverrideImplementation([UIView class], @selector(layoutSublayersOfLayer:), ^id(__unsafe_unretained Class originClass, SEL originCMD, IMP (^originalIMPProvider)(void)) {
+//            return ^(UIView *selfObject, CALayer *firstArgv) {
+//
+//                // call super
+//                void (*originSelectorIMP)(id, SEL, CALayer *);
+//                originSelectorIMP = (void (*)(id, SEL, CALayer *))originalIMPProvider();
+//                originSelectorIMP(selfObject, originCMD, firstArgv);
+//
+//                if (selfObject.qq_borderLayer && !selfObject.qq_borderLayer.hidden) {
+//                    selfObject.qq_borderLayer.frame = selfObject.bounds;
+//                    [selfObject.layer qq_bringSublayerToFront:selfObject.qq_borderLayer];
+//                    [selfObject.qq_borderLayer setNeedsLayout];// 把布局刷新逻辑剥离到 layer 内，方便在子线程里直接刷新 layer，如果放在 UIView 内，子线程里就无法主动请求刷新了
+//                }
+//
+//                if (selfObject.qq_gradientLayer && !selfObject.qq_gradientLayer.hidden) {
+//                    selfObject.qq_gradientLayer.frame = selfObject.bounds;
+//                    [selfObject.layer qq_sendSublayerToBack:selfObject.qq_gradientLayer];
+//                }
+//            };
+//        });
     });
 }
 
