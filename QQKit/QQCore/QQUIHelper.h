@@ -13,6 +13,8 @@
 /// 单例
 + (instancetype)sharedInstance;
 
+#pragma mark - UI相关
+
 /// 获取一个像素
 + (CGFloat)pixelOne;
 
@@ -52,7 +54,6 @@
 /// tabBar的静态高度，如果是 NotchedScreen 设备会加上设备的 safeAreaInsets.bottom 值
 + (CGFloat)tabBarHeight;
 
-
 #pragma mark - 屏幕旋转
 
 /// 记录手动旋转方向前的设备方向，当值不为 UIDeviceOrientationUnknown 时表示设备方向有经过了手动调整。默认值为 UIDeviceOrientationUnknown。
@@ -70,6 +71,43 @@
 /// 判断一个 UIInterfaceOrientationMask 是否包含某个给定的 UIInterfaceOrientation 方向
 + (BOOL)interfaceOrientationMask:(UIInterfaceOrientationMask)mask containsInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation;
 
+#pragma mark - App信息
+/// 应用名称
++ (NSString *)appName;
+
+/// 版本号（eg：1.0.0）
++ (NSString *)appVersion;
+
+/// build版本（eg：101）
++ (NSString *)appBuildVersion;
+
 @end
 
+#pragma mark - 一些自定义函数
 
+/**
+ *  基于指定的倍数，对传进来的 floatValue 进行像素取整。若指定倍数为0，则表示以当前设备的屏幕倍数为准。
+ *
+ *  例如传进来 “2.1”，在 2x 倍数下会返回 2.5（0.5pt 对应 1px），在 3x 倍数下会返回 2.333（0.333pt 对应 1px）。
+ */
+CG_INLINE CGFloat flatSpecificScale(CGFloat floatValue, CGFloat scale) {
+    floatValue = (floatValue == CGFLOAT_MIN ? 0 : floatValue);
+    scale = scale ?: [UIScreen mainScreen].scale;
+    CGFloat flattedValue = ceil(floatValue * scale) / scale;
+    return flattedValue;
+}
+
+/**
+ *  基于当前设备的屏幕倍数，对传进来的 floatValue 进行像素取整。
+ *
+ *  注意如果在 Core Graphic 绘图里使用时，要注意当前画布的倍数是否和设备屏幕倍数一致，若不一致，不可使用 flat() 函数，而应该用 flatSpecificScale
+ */
+CG_INLINE CGFloat flat(CGFloat floatValue) {
+    return flatSpecificScale(floatValue, 0);
+}
+
+
+/// 创建一个像素对齐的CGRec
+CG_INLINE CGRect CGRectFlatMake(CGFloat x, CGFloat y, CGFloat width, CGFloat height) {
+    return CGRectMake(flat(x), flat(y), flat(width), flat(height));
+}

@@ -114,6 +114,11 @@
 		048F3E4826968BAF00DE417B /* QQWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 048F3E4726968BAF00DE417B /* QQWebViewController.m */; };
 		04D8C2B62693EC3700BD5F78 /* CALayer+QQExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 04D8C2B52693EC3600BD5F78 /* CALayer+QQExtension.m */; };
 		04DC3D7F268F0403009D6361 /* QQNavigationButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 04DC3D7E268F0403009D6361 /* QQNavigationButton.m */; };
+		185B930826986DCB00E43DEE /* QQAlertViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 185B930726986DCB00E43DEE /* QQAlertViewController.m */; };
+		185B93112698B3BA00E43DEE /* QQModalViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 185B93102698B3BA00E43DEE /* QQModalViewController.m */; };
+		185B931D26993FF400E43DEE /* QQModalView.m in Sources */ = {isa = PBXBuildFile; fileRef = 185B931C26993FF400E43DEE /* QQModalView.m */; };
+		185B932926996D5700E43DEE /* DMModalViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 185B932826996D5700E43DEE /* DMModalViewController.m */; };
+		185B9338269AF9A400E43DEE /* DMWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 185B9337269AF9A400E43DEE /* DMWebViewController.m */; };
 		187C7F42268CD1B600DF007A /* DMUIConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 187C7F41268CD1B600DF007A /* DMUIConfiguration.m */; };
 /* End PBXBuildFile section */
 
@@ -351,6 +356,16 @@
 		04D8C2B52693EC3600BD5F78 /* CALayer+QQExtension.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "CALayer+QQExtension.m"; sourceTree = "<group>"; };
 		04DC3D7D268F0403009D6361 /* QQNavigationButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QQNavigationButton.h; sourceTree = "<group>"; };
 		04DC3D7E268F0403009D6361 /* QQNavigationButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QQNavigationButton.m; sourceTree = "<group>"; };
+		185B930626986DCB00E43DEE /* QQAlertViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QQAlertViewController.h; sourceTree = "<group>"; };
+		185B930726986DCB00E43DEE /* QQAlertViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QQAlertViewController.m; sourceTree = "<group>"; };
+		185B930F2698B3BA00E43DEE /* QQModalViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QQModalViewController.h; sourceTree = "<group>"; };
+		185B93102698B3BA00E43DEE /* QQModalViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QQModalViewController.m; sourceTree = "<group>"; };
+		185B931B26993FF400E43DEE /* QQModalView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QQModalView.h; sourceTree = "<group>"; };
+		185B931C26993FF400E43DEE /* QQModalView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QQModalView.m; sourceTree = "<group>"; };
+		185B932726996D5700E43DEE /* DMModalViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DMModalViewController.h; sourceTree = "<group>"; };
+		185B932826996D5700E43DEE /* DMModalViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DMModalViewController.m; sourceTree = "<group>"; };
+		185B9336269AF9A400E43DEE /* DMWebViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DMWebViewController.h; sourceTree = "<group>"; };
+		185B9337269AF9A400E43DEE /* DMWebViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DMWebViewController.m; sourceTree = "<group>"; };
 		187C7F40268CD1B600DF007A /* DMUIConfiguration.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DMUIConfiguration.h; sourceTree = "<group>"; };
 		187C7F41268CD1B600DF007A /* DMUIConfiguration.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DMUIConfiguration.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -449,6 +464,7 @@
 		042ED378268AD91E00300BA7 /* QQComponents */ = {
 			isa = PBXGroup;
 			children = (
+				185B931A26993FC600E43DEE /* QQModal */,
 				042ED379268AD91E00300BA7 /* QQAssetPicker */,
 				042ED3D3268AD91E00300BA7 /* QQBadge */,
 				042ED3D0268AD91E00300BA7 /* QQCircularProgress */,
@@ -844,6 +860,8 @@
 				042ED48F268AD95200300BA7 /* DMUITabBarItemViewController.m */,
 				04706D262692D44400474CC4 /* DMViewBorderViewController.h */,
 				04706D272692D44400474CC4 /* DMViewBorderViewController.m */,
+				185B9336269AF9A400E43DEE /* DMWebViewController.h */,
+				185B9337269AF9A400E43DEE /* DMWebViewController.m */,
 			);
 			path = QQKit;
 			sourceTree = "<group>";
@@ -865,6 +883,8 @@
 				042ED4A0268AD95200300BA7 /* DMPageViewController.m */,
 				042ED49B268AD95200300BA7 /* DMToastViewController.h */,
 				042ED4A2268AD95200300BA7 /* DMToastViewController.m */,
+				185B932726996D5700E43DEE /* DMModalViewController.h */,
+				185B932826996D5700E43DEE /* DMModalViewController.m */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -875,6 +895,19 @@
 				042ED41C268AD91E00300BA7 /* QQUIKit.bundle */,
 			);
 			path = QQResources;
+			sourceTree = "<group>";
+		};
+		185B931A26993FC600E43DEE /* QQModal */ = {
+			isa = PBXGroup;
+			children = (
+				185B931B26993FF400E43DEE /* QQModalView.h */,
+				185B931C26993FF400E43DEE /* QQModalView.m */,
+				185B930F2698B3BA00E43DEE /* QQModalViewController.h */,
+				185B93102698B3BA00E43DEE /* QQModalViewController.m */,
+				185B930626986DCB00E43DEE /* QQAlertViewController.h */,
+				185B930726986DCB00E43DEE /* QQAlertViewController.m */,
+			);
+			path = QQModal;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1045,9 +1078,11 @@
 				042ED450268AD91F00300BA7 /* UIImage+QQExtension.m in Sources */,
 				042ED45C268AD91F00300BA7 /* QQViewController.m in Sources */,
 				042ED44B268AD91F00300BA7 /* QQCircularProgressView.m in Sources */,
+				185B931D26993FF400E43DEE /* QQModalView.m in Sources */,
 				042ED4B5268AD95200300BA7 /* DMOrientationViewController.m in Sources */,
 				042ED457268AD91F00300BA7 /* UIDevice+QQExtension.m in Sources */,
 				042ED437268AD91E00300BA7 /* QQSliderLeft.m in Sources */,
+				185B930826986DCB00E43DEE /* QQAlertViewController.m in Sources */,
 				042ED454268AD91F00300BA7 /* NSObject+QQExtension.m in Sources */,
 				042ED438268AD91E00300BA7 /* QQSliderRight.m in Sources */,
 				042ED445268AD91E00300BA7 /* QQAlbumsListView.m in Sources */,
@@ -1062,6 +1097,7 @@
 				042ED43A268AD91E00300BA7 /* QQVideoInfoBar.m in Sources */,
 				042ED434268AD91E00300BA7 /* QQVideoRangeSlider.m in Sources */,
 				04706D282692D44400474CC4 /* DMViewBorderViewController.m in Sources */,
+				185B93112698B3BA00E43DEE /* QQModalViewController.m in Sources */,
 				042ED4BA268AD95200300BA7 /* DMFakeNavigationBarViewController.m in Sources */,
 				042ED458268AD91F00300BA7 /* UINavigationBar+QQExtension.m in Sources */,
 				042ED466268AD91F00300BA7 /* QQTableView.m in Sources */,
@@ -1076,6 +1112,7 @@
 				042ED4BC268AD95200300BA7 /* DMCircularProgressViewController.m in Sources */,
 				042ED46F268AD91F00300BA7 /* QQRuntime.m in Sources */,
 				042ED46E268AD91F00300BA7 /* QQUIHelper.m in Sources */,
+				185B9338269AF9A400E43DEE /* DMWebViewController.m in Sources */,
 				042ED427268AD91E00300BA7 /* QQCropView.m in Sources */,
 				042ED4A6268AD95200300BA7 /* DMViewController.m in Sources */,
 				042ED46B268AD91F00300BA7 /* QQTextView.m in Sources */,
@@ -1083,6 +1120,7 @@
 				042ED4BB268AD95200300BA7 /* DMComponentsViewController.m in Sources */,
 				042ED45A268AD91F00300BA7 /* UIScrollView+QQExtension.m in Sources */,
 				042ED4A8268AD95200300BA7 /* UIColor+QQKitDemo.m in Sources */,
+				185B932926996D5700E43DEE /* DMModalViewController.m in Sources */,
 				042ED45E268AD91F00300BA7 /* QQTabBarController.m in Sources */,
 				042ED456268AD91F00300BA7 /* UIView+QQExtension.m in Sources */,
 				042ED469268AD91F00300BA7 /* QQScrollView.m in Sources */,
@@ -1281,7 +1319,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = Q6NR3ZSKL2;
+				DEVELOPMENT_TEAM = YWART9C6GD;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/QQKitDemo/QQKitPrefixHeader.pch";
 				INFOPLIST_FILE = QQKitDemo/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -1289,7 +1327,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.xuze.demo1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.xuze.test1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -1301,7 +1339,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = Q6NR3ZSKL2;
+				DEVELOPMENT_TEAM = YWART9C6GD;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/QQKitDemo/QQKitPrefixHeader.pch";
 				INFOPLIST_FILE = QQKitDemo/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -1309,7 +1347,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.xuze.demo1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.xuze.test1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

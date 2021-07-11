@@ -104,7 +104,7 @@ static CGFloat pixelOne = -1.0f;
     } else {
         if ([self isLandscape]) {
             if ([UIDevice isNotchedScreen]) {
-                height = 44;
+                height = 32;
             } else {
                 height = 32;
             }
@@ -219,6 +219,19 @@ static CGFloat pixelOne = -1.0f;
 
 + (BOOL)interfaceOrientationMask:(UIInterfaceOrientationMask)mask containsInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
     return [self interfaceOrientationMask:mask containsDeviceOrientation:(UIDeviceOrientation)interfaceOrientation];
+}
+
+#pragma mark - App信息
++ (NSString *)appName {
+    return [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleDisplayName"];
+}
+
++ (NSString *)appVersion {
+    return [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
+}
+
++ (NSString *)appBuildVersion {
+    return [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"];
 }
 
 @end

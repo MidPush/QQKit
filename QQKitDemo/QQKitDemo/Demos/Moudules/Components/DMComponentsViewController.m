@@ -29,7 +29,8 @@
         @{@"QQAssetPicker" : @"DMAssetPickerViewController"},
         @{@"QQBadge" : @"DMBadgeViewController"},
         @{@"QQToast" : @"DMToastViewController"},
-        @{@"QQCircularProgress" : @"DMCircularProgressViewController"}
+        @{@"QQCircularProgress" : @"DMCircularProgressViewController"},
+        @{@"QQModalViewController" : @"DMModalViewController"},
     ];
 }
 

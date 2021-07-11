@@ -11,6 +11,7 @@
 #import "CALayer+QQExtension.h"
 #import "QQNavigationButton.h"
 #import "QQButton.h"
+#import "QQAlertViewController.h"
 
 @interface QQWebProgressView : UIView
 
@@ -126,9 +127,10 @@
 @property (nonatomic, strong) NSURL *URL;
 @property (nonatomic, strong) WKWebViewConfiguration *configuration;
 
-@property (nonatomic, strong) QQWebProgressView *progressView;
 @property (nonatomic, strong) WKWebView *webView;
+@property (nonatomic, strong) QQWebProgressView *progressView;
 @property (nonatomic, strong) QQWebToolBar *toolBar;
+@property (nonatomic, strong) UILabel *domainLabel;
 @property (nonatomic, assign) BOOL hasNavigationBarAndTranslucent;
 
 @property (nonatomic, assign) CGPoint beginContentOffset;
@@ -182,6 +184,17 @@
     return _toolBar;
 }
 
+- (UILabel *)domainLabel {
+    if (!_domainLabel) {
+        _domainLabel = [[UILabel alloc] init];
+        _domainLabel.textColor = [UIColor colorWithRed:0.6 green:0.6 blue:0.6 alpha:1.0];
+        _domainLabel.font = [UIFont systemFontOfSize:13];
+        _domainLabel.textAlignment = NSTextAlignmentCenter;
+        _domainLabel.alpha = 0.0;
+    }
+    return _domainLabel;
+}
+
 - (instancetype)initWithURL:(NSURL *)URL {
     return [self initWithURL:URL configuration:nil];
 }
@@ -219,6 +232,7 @@
     self.automaticallyAdjustsScrollViewInsets = NO;
     [self.view addSubview:self.webView];
     [self.view addSubview:self.progressView];
+    [self.view addSubview:self.domainLabel];
     
     [self addObservers];
     [self showToolBarsIfNeeded:NO];
@@ -234,6 +248,7 @@
     if (_webView.scrollView.isDragging) {
         return;
     }
+    
     CGFloat webViewY = 0;
     if (_hasNavigationBarAndTranslucent) {
         webViewY = QQUIHelper.navigationBarMaxY;
@@ -248,9 +263,9 @@
         }
         self.toolBar.frame = CGRectMake(0, toolbarTop, self.view.qq_width, QQUIHelper.tabBarHeight);
     }
-
     self.webView.frame = CGRectMake(0, webViewY, self.view.qq_width, toolbarTop - webViewY);
     self.progressView.frame = CGRectMake(0, webViewY, self.view.qq_width, 2.0);
+    self.domainLabel.frame = CGRectMake(10, self.webView.qq_top + 10, self.view.qq_width - 20, self.domainLabel.qq_height);
 }
 
 - (void)viewSafeAreaInsetsDidChange {
@@ -263,7 +278,6 @@
     NSURLRequest *request = [[NSURLRequest alloc] initWithURL:_URL cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData timeoutInterval:30];
     [self.webView loadRequest:request];
 }
-
 
 - (void)showToolBarsIfNeeded:(BOOL)animated {
     if (self.showsToolbar && self.isViewLoaded && (self.webView.canGoBack || self.webView.canGoForward)) {
@@ -281,7 +295,7 @@
 
 - (void)hideToolBarsIfNeeded:(BOOL)animated {
     if (self.showsToolbar && self.isViewLoaded) {
-        if (!self.toolBar.showing || _webView.canGoBack) return;
+        if (!self.toolBar.showing) return;
         self.toolBar.showing = NO;
         [UIView animateWithDuration:animated? 0.25 : 0 animations:^{
             self.toolBar.qq_top = self.view.qq_height;
@@ -404,7 +418,7 @@
     [self.webView addObserver:self forKeyPath:@"estimatedProgress" options:NSKeyValueObservingOptionNew context:nil];
     [self.webView addObserver:self forKeyPath:@"canGoBack" options:NSKeyValueObservingOptionNew context:nil];
     [self.webView addObserver:self forKeyPath:@"canGoForward" options:NSKeyValueObservingOptionNew context:nil];
-    
+    [self.webView addObserver:self forKeyPath:@"URL" options:NSKeyValueObservingOptionNew context:nil];
 }
 
 - (void)removeObservers {
@@ -412,6 +426,7 @@
     [self.webView removeObserver:self forKeyPath:@"estimatedProgress"];
     [self.webView removeObserver:self forKeyPath:@"canGoBack"];
     [self.webView removeObserver:self forKeyPath:@"canGoForward"];
+    [self.webView removeObserver:self forKeyPath:@"URL"];
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context {
@@ -440,6 +455,14 @@
         self.toolBar.forwardButton.enabled = canGoForward;
         [self checkPopRectEdge];
         [self showToolBarsIfNeeded:NO];
+    } else if ([keyPath isEqualToString:@"URL"]) {
+        if (self.webView.URL.host.length > 0) {
+            self.domainLabel.text = [NSString stringWithFormat:@"此网页由%@提供", self.webView.URL.host];
+        } else {
+            self.domainLabel.text = nil;
+        }
+        [self.domainLabel sizeToFit];
+        self.domainLabel.frame = CGRectMake(10, self.webView.qq_top + 10, self.view.qq_width - 20, self.domainLabel.qq_height);
     }
 }
 
@@ -453,6 +476,11 @@
 
 #pragma mark - UIScrollViewDelegate
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    if (-scrollView.contentOffset.y > self.domainLabel.qq_bottom - self.webView.qq_top) {
+        self.domainLabel.alpha = (-scrollView.contentOffset.y - (self.domainLabel.qq_bottom - self.webView.qq_top)) / 80;
+    } else {
+        self.domainLabel.alpha = 0;
+    }
     if (!scrollView.isDragging) return;
     if ([self needsUpdateToolbar]) {
         CGPoint currentContentOffset = scrollView.contentOffset;
@@ -468,7 +496,6 @@
         toolbarTop = MIN(MAX(toolbarTop, toolbarMinY), toolbarMaxY);
         self.toolBar.qq_top = toolbarTop;
         self.webView.qq_height = toolbarTop - self.webView.qq_top;
-
     }
 }
 
@@ -490,17 +517,26 @@
 }
 
 - (BOOL)needsUpdateToolbar {
-    return self.showsToolbar && self.hidesToolbarOnSwipe && !_webView.canGoBack && _webView.canGoForward;
+    return self.showsToolbar && self.hidesToolbarOnSwipe && (_webView.canGoBack || _webView.canGoForward) && self.webView.scrollView.contentSize.height > (self.webView.qq_height + self.toolBar.qq_height);
 }
 
 #pragma mark - WKNavigationDelegate
 
 // 决定是否允许或取消导航。
 - (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
-    WKNavigationType type = navigationAction.navigationType;
+    NSLog(@"URLString:%@", navigationAction.request.URL.absoluteString);
     if ([self canJump:navigationAction.request.URL.absoluteString]) {
         if ([[UIApplication sharedApplication] canOpenURL:navigationAction.request.URL]) {
-            [[UIApplication sharedApplication] openURL:navigationAction.request.URL];
+            NSString *tips = [NSString stringWithFormat:@"可能离开%@，打开第三方应用", QQUIHelper.appName.length > 0 ? QQUIHelper.appName : @"APP"];
+            QQAlertViewController *alert = [self createWebAlert:tips];
+            [alert.submitButton setTitle:@"继续" forState:UIControlStateNormal];
+            [alert showFromController:self];
+            alert.actionsHandler = ^(QQAlertViewController * _Nonnull controller, BOOL isSubmit) {
+                if (isSubmit) {
+                    [[UIApplication sharedApplication] openURL:navigationAction.request.URL];
+                }
+                [controller dismiss];
+            };
             decisionHandler(WKNavigationActionPolicyCancel);
             return;
         }
@@ -595,11 +631,30 @@
 
 // 显示一个JavaScript警告面板。
 - (void)webView:(WKWebView *)webView runJavaScriptAlertPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(void))completionHandler {
+    
+    QQAlertViewController *alert = [self createWebAlert:message];
+    [alert removeCancelButton];
+    [alert showFromController:self];
+    alert.actionsHandler = ^(QQAlertViewController * _Nonnull controller, BOOL isSubmit) {
+        [controller dismissWithCompletion:^{
+            completionHandler();
+        }];
+    };
+    
     NSLog(@"%s", __func__);
 }
 
 // 显示一个JavaScript确认面板。
 - (void)webView:(WKWebView *)webView runJavaScriptConfirmPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(BOOL result))completionHandler {
+    
+    QQAlertViewController *alert = [self createWebAlert:message];
+    [alert showFromController:self];
+    alert.actionsHandler = ^(QQAlertViewController * _Nonnull controller, BOOL isSubmit) {
+        [controller dismissWithCompletion:^{
+            completionHandler(isSubmit);
+        }];
+    };
+    
     NSLog(@"%s", __func__);
 }
 
@@ -645,6 +700,15 @@
 
 #pragma mark - More
 
+- (QQAlertViewController *)createWebAlert:(NSString *)message {
+    
+    QQAlertViewController *alert = [[QQAlertViewController alloc] init];
+    alert.alertContentMaximumWidth = QQUIHelper.deviceWidth - 60;
+    alert.attributedMessage = [[NSAttributedString alloc] initWithString:message attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:16 weight:UIFontWeightMedium]}];
+    [alert.cancelButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    return alert;
+}
+
 - (BOOL)canJump:(NSString *)urlString {
     BOOL canJump = NO;
     for (NSString *scheme in [self someURLSchemes]) {
@@ -668,6 +732,7 @@
         @"message://", //邮箱
         @"maps://", //地图
         @"itms-apps://", //AppStore
+        @"itms-appss://", //AppStore
         @"sinaweibo://", //微博
         @"bdmap://", //百度地图
         @"openApp.jdMobile://", //京东

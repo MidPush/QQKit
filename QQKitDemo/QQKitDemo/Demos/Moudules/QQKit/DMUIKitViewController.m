@@ -32,7 +32,8 @@
         @{@"QQActivityIndicatorView" : @"DMActivityIndicatorViewController"},
         @{@"ViewController Orientation" : @"DMOrientationViewController"},
         @{@"UITabBarItem+QQExtension" : @"DMUITabBarItemViewController"},
-        @{@"UIView+QQExtension" : @"DMViewBorderViewController"}
+        @{@"UIView+QQExtension" : @"DMViewBorderViewController"},
+        @{@"QQWebViewController" : @"DMWebViewController"},
     ];
 }
 
