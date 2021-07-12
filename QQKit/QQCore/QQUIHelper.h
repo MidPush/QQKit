@@ -45,13 +45,13 @@
 /// 状态栏高度(如果状态栏不可见，也会返回一个普通状态下可见的高度)
 + (CGFloat)statusBarHeightConstant;
 
-/// 导航栏的静态高度
+/// 导航栏的静态高度，有新设备时可能需要更新
 + (CGFloat)navigationBarHeight;
 
-/// 导航栏 MaxY
+/// 导航栏 MaxY，有新设备时可能需要更新
 + (CGFloat)navigationBarMaxY;
 
-/// tabBar的静态高度，如果是 NotchedScreen 设备会加上设备的 safeAreaInsets.bottom 值
+/// tabBar的静态高度，如果是 NotchedScreen 设备会加上设备的 safeAreaInsets.bottom 值，有新设备时可能需要更新
 + (CGFloat)tabBarHeight;
 
 #pragma mark - 屏幕旋转

@@ -1,17 +1,17 @@
 //
-//  QQAlertViewController.m
+//  QQConfirmModalController.m
 //  QQKitDemo
 //
-//  Created by xuze on 2021/7/9.
+//  Created by Mac on 2021/7/12.
 //
 
-#import "QQAlertViewController.h"
+#import "QQConfirmModalController.h"
 #import "QQModalView.h"
 #import "UIView+QQExtension.h"
 #import "CALayer+QQExtension.h"
 #import "QQUIHelper.h"
 
-@interface QQAlertViewController ()<QQModalViewDelegate>
+@interface QQConfirmModalController ()<QQModalViewDelegate>
 
 @property (nonatomic, strong) QQModalView *modalView;
 @property (nonatomic, strong) UIView *modalContentView;
@@ -29,7 +29,7 @@
 
 @end
 
-@implementation QQAlertViewController
+@implementation QQConfirmModalController
 
 - (QQModalView *)modalView {
     if (!_modalView) {

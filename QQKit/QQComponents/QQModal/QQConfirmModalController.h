@@ -1,15 +1,19 @@
 //
-//  QQAlertViewController.h
+//  QQConfirmModalController.h
 //  QQKitDemo
 //
-//  Created by xuze on 2021/7/9.
+//  Created by Mac on 2021/7/12.
 //
 
 #import <UIKit/UIKit.h>
 
 NS_ASSUME_NONNULL_BEGIN
+/**
+ 一个确认弹出框
+ 自带 titleView、取消和确认按钮、空白的contentView（contentView内容由自己实现）
+ */
 
-@interface QQAlertViewController : UIViewController
+@interface QQConfirmModalController : UIViewController
 
 /// alert距离屏幕四边的间距，默认UIEdgeInsetsMake(20, 20, 20, 20)。alert的宽度最终是通过屏幕宽度减去水平的 alertContentMargin 和 alertContentMaximumWidth 决定的。
 @property (nonatomic, assign) UIEdgeInsets alertViewMargins;
@@ -49,12 +53,12 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  取消和提交按钮点击事件
  isSubmit 为YES，点击了提交按钮，为NO则点击了取消按钮
- 如果设置了此 block，QQAlertViewController 不会自动隐藏，需用户自己手动隐藏
+ 如果设置了此 block，QQConfirmModalController 不会自动隐藏，需用户自己手动隐藏
  */
-@property (nullable, nonatomic, copy) void (^actionsHandler)(QQAlertViewController *controller, BOOL isSubmit);
+@property (nullable, nonatomic, copy) void (^actionsHandler)(QQConfirmModalController *controller, BOOL isSubmit);
 
 /**
- * 弹出 QQAlertViewController，使用 window.rootViewController 弹出
+ * 弹出 QQConfirmModalController，使用 window.rootViewController 弹出
  * 最好不要使用系统方法 presentViewController:animated:completion: 弹出控制器 ，可能会出现卡顿
  * 或者使用： dispatch_async(dispatch_get_main_queue(), ^{
               [viewController presentViewController:self animated:NO completion:nil];
@@ -63,7 +67,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)show;
 
 /**
- * 在指定的控制器里弹出 QQAlertViewController
+ * 在指定的控制器里弹出 QQConfirmModalController
  * 最好不要使用系统方法 presentViewController:animated:completion: 弹出控制器 ，可能会出现卡顿
  * 或者使用： dispatch_async(dispatch_get_main_queue(), ^{
               [viewController presentViewController:self animated:NO completion:nil];

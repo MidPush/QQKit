@@ -55,6 +55,11 @@ typedef NS_ENUM(NSUInteger, QQGradientDirection) {
 - (nullable UIViewController *)qq_viewController;
 
 /**
+ 移除所有子视图
+ */
+- (void)qq_removeAllSubviews;
+
+/**
  将某个 UIView 截图并转成一个 UIImage
  */
 - (UIImage *)qq_snapshotLayerImage;

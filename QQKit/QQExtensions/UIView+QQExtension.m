@@ -248,6 +248,10 @@
     return nil;
 }
 
+- (void)qq_removeAllSubviews {
+    [self.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+}
+
 - (UIImage *)qq_snapshotLayerImage {
     return [UIImage qq_imageWithView:self];
 }

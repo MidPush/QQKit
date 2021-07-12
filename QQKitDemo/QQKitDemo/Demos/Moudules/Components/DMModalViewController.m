@@ -8,7 +8,8 @@
 #import "DMModalViewController.h"
 #import "QQModalView.h"
 #import "QQModalViewController.h"
-#import "QQAlertViewController.h"
+#import "QQConfirmModalController.h"
+#import "QQAlertController.h"
 #import "CALayer+QQExtension.h"
 
 @interface DMModalViewController ()<UITableViewDelegate, UITableViewDataSource>
@@ -16,8 +17,6 @@
 @property (nonatomic, strong) QQTableView *tableView;
 
 @property (nonatomic, strong) NSArray *datas;
-
-@property (nonatomic, strong) QQAlertViewController *alertViewController;
 
 @end
 
@@ -37,9 +36,11 @@
                 @"layoutBlock，自定义布局"
             ],
             @[
-                @"弹出 alertViewController",
-                @"改变样式",
-            ]
+                @"弹出 QQConfirmModalController",
+            ],
+            @[
+                @"弹出 QQAlertController",
+            ],
             
         ];
     }
@@ -92,7 +93,9 @@
     } else if (section == 1) {
         return @"以QQModalViewController方式显示";
     } else if (section == 2) {
-        return @"QQAlertViewController";
+        return @"QQConfirmModalController";
+    } else if (section == 3) {
+        return @"QQAlertController";
     }
     return nil;
 }
@@ -109,13 +112,13 @@
         }
     } else if (indexPath.section == 2) {
         if (indexPath.row == 0) {
-            self.alertViewController = [[QQAlertViewController alloc] init];
-            self.alertViewController.title = @"标题";
-            self.alertViewController.message = @"modalView提供的显示/隐藏动画总共有3种，可通过animationStyle属性来设置，默认为QQModalAnimationStyleFade。\n\n多次打开此浮层会在这3种动画之间互相切换。";
-            [self.alertViewController.submitButton setTitle:@"点击改变样式" forState:UIControlStateNormal];
-            [self.alertViewController showFromController:self];
+            QQConfirmModalController *confirmViewController = [[QQConfirmModalController alloc] init];
+            confirmViewController.title = @"标题";
+            confirmViewController.message = @"modalView提供的显示/隐藏动画总共有3种，可通过animationStyle属性来设置，默认为QQModalAnimationStyleFade。\n\n多次打开此浮层会在这3种动画之间互相切换。";
+            [confirmViewController.submitButton setTitle:@"点击改变样式" forState:UIControlStateNormal];
+            [confirmViewController showFromController:self];
             
-            self.alertViewController.actionsHandler = ^(QQAlertViewController * _Nonnull controller, BOOL isSubmit) {
+            confirmViewController.actionsHandler = ^(QQConfirmModalController * _Nonnull controller, BOOL isSubmit) {
                 if (!isSubmit) {
                     [controller dismiss];
                     return;
@@ -136,17 +139,37 @@
                 controller.actionsViewSeparatorColor = UIColor.qq_randomColor;
             };
             
-        } else if (indexPath.row == 1) {
+        }
+    } else if (indexPath.section == 3) {
+        NSString *title = @"标题";
+        NSString *message = @"消息";
+        if (indexPath.row == 0) {
+            QQAlertController *alert = [QQAlertController alertControllerWithTitle:title message:message preferredStyle:QQAlertControllerStyleAlert];
             
-            UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"标题标题标题标题标题标题标题标题" message:@"消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消" preferredStyle:UIAlertControllerStyleAlert];
-//            UIAlertAction *action1 = [UIAlertAction actionWithTitle:@"默认" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-//                
-//            }] ;
-//            [alert addAction:action1];
+            QQAlertAction *action2 = [QQAlertAction actionWithTitle:@"取消" style:QQAlertActionStyleCancel handler:^(QQAlertAction * _Nonnull action) {
+                
+            }];
+            [alert addAction:action2];
+            
+            QQAlertAction *action3 = [QQAlertAction actionWithTitle:@"确认" style:QQAlertActionStyleDestructive handler:^(QQAlertAction * _Nonnull action) {
+                
+            }] ;
+            [alert addAction:action3];
+            
+            for (NSInteger i = 0; i < 5; i++) {
+                QQAlertAction *action4 = [QQAlertAction actionWithTitle:@"确认" style:QQAlertActionStyleDestructive handler:^(QQAlertAction * _Nonnull action) {
+
+                }] ;
+                [alert addAction:action4];
+            }
+            
+            [self presentViewController:alert animated:NO completion:nil];
+        } else if (indexPath.row == 1) {
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
             
             UIAlertAction *action2 = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
                 
-            }] ;
+            }];
             [alert addAction:action2];
             
             UIAlertAction *action3 = [UIAlertAction actionWithTitle:@"确认" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
@@ -166,8 +189,6 @@
             }
             
             [self presentViewController:alert animated:YES completion:nil];
-            
-            
         }
     }
 }

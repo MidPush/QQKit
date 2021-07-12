@@ -9,7 +9,11 @@
 #import "QQModalView.h"
 
 NS_ASSUME_NONNULL_BEGIN
-
+/**
+ 一个弹出浮层ViewController
+ 优点：可以处理屏幕旋转，控制状态栏
+ 缺点：不能显示在某个View上，只能使用控制器弹出
+ */
 @class QQModalViewController;
 @protocol QQModalViewControllerDelegate <NSObject>
 

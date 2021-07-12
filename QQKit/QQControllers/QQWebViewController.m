@@ -11,7 +11,7 @@
 #import "CALayer+QQExtension.h"
 #import "QQNavigationButton.h"
 #import "QQButton.h"
-#import "QQAlertViewController.h"
+#import "QQConfirmModalController.h"
 
 @interface QQWebProgressView : UIView
 
@@ -127,11 +127,10 @@
 @property (nonatomic, strong) NSURL *URL;
 @property (nonatomic, strong) WKWebViewConfiguration *configuration;
 
-@property (nonatomic, strong) WKWebView *webView;
+@property (nonatomic, strong, readwrite) WKWebView *webView;
 @property (nonatomic, strong) QQWebProgressView *progressView;
 @property (nonatomic, strong) QQWebToolBar *toolBar;
-@property (nonatomic, strong) UILabel *domainLabel;
-@property (nonatomic, assign) BOOL hasNavigationBarAndTranslucent;
+@property (nonatomic, strong) UILabel *hostLabel;
 
 @property (nonatomic, assign) CGPoint beginContentOffset;
 
@@ -158,9 +157,6 @@
         _webView.navigationDelegate = self;
         _webView.UIDelegate = self;
         _webView.scrollView.delegate = self;
-        if (@available(iOS 11.0, *)) {
-            _webView.scrollView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
-        }
     }
     return _webView;
 }
@@ -184,15 +180,15 @@
     return _toolBar;
 }
 
-- (UILabel *)domainLabel {
-    if (!_domainLabel) {
-        _domainLabel = [[UILabel alloc] init];
-        _domainLabel.textColor = [UIColor colorWithRed:0.6 green:0.6 blue:0.6 alpha:1.0];
-        _domainLabel.font = [UIFont systemFontOfSize:13];
-        _domainLabel.textAlignment = NSTextAlignmentCenter;
-        _domainLabel.alpha = 0.0;
+- (UILabel *)hostLabel {
+    if (!_hostLabel) {
+        _hostLabel = [[UILabel alloc] init];
+        _hostLabel.textColor = [UIColor colorWithRed:0.6 green:0.6 blue:0.6 alpha:1.0];
+        _hostLabel.font = [UIFont systemFontOfSize:13];
+        _hostLabel.textAlignment = NSTextAlignmentCenter;
+        _hostLabel.alpha = 0.0;
     }
-    return _domainLabel;
+    return _hostLabel;
 }
 
 - (instancetype)initWithURL:(NSURL *)URL {
@@ -210,15 +206,6 @@
     return self;
 }
 
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-    if (self.navigationController.navigationBar && self.navigationController.navigationBar.translucent) {
-        _hasNavigationBarAndTranslucent = YES;
-    } else {
-        _hasNavigationBarAndTranslucent = NO;
-    }
-}
-
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     if (![self.navigationController.viewControllers containsObject:self]) {
@@ -228,11 +215,16 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-
+    
+    // 设置不自动调整 contentInset，如果使用自动调整，好像有BUG（不知道是不是使用姿势不对！）
+    if (@available(iOS 11.0, *)) {
+        _webView.scrollView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+    }
     self.automaticallyAdjustsScrollViewInsets = NO;
+    
     [self.view addSubview:self.webView];
     [self.view addSubview:self.progressView];
-    [self.view addSubview:self.domainLabel];
+    [self.view addSubview:self.hostLabel];
     
     [self addObservers];
     [self showToolBarsIfNeeded:NO];
@@ -242,41 +234,41 @@
     [self loadRequest];
 }
 
+- (void)loadRequest {
+    if (!_URL) return;
+    NSURLRequest *request = [[NSURLRequest alloc] initWithURL:_URL];
+    [self.webView loadRequest:request];
+}
+
+- (CGFloat)getWebViewMinY {
+    CGFloat webViewMinY = 0;
+    if (self.navigationController.navigationBar && self.navigationController.navigationBar.translucent) {
+        webViewMinY = self.navigationController.navigationBar.qq_bottom;
+    }
+    return webViewMinY;
+}
+
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
     
-    if (_webView.scrollView.isDragging) {
-        return;
-    }
-    
-    CGFloat webViewY = 0;
-    if (_hasNavigationBarAndTranslucent) {
-        webViewY = QQUIHelper.navigationBarMaxY;
-    } else {
-        webViewY = QQUIHelper.statusBarHeight;
-    }
-    
-    CGFloat toolbarTop = self.view.qq_height;
-    if (self.showsToolbar) {
-        if (self.toolBar.isShowing) {
-            toolbarTop = self.view.qq_height - QQUIHelper.tabBarHeight;
+    if (!CGSizeEqualToSize(self.webView.bounds.size, CGSizeMake(self.view.qq_width, self.toolBar.qq_top - self.webView.qq_top))) {
+        CGFloat webViewY = [self getWebViewMinY];
+        CGFloat toolbarTop = self.view.qq_height;
+        if (self.showsToolbar) {
+            if (self.toolBar.isShowing) {
+                toolbarTop = self.view.qq_height - QQUIHelper.tabBarHeight;
+            }
+            self.toolBar.frame = CGRectMake(0, toolbarTop, self.view.qq_width, QQUIHelper.tabBarHeight);
         }
-        self.toolBar.frame = CGRectMake(0, toolbarTop, self.view.qq_width, QQUIHelper.tabBarHeight);
+        self.webView.frame = CGRectMake(0, webViewY, self.view.qq_width, toolbarTop - webViewY);
+        self.progressView.frame = CGRectMake(0, webViewY, self.view.qq_width, 2.0);
+        self.hostLabel.frame = CGRectMake(10, self.webView.qq_top + 10, self.view.qq_width - 20, self.hostLabel.qq_height);
     }
-    self.webView.frame = CGRectMake(0, webViewY, self.view.qq_width, toolbarTop - webViewY);
-    self.progressView.frame = CGRectMake(0, webViewY, self.view.qq_width, 2.0);
-    self.domainLabel.frame = CGRectMake(10, self.webView.qq_top + 10, self.view.qq_width - 20, self.domainLabel.qq_height);
 }
 
 - (void)viewSafeAreaInsetsDidChange {
     [super viewSafeAreaInsetsDidChange];
     [self updateWebViewContentInset];
-}
-
-- (void)loadRequest {
-    if (!_URL) return;
-    NSURLRequest *request = [[NSURLRequest alloc] initWithURL:_URL cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData timeoutInterval:30];
-    [self.webView loadRequest:request];
 }
 
 - (void)showToolBarsIfNeeded:(BOOL)animated {
@@ -457,12 +449,12 @@
         [self showToolBarsIfNeeded:NO];
     } else if ([keyPath isEqualToString:@"URL"]) {
         if (self.webView.URL.host.length > 0) {
-            self.domainLabel.text = [NSString stringWithFormat:@"此网页由%@提供", self.webView.URL.host];
+            self.hostLabel.text = [NSString stringWithFormat:@"此网页由%@提供", self.webView.URL.host];
         } else {
-            self.domainLabel.text = nil;
+            self.hostLabel.text = nil;
         }
-        [self.domainLabel sizeToFit];
-        self.domainLabel.frame = CGRectMake(10, self.webView.qq_top + 10, self.view.qq_width - 20, self.domainLabel.qq_height);
+        [self.hostLabel sizeToFit];
+        self.hostLabel.frame = CGRectMake(10, self.webView.qq_top + 10, self.view.qq_width - 20, self.hostLabel.qq_height);
     }
 }
 
@@ -476,26 +468,34 @@
 
 #pragma mark - UIScrollViewDelegate
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    if (-scrollView.contentOffset.y > self.domainLabel.qq_bottom - self.webView.qq_top) {
-        self.domainLabel.alpha = (-scrollView.contentOffset.y - (self.domainLabel.qq_bottom - self.webView.qq_top)) / 80;
+    if (scrollView.isDragging) {
+        if (-scrollView.contentOffset.y > self.hostLabel.qq_bottom - self.webView.qq_top) {
+            self.hostLabel.alpha = (-scrollView.contentOffset.y - (self.hostLabel.qq_bottom - self.webView.qq_top)) / 80;
+        }
     } else {
-        self.domainLabel.alpha = 0;
+        self.hostLabel.alpha = 0;
     }
     if (!scrollView.isDragging) return;
     if ([self needsUpdateToolbar]) {
-        CGPoint currentContentOffset = scrollView.contentOffset;
-        CGFloat offsetY = currentContentOffset.y - self.beginContentOffset.y;
-        CGFloat toolbarMinY = self.view.qq_height - self.toolBar.qq_height;
-        CGFloat toolbarMaxY = self.view.qq_height;
-        CGFloat toolbarTop = 0;
-        if (self.toolBar.isShowing) {
-            toolbarTop = toolbarMinY + offsetY;
+        if (self.webView.scrollView.contentOffset.y > (self.webView.scrollView.contentSize.height - self.webView.qq_height - self.toolBar.qq_height)) {
+            // 处理滚动到底部时的情况
+            self.toolBar.qq_top = self.view.qq_height;
+            self.webView.qq_height = self.toolBar.qq_top - self.webView.qq_top;
         } else {
-            toolbarTop = toolbarMaxY + offsetY;
+            CGPoint currentContentOffset = scrollView.contentOffset;
+            CGFloat offsetY = currentContentOffset.y - self.beginContentOffset.y;
+            CGFloat toolbarMinY = self.view.qq_height - self.toolBar.qq_height;
+            CGFloat toolbarMaxY = self.view.qq_height;
+            CGFloat toolbarTop = 0;
+            if (self.toolBar.isShowing) {
+                toolbarTop = toolbarMinY + offsetY;
+            } else {
+                toolbarTop = toolbarMaxY + offsetY;
+            }
+            toolbarTop = MIN(MAX(toolbarTop, toolbarMinY), toolbarMaxY);
+            self.toolBar.qq_top = toolbarTop;
+            self.webView.qq_height = toolbarTop - self.webView.qq_top;
         }
-        toolbarTop = MIN(MAX(toolbarTop, toolbarMinY), toolbarMaxY);
-        self.toolBar.qq_top = toolbarTop;
-        self.webView.qq_height = toolbarTop - self.webView.qq_top;
     }
 }
 
@@ -528,10 +528,10 @@
     if ([self canJump:navigationAction.request.URL.absoluteString]) {
         if ([[UIApplication sharedApplication] canOpenURL:navigationAction.request.URL]) {
             NSString *tips = [NSString stringWithFormat:@"可能离开%@，打开第三方应用", QQUIHelper.appName.length > 0 ? QQUIHelper.appName : @"APP"];
-            QQAlertViewController *alert = [self createWebAlert:tips];
+            QQConfirmModalController *alert = [self createWebAlert:tips];
             [alert.submitButton setTitle:@"继续" forState:UIControlStateNormal];
             [alert showFromController:self];
-            alert.actionsHandler = ^(QQAlertViewController * _Nonnull controller, BOOL isSubmit) {
+            alert.actionsHandler = ^(QQConfirmModalController * _Nonnull controller, BOOL isSubmit) {
                 if (isSubmit) {
                     [[UIApplication sharedApplication] openURL:navigationAction.request.URL];
                 }
@@ -559,7 +559,7 @@
 
 // 页面开始加载时调用
 - (void)webView:(WKWebView *)webView didStartProvisionalNavigation:(null_unspecified WKNavigation *)navigation {
-    
+    [self showToolBarsIfNeeded:YES];
 }
 
 // 当页面接收到服务器重定向时调用
@@ -632,10 +632,10 @@
 // 显示一个JavaScript警告面板。
 - (void)webView:(WKWebView *)webView runJavaScriptAlertPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(void))completionHandler {
     
-    QQAlertViewController *alert = [self createWebAlert:message];
+    QQConfirmModalController *alert = [self createWebAlert:message];
     [alert removeCancelButton];
     [alert showFromController:self];
-    alert.actionsHandler = ^(QQAlertViewController * _Nonnull controller, BOOL isSubmit) {
+    alert.actionsHandler = ^(QQConfirmModalController * _Nonnull controller, BOOL isSubmit) {
         [controller dismissWithCompletion:^{
             completionHandler();
         }];
@@ -647,9 +647,9 @@
 // 显示一个JavaScript确认面板。
 - (void)webView:(WKWebView *)webView runJavaScriptConfirmPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(BOOL result))completionHandler {
     
-    QQAlertViewController *alert = [self createWebAlert:message];
+    QQConfirmModalController *alert = [self createWebAlert:message];
     [alert showFromController:self];
-    alert.actionsHandler = ^(QQAlertViewController * _Nonnull controller, BOOL isSubmit) {
+    alert.actionsHandler = ^(QQConfirmModalController * _Nonnull controller, BOOL isSubmit) {
         [controller dismissWithCompletion:^{
             completionHandler(isSubmit);
         }];
@@ -700,9 +700,9 @@
 
 #pragma mark - More
 
-- (QQAlertViewController *)createWebAlert:(NSString *)message {
+- (QQConfirmModalController *)createWebAlert:(NSString *)message {
     
-    QQAlertViewController *alert = [[QQAlertViewController alloc] init];
+    QQConfirmModalController *alert = [[QQConfirmModalController alloc] init];
     alert.alertContentMaximumWidth = QQUIHelper.deviceWidth - 60;
     alert.attributedMessage = [[NSAttributedString alloc] initWithString:message attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:16 weight:UIFontWeightMedium]}];
     [alert.cancelButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
@@ -712,7 +712,7 @@
 - (BOOL)canJump:(NSString *)urlString {
     BOOL canJump = NO;
     for (NSString *scheme in [self someURLSchemes]) {
-        if ([urlString containsString:scheme]) {
+        if ([urlString rangeOfString:scheme options:NSCaseInsensitiveSearch].location != NSNotFound) {
             canJump = YES;
         }
     }
@@ -735,7 +735,7 @@
         @"itms-appss://", //AppStore
         @"sinaweibo://", //微博
         @"bdmap://", //百度地图
-        @"openApp.jdMobile://", //京东
+        @"openapp.jdmobile://", //京东
         @"imeituan://", //美团
         @"taobao://", //淘宝
         @"pinduoduo://", //拼多多

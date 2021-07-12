@@ -8,7 +8,11 @@
 #import <UIKit/UIKit.h>
 
 NS_ASSUME_NONNULL_BEGIN
-
+/**
+ 一个弹出浮层View
+ 优点：可以显示在某个父View上
+ 缺点：不能处理屏幕旋转布局，需自己手动处理屏幕旋转时布局
+ */
 typedef NS_ENUM(NSInteger, QQModalAnimationStyle) {
     QQModalAnimationStyleFade,   // 渐隐渐现，默认
     QQModalAnimationStylePopup,  // 从中心点弹出

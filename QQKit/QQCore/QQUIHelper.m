@@ -104,7 +104,12 @@ static CGFloat pixelOne = -1.0f;
     } else {
         if ([self isLandscape]) {
             if ([UIDevice isNotchedScreen]) {
-                height = 32;
+                // iPhone12、iphone12Pro 横屏导航栏高度又变回32
+                if ([UIDevice is61InchScreenAndiPhone12]) {
+                    height = 32;
+                } else {
+                    height = 44;
+                }
             } else {
                 height = 32;
             }
