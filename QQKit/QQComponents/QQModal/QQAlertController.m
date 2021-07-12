@@ -6,8 +6,11 @@
 //
 
 #import "QQAlertController.h"
-#import "QQModalView.h"
+#import "QQUIHelper.h"
 #import "UIView+QQExtension.h"
+#import "CALayer+QQExtension.h"
+#import "UIScrollView+QQExtension.h"
+#import "QQModalView.h"
 
 @protocol QQAlertActionDelegate <NSObject>
 
@@ -99,17 +102,24 @@
         self.modalPresentationStyle = UIModalPresentationCustom;
         
         // 样式
-        self.alertContainerBackgroundColor = preferredStyle == QQAlertControllerStyleAlert ? [UIColor colorWithRed:247.0/255.0 green:247.0/255.0 blue:247.0/255.0 alpha:1.0] : [UIColor clearColor];
+        self.alertContainerBackgroundColor = [UIColor colorWithRed:247.0/255.0 green:247.0/255.0 blue:247.0/255.0 alpha:1.0];
         self.alertHeaderBackgroundColor = [UIColor colorWithRed:247.0/255.0 green:247.0/255.0 blue:247.0/255.0 alpha:1.0];
-        self.alertContentMaximumWidth = preferredStyle == QQAlertControllerStyleAlert ? 270 : [QQUIHelper deviceWidth] - 20;
+        self.alertContentMaximumWidth = 270;
+        self.sheetContentMaximumWidth = [QQUIHelper deviceWidth] - 20;
         self.alertContentCornerRadius = 13.0;
         self.alertHeaderInsets = UIEdgeInsetsMake(20, 16, 20, 16);
+        
         self.alertTitleMessageSpacing = 3.0;
+        self.alertTextFieldMessageSpacing = 10;
         self.alertTitleAttributes = @{NSForegroundColorAttributeName:[UIColor blackColor],NSFontAttributeName:[UIFont boldSystemFontOfSize:17]};
         self.alertMessageAttributes = @{NSForegroundColorAttributeName:[UIColor blackColor],NSFontAttributeName:[UIFont systemFontOfSize:13]};
+        
         self.alertTextFieldHeight = 40;
+        self.alertTextFieldsSpecing = 2.0;
         self.alertTextFieldFont = [UIFont systemFontOfSize:13];
         self.alertTextFieldTextColor = [UIColor blackColor];
+        self.alertTextFieldBackgroundColor = [UIColor whiteColor];
+        
         self.alertButtonHeight = 44.0;
         self.alertButtonBackgroundColor = [UIColor colorWithRed:247.0/255.0 green:247.0/255.0 blue:247.0/255.0 alpha:1.0];
         self.alertButtonHighlightBackgroundColor = [UIColor colorWithRed:232.0/255.0 green:232.0/255.0 blue:232.0/255.0 alpha:1.0];
@@ -131,8 +141,15 @@
         
         self.mainVisualEffectView = [[UIView alloc] init];
         self.cancelButtonVisualEffectView = [[UIView alloc] init];
+        
     }
     return self;
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    QQTextField *firstTextField = self.alertTextFields.firstObject;
+    [firstTextField becomeFirstResponder];
 }
 
 - (void)viewDidLoad {
@@ -140,35 +157,46 @@
     self.view.backgroundColor = [UIColor clearColor];
     [self.view addSubview:self.modalView];
     
-    self.containerView.backgroundColor = self.alertContainerBackgroundColor;
+    __weak __typeof(self)weakSelf = self;
+    self.modalView.layoutBlock = ^(CGRect containerBounds, CGFloat keyboardHeight, CGRect contentViewDefaultFrame) {
+        weakSelf.keyboardHeight = keyboardHeight;
+        [weakSelf updateLayout];
+    };
+    self.containerView.backgroundColor = self.preferredStyle == QQAlertControllerStyleAlert ? self.alertContainerBackgroundColor : [UIColor clearColor];
     [self.containerView addSubview:self.scrollWrapView];
     
+    self.headerScrollView.qq_borderColor = self.alertSeparatorColor;
+    self.headerScrollView.qq_borderPosition = QQViewBorderPositionBottom;
+    self.headerScrollView.qq_borderWidth = QQUIHelper.pixelOne;
     self.headerScrollView.backgroundColor = self.alertHeaderBackgroundColor;
     [self.scrollWrapView addSubview:self.headerScrollView];
     
     self.buttonScrollView.backgroundColor = self.alertButtonBackgroundColor;
     [self.scrollWrapView addSubview:self.buttonScrollView];
+    
 }
 
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
-    [self updateTitleLabel];
-    [self updateMessageLabel];
-    [self updateActions];
-    [self updateLayout];
-    if (!self.modalView.isVisible) {
-        [self.modalView showInView:self.view completion:nil];
+    if (!CGRectEqualToRect(self.modalView.frame, self.view.frame)) {
+        [self updateTitleLabel];
+        [self updateMessageLabel];
+        [self updateTextFields];
+        [self updateActions];
+        [self updateLayout];
+        if (!self.modalView.isVisible) {
+            [self.modalView showInView:self.view completion:nil];
+        }
     }
 }
 
 - (void)updateLayout {
     
-    if (_isWillDismissModalView) return;
+    if (_isWillDismissModalView || !self.isViewLoaded) return;
     
     BOOL hasTitle = (self.titleLabel.text.length > 0 && !self.titleLabel.hidden);
     BOOL hasMessage = (self.messageLabel.text.length > 0 && !self.messageLabel.hidden);
     BOOL hasTextField = self.alertTextFields.count > 0;
-    
     
     CGFloat containerMaximumHeight = self.view.qq_height - (self.view.qq_safeAreaInsets.top + self.view.qq_safeAreaInsets.bottom);
     if (self.keyboardHeight > 0) {
@@ -185,7 +213,11 @@
         if (self.alertActions.count > 0 && self.alertActions.count <= 2) {
             buttonScrollViewHeight = self.alertButtonHeight;
         } else if (self.alertActions.count > 2) {
-            buttonScrollViewHeight = self.alertButtonHeight * 3;
+            if (self.alertActions.count * self.alertButtonHeight > containerMaximumHeight / 2) {
+                buttonScrollViewHeight = containerMaximumHeight / 2;
+            } else {
+                buttonScrollViewHeight = self.alertActions.count * self.alertButtonHeight;
+            }
         }
         if (buttonScrollViewHeight == 0) {
             self.buttonScrollView.hidden = YES;
@@ -194,10 +226,15 @@
             self.buttonScrollView.hidden = NO;
             self.buttonScrollView.frame = CGRectMake(0, 0, containerSize.width, buttonScrollViewHeight);
             
+            NSArray *orderedAlertActions = [self orderedAlertActions:self.alertActions];
+            
             if (buttonVerticalLayout) {
                 CGFloat buttonTop = 0;
-                for (int i = 0; i < self.alertActions.count; i++) {
-                    QQAlertAction *action = self.alertActions[i];
+                for (int i = 0; i < orderedAlertActions.count; i++) {
+                    QQAlertAction *action = orderedAlertActions[i];
+                    if (i == 0) {
+                        action.button.qq_borderWidth = 0;
+                    }
                     action.button.frame = CGRectMake(0, buttonTop, CGRectGetWidth(self.buttonScrollView.bounds), self.alertButtonHeight);
                     action.button.qq_borderPosition = QQViewBorderPositionTop;
                     buttonTop = CGRectGetMaxY(action.button.frame);
@@ -206,11 +243,11 @@
                 self.buttonScrollView.contentSize = CGSizeMake(self.buttonScrollView.qq_width, buttonTop);
             } else {
                 // 对齐系统，先 add 的在右边，后 add 的在左边
-                QQAlertAction *leftAction = self.alertActions[1];
+                QQAlertAction *leftAction = orderedAlertActions[1];
                 leftAction.button.frame = CGRectMake(0, 0, CGRectGetWidth(self.buttonScrollView.bounds) / 2, self.alertButtonHeight);
                 leftAction.button.qq_borderPosition = QQViewBorderPositionTop|QQViewBorderPositionRight;
                 
-                QQAlertAction *rightAction = self.alertActions[0];
+                QQAlertAction *rightAction = orderedAlertActions[0];
                 rightAction.button.frame = CGRectMake(CGRectGetMaxX(leftAction.button.frame), 0, CGRectGetWidth(self.buttonScrollView.bounds) / 2, self.alertButtonHeight);
                 rightAction.button.qq_borderPosition = QQViewBorderPositionTop;
                 
@@ -243,7 +280,7 @@
             
             self.messageLabel.frame = CGRectMake(contentPaddingLeft, lastTop, headerLimitSize.width, messageLabeSize.height);
             
-            lastTop = self.titleLabel.qq_bottom + contentPaddingBottom;
+            lastTop = self.messageLabel.qq_bottom + (hasTextField ? self.alertTextFieldMessageSpacing : contentPaddingBottom);
         }
         
         if (hasTextField) {
@@ -251,29 +288,146 @@
                 QQTextField *textField = self.alertTextFields[i];
                 CGRect textFieldFrame = CGRectMake(contentPaddingLeft, lastTop, headerLimitSize.width, self.alertTextFieldHeight);
                 textField.frame = textFieldFrame;
-                lastTop = textField.qq_bottom;
+                lastTop = textField.qq_bottom + self.alertTextFieldsSpecing;
             }
+            lastTop += contentPaddingBottom;
         }
         
-        CGFloat headerScrollViewHeight = lastTop + contentPaddingBottom;
-        headerScrollViewHeight = fmin(headerScrollViewHeight, containerSize.height - buttonScrollViewHeight);
-        
+        CGFloat headerScrollViewHeight = fmin(lastTop, containerSize.height - buttonScrollViewHeight);
         
         self.headerScrollView.frame = CGRectMake(0, 0, containerSize.width, headerScrollViewHeight);
+        self.headerScrollView.contentSize = CGSizeMake(containerSize.width, lastTop);
         
         self.buttonScrollView.frame = CGRectMake(0, self.headerScrollView.qq_bottom, containerSize.width, buttonScrollViewHeight);
         
         self.scrollWrapView.frame = CGRectMake(0, 0, containerSize.width, self.buttonScrollView.qq_bottom);
         
-        containerViewFrame = CGRectMake(0, 0, containerSize.width, self.scrollWrapView.qq_bottom);
+        containerViewFrame = CGRectMake((self.view.qq_width - containerSize.width) / 2, (self.view.qq_height - self.scrollWrapView.qq_bottom - self.keyboardHeight) / 2, containerSize.width, self.scrollWrapView.qq_bottom);
+        
+        
+    } else if (self.preferredStyle == QQAlertControllerStyleActionSheet) {
+        
+        CGSize containerSize = CGSizeMake(self.sheetContentMaximumWidth, containerMaximumHeight - 20);
+        
+        CGFloat contentPaddingLeft = self.alertHeaderInsets.left;
+        CGFloat contentPaddingRight = self.alertHeaderInsets.right;
+        CGFloat contentPaddingTop = (hasTitle || hasMessage) ? self.alertHeaderInsets.top : 0;
+        CGFloat contentPaddingBottom = (hasTitle || hasMessage) ? self.alertHeaderInsets.bottom : 0;
+        
+        CGSize headerLimitSize = CGSizeMake(containerSize.width - (contentPaddingLeft + contentPaddingRight), CGFLOAT_MAX);
+        
+        lastTop = contentPaddingTop;
+        if (hasTitle) {
+            CGSize titleLabeSize = [self.titleLabel sizeThatFits:headerLimitSize];
+            titleLabeSize.width = fmin(headerLimitSize.width, titleLabeSize.width);
+            titleLabeSize.height = fmin(headerLimitSize.height, titleLabeSize.height);
+            
+            self.titleLabel.frame = CGRectMake(contentPaddingLeft, lastTop, headerLimitSize.width, titleLabeSize.height);
+            
+            lastTop = self.titleLabel.qq_bottom + (hasMessage ? self.alertTitleMessageSpacing : contentPaddingBottom);
+        }
+        
+        if (hasMessage) {
+            CGSize messageLabeSize = [self.messageLabel sizeThatFits:headerLimitSize];
+            messageLabeSize.width = fmin(headerLimitSize.width, messageLabeSize.width);
+            messageLabeSize.height = fmin(headerLimitSize.height, messageLabeSize.height);
+            
+            self.messageLabel.frame = CGRectMake(contentPaddingLeft, lastTop, headerLimitSize.width, messageLabeSize.height);
+            
+            lastTop = self.messageLabel.qq_bottom + contentPaddingBottom;
+        }
+        
+        NSMutableArray<QQAlertAction *> *newOrderActions = [[self orderedAlertActions:self.alertActions] mutableCopy];
+        
+        BOOL hasCancelButton = (self.cancelAction != nil);
+        if (hasCancelButton) {
+            containerSize.height -= (self.alertButtonHeight + 20);
+        }
+        CGFloat actionButtonMinHeight = 0;
+        if (hasCancelButton) {
+            actionButtonMinHeight += self.alertButtonHeight;
+            [newOrderActions removeObject:self.cancelAction];
+        }
+        if (newOrderActions.count == 1) {
+            actionButtonMinHeight += self.alertButtonHeight;
+        } else if (newOrderActions.count > 1) {
+            actionButtonMinHeight += (self.alertButtonHeight * 2);
+        }
+        
+        CGFloat buttonScrollViewHeight = 0;
+        if (lastTop + actionButtonMinHeight > containerSize.height) {
+            if (newOrderActions.count == 1) {
+                buttonScrollViewHeight = self.alertButtonHeight;
+            } else if (newOrderActions.count > 1) {
+                buttonScrollViewHeight = (self.alertButtonHeight * 2);
+            }
+        } else {
+            buttonScrollViewHeight = newOrderActions.count * self.alertButtonHeight;
+        }
+        CGFloat headerScrollViewHeight = fmin(lastTop, containerSize.height - buttonScrollViewHeight);
+        
+        CGFloat buttonTop = 0;
+        for (int i = 0; i < newOrderActions.count; i++) {
+            QQAlertAction *action = newOrderActions[i];
+            if (i == 0) {
+                action.button.qq_borderWidth = 0;
+            }
+            action.button.frame = CGRectMake(0, buttonTop, containerSize.width, self.alertButtonHeight);
+            action.button.qq_borderPosition = QQViewBorderPositionTop;
+            buttonTop = CGRectGetMaxY(action.button.frame);
+        }
+        
+
+        self.headerScrollView.frame = CGRectMake(0, 0, containerSize.width, headerScrollViewHeight);
+        self.headerScrollView.contentSize = CGSizeMake(containerSize.width, lastTop);
+        
+        self.buttonScrollView.frame = CGRectMake(0, self.headerScrollView.qq_bottom, containerSize.width, buttonScrollViewHeight);
+        self.buttonScrollView.contentSize = CGSizeMake(containerSize.width, buttonTop);
+        
+        if (hasCancelButton) {
+            self.cancelAction.button.frame = CGRectMake(0, self.buttonScrollView.qq_bottom + 10, containerSize.width, self.alertButtonHeight);
+            self.cancelAction.button.layer.cornerRadius = self.alertContentCornerRadius;
+            [self.containerView addSubview:self.cancelAction.button];
+        }
+        
+        self.scrollWrapView.frame = CGRectMake(0, 0, containerSize.width, self.buttonScrollView.qq_bottom);
+    
+        CGFloat containerViewHeight = hasCancelButton ? self.cancelAction.button.qq_bottom : self.scrollWrapView.qq_bottom;
+        containerViewFrame = CGRectMake((self.view.qq_width - containerSize.width) / 2, (self.view.qq_height - containerViewHeight - 10 - self.view.qq_safeAreaInsets.bottom), containerSize.width, containerViewHeight);
+        
     }
     
+    [self.buttonScrollView qq_scrollToBottom];
+    
     self.containerView.frame = containerViewFrame;
+    if (self.preferredStyle == QQAlertControllerStyleAlert) {
+        self.modalView.modalAnimationStyle = QQModalAnimationStyleFade;
+        self.modalView.dismissWhenTapDimmingView = NO;
+    } else if (self.preferredStyle == QQAlertControllerStyleActionSheet) {
+        self.modalView.modalAnimationStyle = QQModalAnimationStyleSheet;
+        self.modalView.dismissWhenTapDimmingView = YES;
+    }
     self.modalView.contentView = self.containerView;
-    self.modalView.dismissWhenTapDimmingView = NO;
+    self.modalView.contentViewMargins = UIEdgeInsetsZero;
     self.modalView.frame = self.view.bounds;
-    [self.modalView updateLayout];
 }
+
+- (NSArray<QQAlertAction *> *)orderedAlertActions:(NSArray<QQAlertAction *> *)actions {
+    NSMutableArray<QQAlertAction *> *newActions = [[NSMutableArray alloc] init];
+    for (QQAlertAction *action in self.alertActions) {
+        if (action.style != QQAlertActionStyleCancel && action.style != QQAlertActionStyleDestructive) {
+            [newActions addObject:action];
+        }
+    }
+    for (QQAlertAction *action in self.destructiveActions) {
+        [newActions addObject:action];
+    }
+    if (self.cancelAction) {
+        [newActions addObject:self.cancelAction];
+    }
+    return newActions;
+}
+
 
 - (void)addAction:(QQAlertAction *)action {
     if (action.style == QQAlertActionStyleCancel && self.cancelAction) {
@@ -312,11 +466,11 @@
     
     QQTextField *textField = [[QQTextField alloc] init];
     textField.delegate = self;
-    textField.borderStyle = UITextBorderStyleRoundedRect;
-    textField.backgroundColor = [UIColor whiteColor];
+    textField.borderStyle = UITextBorderStyleNone;
+    textField.backgroundColor = self.alertTextFieldBackgroundColor;
     textField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
-    textField.font = [UIFont systemFontOfSize:13];
-    textField.textColor = [UIColor blackColor];
+    textField.font = self.alertTextFieldFont;
+    textField.textColor = self.alertTextFieldTextColor;
     textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
     textField.clearButtonMode = UITextFieldViewModeWhileEditing;
     textField.textInsets = UIEdgeInsetsMake(4, 7, 4, 7);
@@ -485,13 +639,6 @@
     return _title;
 }
 
-- (void)updateTitleLabel {
-    if (self.titleLabel && !self.titleLabel.hidden) {
-        NSAttributedString *attributeString = [[NSAttributedString alloc] initWithString:self.title attributes:self.alertTitleAttributes];
-        self.titleLabel.attributedText = attributeString;
-    }
-}
-
 - (void)setMessage:(NSString *)message {
     _message = message;
     if (!_messageLabel) {
@@ -508,10 +655,175 @@
     }
 }
 
+#pragma mark - 设置 alertContent 样式
+
+- (void)setAlertContainerBackgroundColor:(UIColor *)alertContainerBackgroundColor {
+    _alertContainerBackgroundColor = alertContainerBackgroundColor;
+    _containerView.backgroundColor = alertContainerBackgroundColor;
+}
+
+- (void)setAlertHeaderBackgroundColor:(UIColor *)alertHeaderBackgroundColor {
+    _alertHeaderBackgroundColor = alertHeaderBackgroundColor;
+    _headerScrollView.backgroundColor = alertHeaderBackgroundColor;
+}
+
+- (void)setAlertContentMaximumWidth:(CGFloat)alertContentMaximumWidth {
+    if (_alertContentMaximumWidth != alertContentMaximumWidth) {
+        _alertContentMaximumWidth = alertContentMaximumWidth;
+        [self updateLayout];
+    }
+}
+
+- (void)setSheetContentMaximumWidth:(CGFloat)sheetContentMaximumWidth {
+    if (_sheetContentMaximumWidth != sheetContentMaximumWidth) {
+        _sheetContentMaximumWidth = sheetContentMaximumWidth;
+        [self updateLayout];
+    }
+}
+
+- (void)setAlertContentCornerRadius:(CGFloat)alertContentCornerRadius {
+    if (_alertContentCornerRadius != alertContentCornerRadius) {
+        _alertContentCornerRadius = alertContentCornerRadius;
+        [self updateCornerRadius];
+    }
+}
+
+- (void)setAlertHeaderInsets:(UIEdgeInsets)alertHeaderInsets {
+    if (!UIEdgeInsetsEqualToEdgeInsets(_alertHeaderInsets, alertHeaderInsets)) {
+        _alertHeaderInsets = alertHeaderInsets;
+        [self updateLayout];
+    }
+}
+
+- (void)setAlertTitleMessageSpacing:(CGFloat)alertTitleMessageSpacing {
+    if (_alertTitleMessageSpacing != alertTitleMessageSpacing) {
+        _alertTitleMessageSpacing = alertTitleMessageSpacing;
+        [self updateLayout];
+    }
+}
+
+- (void)setAlertTextFieldMessageSpacing:(CGFloat)alertTextFieldMessageSpacing {
+    if (_alertTextFieldMessageSpacing != alertTextFieldMessageSpacing) {
+        _alertTextFieldMessageSpacing = alertTextFieldMessageSpacing;
+        [self updateLayout];
+    }
+}
+
+- (void)setAlertTitleAttributes:(NSDictionary<NSAttributedStringKey,id> *)alertTitleAttributes {
+    _alertTitleAttributes = alertTitleAttributes;
+    [self updateTitleLabel];
+}
+
+- (void)setAlertMessageAttributes:(NSDictionary<NSAttributedStringKey,id> *)alertMessageAttributes {
+    _alertMessageAttributes = alertMessageAttributes;
+    [self updateMessageLabel];
+}
+
+#pragma mark - 设置TextField样式
+- (void)setAlertTextFieldHeight:(CGFloat)alertTextFieldHeight {
+    if (_alertTextFieldHeight != alertTextFieldHeight) {
+        _alertTextFieldHeight = alertTextFieldHeight;
+        [self updateLayout];
+    }
+}
+
+- (void)setAlertTextFieldsSpecing:(CGFloat)alertTextFieldsSpecing {
+    if (_alertTextFieldsSpecing != alertTextFieldsSpecing) {
+        _alertTextFieldsSpecing = alertTextFieldsSpecing;
+        [self updateLayout];
+    }
+}
+
+- (void)setAlertTextFieldFont:(UIFont *)alertTextFieldFont {
+    if (_alertTextFieldFont != alertTextFieldFont) {
+        _alertTextFieldFont = alertTextFieldFont;
+        [self updateTextFields];
+    }
+}
+
+- (void)setAlertTextFieldTextColor:(UIColor *)alertTextFieldTextColor {
+    if (_alertTextFieldTextColor != alertTextFieldTextColor) {
+        _alertTextFieldTextColor = alertTextFieldTextColor;
+        [self updateTextFields];
+    }
+}
+
+- (void)setAlertTextFieldBackgroundColor:(UIColor *)alertTextFieldBackgroundColor {
+    if (_alertTextFieldBackgroundColor != alertTextFieldBackgroundColor) {
+        _alertTextFieldBackgroundColor = alertTextFieldBackgroundColor;
+        [self updateTextFields];
+    }
+}
+
+#pragma mark - 设置按钮样式
+- (void)setAlertButtonHeight:(CGFloat)alertButtonHeight {
+    if (_alertButtonHeight != alertButtonHeight) {
+        _alertButtonHeight = alertButtonHeight;
+        [self updateLayout];
+    }
+}
+
+- (void)setAlertButtonBackgroundColor:(UIColor *)alertButtonBackgroundColor {
+    if (_alertButtonBackgroundColor != alertButtonBackgroundColor) {
+        _alertButtonBackgroundColor = alertButtonBackgroundColor;
+        [self updateActions];
+    }
+}
+
+- (void)setAlertButtonHighlightBackgroundColor:(UIColor *)alertButtonHighlightBackgroundColor {
+    if (_alertButtonHighlightBackgroundColor != alertButtonHighlightBackgroundColor) {
+        _alertButtonHighlightBackgroundColor = alertButtonHighlightBackgroundColor;
+        [self updateActions];
+    }
+}
+
+- (void)setAlertSeparatorColor:(UIColor *)alertSeparatorColor {
+    if (_alertSeparatorColor != alertSeparatorColor) {
+        _alertSeparatorColor = alertSeparatorColor;
+        self.headerScrollView.qq_borderColor = self.alertSeparatorColor;
+        [self updateActions];
+    }
+}
+
+- (void)setAlertButtonAttributes:(NSDictionary<NSAttributedStringKey,id> *)alertButtonAttributes {
+    _alertButtonAttributes = alertButtonAttributes;
+    [self updateActions];
+}
+
+- (void)setAlertButtonDisabledAttributes:(NSDictionary<NSAttributedStringKey,id> *)alertButtonDisabledAttributes {
+    _alertButtonDisabledAttributes = alertButtonDisabledAttributes;
+    [self updateActions];
+}
+
+- (void)setAlertCancelButtonAttributes:(NSDictionary<NSAttributedStringKey,id> *)alertCancelButtonAttributes {
+    _alertCancelButtonAttributes = alertCancelButtonAttributes;
+    [self updateActions];
+}
+
+- (void)setAlertDestructiveButtonAttributes:(NSDictionary<NSAttributedStringKey,id> *)alertDestructiveButtonAttributes {
+    _alertDestructiveButtonAttributes = alertDestructiveButtonAttributes;
+    [self updateActions];
+}
+
+- (void)updateTitleLabel {
+    if (self.titleLabel && !self.titleLabel.hidden) {
+        NSAttributedString *attributeString = [[NSAttributedString alloc] initWithString:self.title attributes:self.alertTitleAttributes];
+        self.titleLabel.attributedText = attributeString;
+    }
+}
+
 - (void)updateMessageLabel {
     if (self.messageLabel && !self.messageLabel.hidden) {
         NSAttributedString *attributeString = [[NSAttributedString alloc] initWithString:self.message attributes:self.alertMessageAttributes];
         self.messageLabel.attributedText = attributeString;
+    }
+}
+
+- (void)updateTextFields {
+    for (QQTextField *textField in self.textFields) {
+        textField.backgroundColor = self.alertTextFieldBackgroundColor;
+        textField.font = self.alertTextFieldFont;
+        textField.textColor = self.alertTextFieldTextColor;
     }
 }
 

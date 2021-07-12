@@ -6,12 +6,14 @@
 //
 
 #import "QQModalView.h"
+#import "UIView+QQExtension.h"
 
 @interface QQModalView ()
 
 @property (nonatomic, assign, readwrite, getter=isVisible) BOOL visible;
 @property (nonatomic, assign) BOOL inAnimation;
 @property(nonatomic, strong) UITapGestureRecognizer *dimmingViewTapGesture;
+@property (nonatomic, assign) CGFloat keyboardHeight;
 
 @end
 
@@ -24,6 +26,7 @@
         _dismissWhenTapDimmingView = YES;
         _removeWhenDismiss = YES;
         [self initDefaultDimmingView];
+        [self addKeyboardNotification];
     }
     return self;
 }
@@ -31,6 +34,52 @@
 - (void)layoutSubviews {
     [super layoutSubviews];
     self.dimmingView.frame = self.bounds;
+}
+
+#pragma mark - Keyboard
+- (void)addKeyboardNotification {
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShowNotification:) name:UIKeyboardWillShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHideNotification:) name:UIKeyboardWillHideNotification object:nil];
+}
+
+- (void)removeKeyboardNotification {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)keyboardWillShowNotification:(NSNotification *)notification {
+    UIResponder *firstResponder = [self firstResponderInWindows];
+    if (!firstResponder || !([firstResponder isKindOfClass:[UIView class]] && [(UIView *)firstResponder isDescendantOfView:self])) {
+        return;
+    }
+    CGRect endFrame = [[notification.userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    CGFloat keyboardHeight = endFrame.size.height;
+    if (self.keyboardHeight != keyboardHeight) {
+        self.keyboardHeight = keyboardHeight;
+        [self updateLayout];
+    }
+}
+
+- (void)keyboardWillHideNotification:(NSNotification *)notification {
+    CGFloat keyboardHeight = 0;
+    if (self.keyboardHeight != keyboardHeight) {
+        self.keyboardHeight = keyboardHeight;
+        [self updateLayout];
+    }
+}
+
+- (UIResponder *)firstResponderInWindows {
+    UIResponder *responder = [UIApplication.sharedApplication.keyWindow qq_findFirstResponder];
+    if (!responder) {
+        for (UIWindow *window in UIApplication.sharedApplication.windows) {
+            if (window != UIApplication.sharedApplication.keyWindow) {
+                responder = [window qq_findFirstResponder];
+                if (responder) {
+                    return responder;
+                }
+            }
+        }
+    }
+    return responder;
 }
 
 #pragma mark - Dimming View
@@ -72,6 +121,7 @@
 
 - (void)dimmingViewTapGestureHandler:(UITapGestureRecognizer *)tapGesture {
     if (!self.dismissWhenTapDimmingView) {
+        [self endEditing:YES];
         return;
     }
     [self dismiss];
@@ -211,7 +261,7 @@
 }
 
 - (CGRect)contentViewDefaultFrame {
-    CGSize containerSize = CGSizeMake(CGRectGetWidth(self.bounds) - (self.contentViewMargins.left + self.contentViewMargins.right), CGRectGetHeight(self.bounds) - (self.contentViewMargins.top + self.contentViewMargins.bottom));
+    CGSize containerSize = CGSizeMake(CGRectGetWidth(self.bounds) - (self.contentViewMargins.left + self.contentViewMargins.right), CGRectGetHeight(self.bounds) - (self.contentViewMargins.top + self.contentViewMargins.bottom + self.keyboardHeight));
     CGSize contentViewSize = [self.contentView sizeThatFits:containerSize];
     contentViewSize.width = fmin(containerSize.width, contentViewSize.width);
     contentViewSize.height = fmin(containerSize.height, contentViewSize.height);
@@ -226,10 +276,14 @@
     self.dimmingView.frame = self.bounds;
     CGRect contentViewFrame = [self contentViewDefaultFrame];
     if (self.layoutBlock) {
-        self.layoutBlock(self.bounds, contentViewFrame);
+        self.layoutBlock(self.bounds, self.keyboardHeight, contentViewFrame);
     } else {
         self.contentView.frame = contentViewFrame;
     }
+}
+
+- (void)dealloc {
+    [self removeKeyboardNotification];
 }
 
 @end

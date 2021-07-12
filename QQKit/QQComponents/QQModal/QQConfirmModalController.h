@@ -18,7 +18,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// alert距离屏幕四边的间距，默认UIEdgeInsetsMake(20, 20, 20, 20)。alert的宽度最终是通过屏幕宽度减去水平的 alertContentMargin 和 alertContentMaximumWidth 决定的。
 @property (nonatomic, assign) UIEdgeInsets alertViewMargins;
 
-/// alert的最大宽度，默认270。
+/// alert的最大宽度，默认CGFLOAT_MAX。
 @property (nonatomic, assign) CGFloat alertContentMaximumWidth;
 
 /// alert的圆角，默认13.0。

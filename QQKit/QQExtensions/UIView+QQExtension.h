@@ -65,6 +65,8 @@ typedef NS_ENUM(NSUInteger, QQGradientDirection) {
 - (UIImage *)qq_snapshotLayerImage;
 - (UIImage *)qq_snapshotImageAfterScreenUpdates:(BOOL)afterScreenUpdates;
 
+/// 第一响应者
+- (id)qq_findFirstResponder;
 
 @end
 

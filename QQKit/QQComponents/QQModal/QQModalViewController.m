@@ -84,7 +84,7 @@
     self.modalView.modalAnimationStyle = modalAnimationStyle;
 }
 
-- (void)setLayoutBlock:(void (^)(CGRect, CGRect))layoutBlock {
+- (void)setLayoutBlock:(void (^)(CGRect, CGFloat, CGRect))layoutBlock {
     _layoutBlock = layoutBlock;
     self.modalView.layoutBlock = layoutBlock;
 }

@@ -40,6 +40,7 @@
             ],
             @[
                 @"弹出 QQAlertController",
+                @"弹出系统 UIAlertController"
             ],
             
         ];
@@ -141,10 +142,10 @@
             
         }
     } else if (indexPath.section == 3) {
-        NSString *title = @"标题";
-        NSString *message = @"消息";
+        NSString *title = @"标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题";
+        NSString *message = @"消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息";
         if (indexPath.row == 0) {
-            QQAlertController *alert = [QQAlertController alertControllerWithTitle:title message:message preferredStyle:QQAlertControllerStyleAlert];
+            QQAlertController *alert = [QQAlertController alertControllerWithTitle:title message:message preferredStyle:QQAlertControllerStyleActionSheet];
             
             QQAlertAction *action2 = [QQAlertAction actionWithTitle:@"取消" style:QQAlertActionStyleCancel handler:^(QQAlertAction * _Nonnull action) {
                 
@@ -156,16 +157,20 @@
             }] ;
             [alert addAction:action3];
             
-            for (NSInteger i = 0; i < 5; i++) {
+            for (NSInteger i = 0; i < 4; i++) {
                 QQAlertAction *action4 = [QQAlertAction actionWithTitle:@"确认" style:QQAlertActionStyleDestructive handler:^(QQAlertAction * _Nonnull action) {
 
                 }] ;
                 [alert addAction:action4];
             }
+
+//            for (NSInteger i = 0; i < 2; i++) {
+//                [alert addTextFieldWithConfigurationHandler:nil];
+//            }
             
             [self presentViewController:alert animated:NO completion:nil];
         } else if (indexPath.row == 1) {
-            UIAlertController *alert = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleActionSheet];
             
             UIAlertAction *action2 = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
                 
@@ -177,16 +182,16 @@
             }] ;
             [alert addAction:action3];
             
-//            for (NSInteger i = 0; i < 1; i++) {
-//                UIAlertAction *action4 = [UIAlertAction actionWithTitle:@"确认" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
-//
-//                }] ;
-//                [alert addAction:action4];
-//            }
-            
-            for (NSInteger i = 0; i < 2; i++) {
-                [alert addTextFieldWithConfigurationHandler:nil];
+            for (NSInteger i = 0; i < 6; i++) {
+                UIAlertAction *action4 = [UIAlertAction actionWithTitle:@"确认" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+
+                }] ;
+                [alert addAction:action4];
             }
+            
+//            for (NSInteger i = 0; i < 2; i++) {
+//                [alert addTextFieldWithConfigurationHandler:nil];
+//            }
             
             [self presentViewController:alert animated:YES completion:nil];
         }
@@ -259,7 +264,7 @@
         QQModalViewController *modalVC = [[QQModalViewController alloc] init];
         modalVC.modalAnimationStyle = QQModalAnimationStyleSheet;
         modalVC.contentView = contentView;
-        modalVC.layoutBlock = ^(CGRect containerBounds, CGRect contentViewDefaultFrame) {
+        modalVC.layoutBlock = ^(CGRect containerBounds,  CGFloat keyboardHeight, CGRect contentViewDefaultFrame) {
             contentView.frame = CGRectMake((self.view.qq_width - contentView.qq_width) / 2, containerBounds.size.height - contentView.qq_height, contentView.qq_width, contentView.qq_height);
         };
         [modalVC show];
@@ -267,7 +272,7 @@
         QQModalView *modalView = [[QQModalView alloc] initWithFrame:CGRectZero];
         modalView.modalAnimationStyle = QQModalAnimationStyleSheet;
         modalView.contentView = contentView;
-        modalView.layoutBlock = ^(CGRect containerBounds, CGRect contentViewDefaultFrame) {
+        modalView.layoutBlock = ^(CGRect containerBounds,  CGFloat keyboardHeight, CGRect contentViewDefaultFrame) {
             contentView.frame = CGRectMake((self.view.qq_width - contentView.qq_width) / 2, containerBounds.size.height - contentView.qq_height, contentView.qq_width, contentView.qq_height);
         };
         [modalView show];

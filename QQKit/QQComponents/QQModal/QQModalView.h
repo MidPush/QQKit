@@ -76,7 +76,7 @@ typedef NS_ENUM(NSInteger, QQModalAnimationStyle) {
 /**
  * 管理自定义的浮层布局，将会在浮层显示前、控件的容器大小发生变化时（例如横竖屏、来电状态栏）被调用，请在 block 内主动为 contentView 设置期望的 frame，
  */
-@property (nullable, nonatomic, copy) void (^layoutBlock)(CGRect containerBounds, CGRect contentViewDefaultFrame);
+@property (nullable, nonatomic, copy) void (^layoutBlock)(CGRect containerBounds, CGFloat keyboardHeight, CGRect contentViewDefaultFrame);
 
 /**
  * 显示浮层，会将浮层添加到当前的 keyWindow 上

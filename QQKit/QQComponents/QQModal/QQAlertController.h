@@ -43,7 +43,7 @@ typedef NS_ENUM(NSInteger, QQAlertControllerStyle) {
 @end
 
 
-@interface QQAlertController : UIViewController
+@interface QQAlertController : UIViewController<UIAppearance>
 
 + (instancetype)alertControllerWithTitle:(nullable NSString *)title message:(nullable NSString *)message preferredStyle:(QQAlertControllerStyle)preferredStyle;
 
@@ -58,27 +58,31 @@ typedef NS_ENUM(NSInteger, QQAlertControllerStyle) {
 @property (nullable, nonatomic, copy) NSString *title;
 @property (nullable, nonatomic, copy) NSString *message;
 
-@property (nonatomic, readonly) QQAlertControllerStyle preferredStyle;
+@property (nonatomic, assign, readonly) QQAlertControllerStyle preferredStyle;
 
 @property (null_resettable, nonatomic, strong) UIView *mainVisualEffectView;
 @property (null_resettable, nonatomic, strong) UIView *cancelButtonVisualEffectView;
 
 #pragma mark - 设置 alertContent 样式
 
-/// alert容器背景颜色, style为Alert时默认为RGBA(247, 247, 247, 1)，style为Sheet时默认为透明色
+/// alert容器背景颜色, style为Alert时默认为RGBA(247, 247, 247, 1)
 @property (nullable, nonatomic, strong) UIColor *alertContainerBackgroundColor;
 /// alert头部（非按钮部分）背景色
 @property (nullable, nonatomic, strong) UIColor *alertHeaderBackgroundColor;
 
 
-/// alert最大宽度， style为Alert时默认为270，style为Sheet时默认为设备的宽度减20
+/// alert最大宽度，默认为270
 @property (nonatomic, assign) CGFloat alertContentMaximumWidth;
+/// sheet大宽度，默认为设备的宽度减20
+@property (nonatomic, assign) CGFloat sheetContentMaximumWidth;
 /// alert圆角。默认13.0
 @property (nonatomic, assign) CGFloat alertContentCornerRadius;
 /// alert header 边距
 @property (nonatomic, assign) UIEdgeInsets alertHeaderInsets;
 /// alert 标题和信息之间间距
 @property (nonatomic, assign) CGFloat alertTitleMessageSpacing;
+/// alert TextFiled和标题或信息之间间距
+@property (nonatomic, assign) CGFloat alertTextFieldMessageSpacing;
 /// 标题
 @property(nullable, nonatomic, strong) NSDictionary<NSAttributedStringKey, id> *alertTitleAttributes;
 /// 信息
@@ -86,8 +90,10 @@ typedef NS_ENUM(NSInteger, QQAlertControllerStyle) {
 
 #pragma mark - 设置TextField样式
 @property (nonatomic, assign) CGFloat alertTextFieldHeight;
+@property (nonatomic, assign) CGFloat alertTextFieldsSpecing;
 @property (nonatomic, strong) UIFont *alertTextFieldFont;
 @property (nonatomic, strong) UIColor *alertTextFieldTextColor;
+@property (nonatomic, strong) UIColor *alertTextFieldBackgroundColor;
 
 #pragma mark - 设置按钮样式
 /// alertButton 高度，默认44.0

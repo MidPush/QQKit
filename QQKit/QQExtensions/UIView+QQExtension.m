@@ -260,6 +260,17 @@
     return [UIImage qq_imageWithView:self afterScreenUpdates:afterScreenUpdates];
 }
 
+- (id)qq_findFirstResponder {
+    if (self.isFirstResponder) {
+        return self;
+    }
+    for (UIView *subView in self.subviews) {
+        id responder = [subView qq_findFirstResponder];
+        if (responder) return responder;
+    }
+    return nil;
+}
+
 @end
 
 @implementation UIView (QQBorder)

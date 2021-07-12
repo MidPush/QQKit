@@ -217,13 +217,14 @@
         self.actionsView.frame =  CGRectMake(0, self.contentView.qq_bottom, contentViewSize.width, 0);
     }
     
-    self.modalContentView.frame = CGRectMake(0, 0, contentViewSize.width, self.titleView.qq_height + self.contentView.qq_height + self.actionsView.qq_height);
+    CGFloat modalContentViewWidth = contentViewSize.width;
+    CGFloat modalContentViewHeight = self.titleView.qq_height + self.contentView.qq_height + self.actionsView.qq_height;
+    self.modalContentView.frame = CGRectMake((self.view.qq_width - modalContentViewWidth) / 2, (self.view.qq_height - modalContentViewHeight) / 2, modalContentViewWidth, modalContentViewHeight);
     
     self.modalView.contentViewMargins = self.alertViewMargins;
     self.modalView.contentView = self.modalContentView;
     self.modalView.dismissWhenTapDimmingView = NO;
     self.modalView.frame = self.view.bounds;
-    [self.modalView updateLayout];
 }
 
 #pragma mark - Showing and Hiding
