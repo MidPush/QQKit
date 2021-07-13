@@ -17,6 +17,16 @@ NS_ASSUME_NONNULL_BEGIN
 + (nullable UIColor *)qq_colorWithHexString:(NSString *)hexString;
 
 /**
+ 传入数组，[R, G, B] => [0, 0, 255] ，取值范围 0~255.0
+ */
++ (nullable UIColor *)qq_colorWithRGB:(NSArray<NSNumber *> *)rgb;
+
+/**
+ 传入数组，[R, G, B, A] => [0, 0, 255, 1.0] ，RGB取值范围 0~255.0，A取值范围 0~1.0
+ */
++ (nullable UIColor *)qq_colorWithRGBA:(NSArray<NSNumber *> *)rgba;
+
+/**
  将当前色值 RGB 转换为hex字符串，不包含 alpha
  例如：0066bb
  */

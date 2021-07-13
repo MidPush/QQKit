@@ -150,7 +150,7 @@
             configuration.allowsInlineMediaPlayback = YES;
         }
 
-        _webView = [[WKWebView alloc] initWithFrame:self.view.bounds configuration:configuration];
+        _webView = [[WKWebView alloc] initWithFrame:CGRectZero configuration:configuration];
         _webView.backgroundColor = [UIColor clearColor];
         _webView.scrollView.backgroundColor = [UIColor clearColor];
         _webView.allowsBackForwardNavigationGestures = YES;

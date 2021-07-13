@@ -70,6 +70,30 @@
     return [UIColor colorWithRed: red green: green blue: blue alpha: alpha];
 }
 
++ (UIColor *)qq_colorWithRGB:(NSArray<NSNumber *> *)rgb {
+    return [self qq_colorWithRGBA:rgb];
+}
+
++ (UIColor *)qq_colorWithRGBA:(NSArray<NSNumber *> *)rgba {
+    CGFloat r = 0.0;
+    CGFloat g = 0.0;
+    CGFloat b = 0.0;
+    CGFloat a = 1.0;
+    if (rgba.count > 0) {
+        r = [rgba[0] floatValue];
+    }
+    if (rgba.count > 1) {
+        g = [rgba[1] floatValue];
+    }
+    if (rgba.count > 2) {
+        b = [rgba[2] floatValue];
+    }
+    if (rgba.count > 3) {
+        a = [rgba[3] floatValue];
+    }
+    return [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:a];
+}
+
 - (NSString *)qq_hexString {
     return [self qq_hexStringWithAlpha:NO];
 }

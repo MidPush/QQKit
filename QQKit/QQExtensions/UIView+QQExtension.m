@@ -340,7 +340,7 @@ static const void * const kQQBorderWidthKey = &kQQBorderWidthKey;
 }
 
 - (CGFloat)qq_borderWidth {
-    return [((NSNumber *)objc_getAssociatedObject(self, kQQBorderWidthKey)) floatValue];
+    return [((NSNumber *)objc_getAssociatedObject(self, kQQBorderWidthKey)) doubleValue];
 }
 
 static const void * const kQQBorderColorKey = &kQQBorderColorKey;

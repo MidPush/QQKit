@@ -14,6 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
  缺点：不能处理屏幕旋转布局，需自己手动处理屏幕旋转时布局
  */
 typedef NS_ENUM(NSInteger, QQModalAnimationStyle) {
+    QQModalAnimationStyleNone,   // 无动画
     QQModalAnimationStyleFade,   // 渐隐渐现，默认
     QQModalAnimationStylePopup,  // 从中心点弹出
     QQModalAnimationStyleSheet   // 从下往上升起
@@ -48,6 +49,7 @@ typedef NS_ENUM(NSInteger, QQModalAnimationStyle) {
 
 /**
  * 设置要使用的显示/隐藏动画的类型，默认为`QQModalAnimationStyleFade`。
+ * 当自定义了showingAnimation、hidingAnimation，会使用自定义动画
  */
 @property (nonatomic, assign) QQModalAnimationStyle modalAnimationStyle;
 
@@ -79,6 +81,25 @@ typedef NS_ENUM(NSInteger, QQModalAnimationStyle) {
 @property (nullable, nonatomic, copy) void (^layoutBlock)(CGRect containerBounds, CGFloat keyboardHeight, CGRect contentViewDefaultFrame);
 
 /**
+ *  管理自定义的显示动画，需要管理的对象包括`contentView`和`dimmingView`，在`showingAnimation`被调用前，`contentView`已被添加到界面上。若使用了`layoutBlock`，则会先调用`layoutBlock`，再调用`showingAnimation`。在动画结束后，必须调用参数里的`completion` block。
+ *  @arg  dimmingView         背景遮罩的View，请自行设置显示遮罩的动画
+ *  @arg  containerBounds     浮层所在的父容器的大小，也即`self.view.bounds`
+ *  @arg  keyboardHeight      键盘在当前界面里的高度，若无键盘，则为0
+ *  @arg  contentViewFrame    动画执行完后`contentView`的最终frame，若使用了`layoutBlock`，则也即`layoutBlock`计算完后的frame
+ *  @arg  completion          动画结束后给到modalController的回调，modalController会在这个回调里做一些状态设置，务必调用。
+ */
+@property (nullable, nonatomic, copy) void (^showingAnimation)(UIView *dimmingView, CGRect containerBounds, CGFloat keyboardHeight,  CGRect contentViewFrame, void(^completion)(BOOL finished));
+
+/**
+ *  管理自定义的隐藏动画，需要管理的对象包括`contentView`和`dimmingView`，在动画结束后，必须调用参数里的`completion` block。
+ *  @arg  dimmingView         背景遮罩的View，请自行设置隐藏遮罩的动画
+ *  @arg  containerBounds     浮层所在的父容器的大小，也即`self.view.bounds`
+ *  @arg  keyboardHeight      键盘在当前界面里的高度，若无键盘，则为0
+ *  @arg  completion          动画结束后给到modalController的回调，modalController会在这个回调里做一些清理工作，务必调用
+ */
+@property (nullable, nonatomic, copy) void (^hidingAnimation)(UIView * _Nullable dimmingView, CGRect containerBounds, CGFloat keyboardHeight, void(^completion)(BOOL finished));
+
+/**
  * 显示浮层，会将浮层添加到当前的 keyWindow 上
  */
 - (void)show;
@@ -100,6 +121,7 @@ typedef NS_ENUM(NSInteger, QQModalAnimationStyle) {
 
 /**
  *  请求重新计算浮层的布局
+ *  不要在 layoutBlock 里面调用，否则会造成循环调用
  */
 - (void)updateLayout;
 

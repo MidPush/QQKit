@@ -142,10 +142,15 @@
             
         }
     } else if (indexPath.section == 3) {
-        NSString *title = @"标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题";
-        NSString *message = @"消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息";
+        NSString *title = @"ceil用 法： double ceil(double x);功 能： 返回大于或者等于指定表达式的最小整数头文件：math.h返回数据类型：double";
+        NSString *message = @"ceil用 法： double ceil(double x);功 能：";
+        
+        NSInteger addCount = 0;
+//        title = nil;
+//        message = nil;
+        NSInteger preferredStyle = QQAlertControllerStyleAlert;
         if (indexPath.row == 0) {
-            QQAlertController *alert = [QQAlertController alertControllerWithTitle:title message:message preferredStyle:QQAlertControllerStyleActionSheet];
+            QQAlertController *alert = [QQAlertController alertControllerWithTitle:title message:message preferredStyle:preferredStyle];
             
             QQAlertAction *action2 = [QQAlertAction actionWithTitle:@"取消" style:QQAlertActionStyleCancel handler:^(QQAlertAction * _Nonnull action) {
                 
@@ -157,7 +162,7 @@
             }] ;
             [alert addAction:action3];
             
-            for (NSInteger i = 0; i < 4; i++) {
+            for (NSInteger i = 0; i < addCount; i++) {
                 QQAlertAction *action4 = [QQAlertAction actionWithTitle:@"确认" style:QQAlertActionStyleDestructive handler:^(QQAlertAction * _Nonnull action) {
 
                 }] ;
@@ -168,9 +173,21 @@
 //                [alert addTextFieldWithConfigurationHandler:nil];
 //            }
             
-            [self presentViewController:alert animated:NO completion:nil];
+            
+            UIVisualEffectView *visualEffectView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:UIBlurEffectStyleLight]];
+            visualEffectView.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent:0.5];
+            
+            UIVisualEffectView *visualEffectView2 = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:UIBlurEffectStyleLight]];
+            visualEffectView2.backgroundColor = [UIColor whiteColor];
+            
+            alert.mainVisualEffectView = visualEffectView;
+            alert.cancelButtonVisualEffectView = visualEffectView2;
+            alert.alertContainerBackgroundColor = nil;
+            alert.alertHeaderBackgroundColor = nil;// 当你需要磨砂的时候请自行去掉这几个背景色，不然这些背景色会盖住磨砂
+            alert.alertButtonBackgroundColor = nil;
+            [alert showFromController:self];
         } else if (indexPath.row == 1) {
-            UIAlertController *alert = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleActionSheet];
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:preferredStyle];
             
             UIAlertAction *action2 = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
                 
@@ -182,7 +199,7 @@
             }] ;
             [alert addAction:action3];
             
-            for (NSInteger i = 0; i < 6; i++) {
+            for (NSInteger i = 0; i < addCount; i++) {
                 UIAlertAction *action4 = [UIAlertAction actionWithTitle:@"确认" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
 
                 }] ;
