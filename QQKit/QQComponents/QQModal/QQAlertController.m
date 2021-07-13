@@ -84,7 +84,6 @@
 
 @property (nonatomic, assign) CGFloat keyboardHeight;
 @property (nonatomic, assign) BOOL isWillDismissModalView;
-@property (nonatomic, copy) void (^dismissCompletion)(void);
 
 @end
 
@@ -121,6 +120,7 @@
         _alertTextFieldsSpecing = 2.0;
         _alertTextFieldFont = [UIFont systemFontOfSize:13];
         _alertTextFieldTextColor = [UIColor blackColor];
+        _alertTextFieldPlacehodlerColor = [UIColor grayColor];
         _alertTextFieldBackgroundColor = [UIColor whiteColor];
         
         _alertButtonHeight = alertStyle ? 44.0 : 57.0;
@@ -333,7 +333,6 @@
                     buttonScrollViewHeight = self.alertButtonHeight;
                 }
             }
-            
         }
         
         if (buttonVerticalLayout) {
@@ -347,7 +346,7 @@
             
             self.buttonScrollView.contentSize = CGSizeMake(self.buttonScrollView.qq_width, buttonTop);
         } else {
-            // 对齐系统，先 add 的在右边，后 add 的在左边
+            // 对齐系统，先 add 的在右边，后 add 的在左边，取消按钮不参与排序
             QQAlertAction *leftAction = orderedAlertActions[1];
             leftAction.button.frame = CGRectMake(0, 0, CGRectGetWidth(self.buttonScrollView.bounds) / 2, self.alertButtonHeight);
             leftAction.button.qq_borderPosition = QQViewBorderPositionTop|QQViewBorderPositionRight;
@@ -361,6 +360,7 @@
         self.headerScrollView.frame = CGRectMake(0, 0, containerSize.width, headerScrollViewHeight);
         self.headerScrollView.contentSize = CGSizeMake(containerSize.width, lastTop);
         
+        // 这里如果不用ceil()取整，按钮的 border 1像素在某些设备上可能对不齐，不知道什么原因。。。
         self.buttonScrollView.frame = CGRectMake(0, ceil(self.headerScrollView.qq_bottom), containerSize.width, buttonScrollViewHeight);
         
         self.scrollWrapView.frame = CGRectMake(0, 0, containerSize.width, self.buttonScrollView.qq_bottom);
@@ -405,7 +405,6 @@
             
             lastTop = self.messageLabel.qq_bottom + contentPaddingBottom;
         }
-        
         
         NSMutableArray<QQAlertAction *> *newOrderActions = [[self orderedAlertActions:self.alertActions] mutableCopy];
         
@@ -546,6 +545,8 @@
     textField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
     textField.font = self.alertTextFieldFont;
     textField.textColor = self.alertTextFieldTextColor;
+    textField.placeholderColor = self.alertTextFieldPlacehodlerColor;
+    textField.layer.cornerRadius = 2.0;
     textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
     textField.clearButtonMode = UITextFieldViewModeWhileEditing;
     textField.textInsets = UIEdgeInsetsMake(4, 7, 4, 7);
@@ -572,8 +573,15 @@
 }
 
 - (void)dismissWithCompletion:(void (^)(void))completion {
-    self.dismissCompletion = completion;
-    [self.modalView dismiss];
+    [self.modalView dismissWithCompletion:^(BOOL finished) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self dismissViewControllerAnimated:NO completion:^{
+                if (completion) {
+                    completion();
+                }
+            }];
+        });
+    }];
 }
 
 #pragma mark - QQModalViewDelegate
@@ -581,20 +589,13 @@
     _isWillDismissModalView = YES;
 }
 
-- (void)didDismissModalView:(QQModalView *)modalView {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self dismissViewControllerAnimated:NO completion:^{
-            if (self.dismissCompletion) {
-                self.dismissCompletion();
-                self.dismissCompletion = nil;
-            }
-        }];
-    });
-}
-
 #pragma mark - QQAlertActionDelegate
 - (void)alertActionClicked:(QQAlertAction *)action {
-    [self.modalView dismiss];
+    [self dismissWithCompletion:^{
+        if (action.handler) {
+            action.handler(action);
+        }
+    }];
 }
 
 #pragma mark - Getters & Setters
@@ -734,6 +735,10 @@
     return [self.alertActions copy];
 }
 
+- (NSArray<QQTextField *> *)textFields {
+    return [self.alertTextFields copy];
+}
+
 #pragma mark - 设置 alertContent 样式
 
 - (void)setAlertContainerBackgroundColor:(UIColor *)alertContainerBackgroundColor {
@@ -816,6 +821,13 @@
 - (void)setAlertTextFieldTextColor:(UIColor *)alertTextFieldTextColor {
     if (_alertTextFieldTextColor != alertTextFieldTextColor) {
         _alertTextFieldTextColor = alertTextFieldTextColor;
+        [self updateTextFields];
+    }
+}
+
+- (void)setAlertTextFieldPlacehodlerColor:(UIColor *)alertTextFieldPlacehodlerColor {
+    if (_alertTextFieldPlacehodlerColor != alertTextFieldPlacehodlerColor) {
+        _alertTextFieldPlacehodlerColor = alertTextFieldPlacehodlerColor;
         [self updateTextFields];
     }
 }

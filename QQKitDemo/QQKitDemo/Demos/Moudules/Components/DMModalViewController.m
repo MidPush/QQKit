@@ -145,7 +145,7 @@
         NSString *title = @"ceil用 法： double ceil(double x);功 能： 返回大于或者等于指定表达式的最小整数头文件：math.h返回数据类型：double";
         NSString *message = @"ceil用 法： double ceil(double x);功 能：";
         
-        NSInteger addCount = 0;
+        NSInteger addCount = 10;
 //        title = nil;
 //        message = nil;
         NSInteger preferredStyle = QQAlertControllerStyleAlert;

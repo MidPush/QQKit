@@ -25,8 +25,6 @@
 @property (nonatomic, assign) BOOL hasCustomContentView;
 @property (nonatomic, assign) BOOL isWillDismissModalView;
 
-@property (nonatomic, copy) void (^dismissCompletion)(void);
-
 @end
 
 @implementation QQConfirmModalController
@@ -141,7 +139,7 @@
 }
 
 - (void)updateLayout {
-    if (_isWillDismissModalView) return;
+    if (_isWillDismissModalView || !self.isViewLoaded) return;
     BOOL isTitleViewShowing = (self.title.length > 0 || self.attributedTitle.length > 0) && self.titleViewHeight > 0;
     BOOL isActionsViewShowing = (self.cancelButton || self.submitButton) && self.actionsViewHeight > 0;
     
@@ -243,24 +241,20 @@
 }
 
 - (void)dismissWithCompletion:(void (^)(void))completion {
-    self.dismissCompletion = completion;
-    [self.modalView dismiss];
+    [self.modalView dismissWithCompletion:^(BOOL finished) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self dismissViewControllerAnimated:NO completion:^{
+                if (completion) {
+                    completion();
+                }
+            }];
+        });
+    }];
 }
 
 #pragma mark - QQModalViewDelegate
 - (void)willDismissModalView:(QQModalView *)modalView {
     _isWillDismissModalView = YES;
-}
-
-- (void)didDismissModalView:(QQModalView *)modalView {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self dismissViewControllerAnimated:NO completion:^{
-            if (self.dismissCompletion) {
-                self.dismissCompletion();
-                self.dismissCompletion = nil;
-            }
-        }];
-    });
 }
 
 #pragma mark - Button Actions

@@ -12,7 +12,6 @@ NS_ASSUME_NONNULL_BEGIN
  一个确认弹出框
  自带 titleView、取消和确认按钮、空白的contentView（contentView内容由自己实现）
  */
-
 @interface QQConfirmModalController : UIViewController
 
 /// alert距离屏幕四边的间距，默认UIEdgeInsetsMake(20, 20, 20, 20)。alert的宽度最终是通过屏幕宽度减去水平的 alertContentMargin 和 alertContentMaximumWidth 决定的。
@@ -76,7 +75,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)showFromController:(UIViewController *)viewController;
 
 /**
- * dismiss alert viewController
+ * dismiss viewController
  */
 - (void)dismiss;
 - (void)dismissWithCompletion:(void (^ _Nullable)(void))completion;

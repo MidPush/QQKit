@@ -46,7 +46,6 @@
 - (void)updateLayout {
     if (_isWillDismissModalView) return;
     self.modalView.frame = self.view.bounds;
-    [self.modalView updateLayout];
 }
 
 - (void)viewDidLoad {

@@ -8,10 +8,11 @@
 #import "QQWebViewController.h"
 #import "QQUIHelper.h"
 #import "UIView+QQExtension.h"
+#import "UIColor+QQExtension.h"
 #import "CALayer+QQExtension.h"
 #import "QQNavigationButton.h"
 #import "QQButton.h"
-#import "QQConfirmModalController.h"
+#import "QQAlertController.h"
 
 @interface QQWebProgressView : UIView
 
@@ -528,15 +529,18 @@
     if ([self canJump:navigationAction.request.URL.absoluteString]) {
         if ([[UIApplication sharedApplication] canOpenURL:navigationAction.request.URL]) {
             NSString *tips = [NSString stringWithFormat:@"可能离开%@，打开第三方应用", QQUIHelper.appName.length > 0 ? QQUIHelper.appName : @"APP"];
-            QQConfirmModalController *alert = [self createWebAlert:tips];
-            [alert.submitButton setTitle:@"继续" forState:UIControlStateNormal];
+            
+            QQAlertController *alert = [self createWebAlertWithMessage:tips needsHostTitle:NO];
+            QQAlertAction *cancelAction = [QQAlertAction actionWithTitle:@"取消" style:QQAlertActionStyleCancel handler:^(QQAlertAction * _Nonnull action) {
+                
+            }];
+            QQAlertAction *continueAction = [QQAlertAction actionWithTitle:@"继续" style:QQAlertActionStyleDefault handler:^(QQAlertAction * _Nonnull action) {
+                [[UIApplication sharedApplication] openURL:navigationAction.request.URL];
+            }];
+            [alert addAction:cancelAction];
+            [alert addAction:continueAction];
             [alert showFromController:self];
-            alert.actionsHandler = ^(QQConfirmModalController * _Nonnull controller, BOOL isSubmit) {
-                if (isSubmit) {
-                    [[UIApplication sharedApplication] openURL:navigationAction.request.URL];
-                }
-                [controller dismiss];
-            };
+            
             decisionHandler(WKNavigationActionPolicyCancel);
             return;
         }
@@ -632,14 +636,12 @@
 // 显示一个JavaScript警告面板。
 - (void)webView:(WKWebView *)webView runJavaScriptAlertPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(void))completionHandler {
     
-    QQConfirmModalController *alert = [self createWebAlert:message];
-    [alert removeCancelButton];
+    QQAlertController *alert = [self createWebAlertWithMessage:message needsHostTitle:YES];
+    QQAlertAction *confirmAction = [QQAlertAction actionWithTitle:@"确定" style:QQAlertActionStyleDefault handler:^(QQAlertAction * _Nonnull action) {
+        completionHandler();
+    }];
+    [alert addAction:confirmAction];
     [alert showFromController:self];
-    alert.actionsHandler = ^(QQConfirmModalController * _Nonnull controller, BOOL isSubmit) {
-        [controller dismissWithCompletion:^{
-            completionHandler();
-        }];
-    };
     
     NSLog(@"%s", __func__);
 }
@@ -647,19 +649,40 @@
 // 显示一个JavaScript确认面板。
 - (void)webView:(WKWebView *)webView runJavaScriptConfirmPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(BOOL result))completionHandler {
     
-    QQConfirmModalController *alert = [self createWebAlert:message];
+    QQAlertController *alert = [self createWebAlertWithMessage:message needsHostTitle:YES];
+    QQAlertAction *cancelAction = [QQAlertAction actionWithTitle:@"取消" style:QQAlertActionStyleCancel handler:^(QQAlertAction * _Nonnull action) {
+        completionHandler(NO);
+    }];
+    QQAlertAction *confirmAction = [QQAlertAction actionWithTitle:@"确认" style:QQAlertActionStyleDefault handler:^(QQAlertAction * _Nonnull action) {
+        completionHandler(YES);
+    }];
+    [alert addAction:cancelAction];
+    [alert addAction:confirmAction];
     [alert showFromController:self];
-    alert.actionsHandler = ^(QQConfirmModalController * _Nonnull controller, BOOL isSubmit) {
-        [controller dismissWithCompletion:^{
-            completionHandler(isSubmit);
-        }];
-    };
     
     NSLog(@"%s", __func__);
 }
 
 // 显示一个JavaScript文本输入面板。
 - (void)webView:(WKWebView *)webView runJavaScriptTextInputPanelWithPrompt:(NSString *)prompt defaultText:(nullable NSString *)defaultText initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(NSString * _Nullable result))completionHandler {
+    
+    QQAlertController *alert = [self createWebAlertWithMessage:prompt needsHostTitle:YES];
+    QQAlertAction *cancelAction = [QQAlertAction actionWithTitle:@"取消" style:QQAlertActionStyleCancel handler:^(QQAlertAction * _Nonnull action) {
+        completionHandler(nil);
+    }];
+    QQAlertAction *confirmAction = [QQAlertAction actionWithTitle:@"确认" style:QQAlertActionStyleDefault handler:^(QQAlertAction * _Nonnull action) {
+        QQTextField *textFiled = alert.textFields.firstObject;
+        completionHandler(textFiled.text);
+    }];
+    
+    [alert addTextFieldWithConfigurationHandler:^(QQTextField * _Nonnull textField) {
+        textField.placeholder = defaultText;
+    }];
+    
+    [alert addAction:cancelAction];
+    [alert addAction:confirmAction];
+    [alert showFromController:self];
+    
     NSLog(@"%s", __func__);
 }
 
@@ -700,12 +723,38 @@
 
 #pragma mark - More
 
-- (QQConfirmModalController *)createWebAlert:(NSString *)message {
+- (QQAlertController *)createWebAlertWithMessage:(NSString *)message needsHostTitle:(BOOL)needsHostTitle {
     
-    QQConfirmModalController *alert = [[QQConfirmModalController alloc] init];
+    NSString *title = nil;
+    if (needsHostTitle) {
+        title = self.webView.URL.host;
+    }
+    
+    QQAlertController *alert = [QQAlertController alertControllerWithTitle:title message:message preferredStyle:QQAlertControllerStyleAlert];
     alert.alertContentMaximumWidth = QQUIHelper.deviceWidth - 60;
-    alert.attributedMessage = [[NSAttributedString alloc] initWithString:message attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:16 weight:UIFontWeightMedium]}];
-    [alert.cancelButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    alert.alertContentCornerRadius = 10;
+    if (title.length > 0) {
+        alert.alertTitleAttributes = @{NSFontAttributeName:[UIFont boldSystemFontOfSize:17], NSForegroundColorAttributeName:[UIColor qq_colorWithHexString:@"222222"]};
+        alert.alertMessageAttributes = @{NSFontAttributeName:[UIFont boldSystemFontOfSize:15], NSForegroundColorAttributeName:[UIColor qq_colorWithHexString:@"999999"]};
+    } else {
+        alert.alertTitleAttributes = @{NSFontAttributeName:[UIFont boldSystemFontOfSize:17], NSForegroundColorAttributeName:[UIColor qq_colorWithHexString:@"222222"]};
+        alert.alertMessageAttributes = @{NSFontAttributeName:[UIFont boldSystemFontOfSize:17], NSForegroundColorAttributeName:[UIColor qq_colorWithHexString:@"222222"]};
+    }
+    
+    alert.alertHeaderInsets = UIEdgeInsetsMake(30, 25, 30, 25);
+    alert.alertTitleMessageSpacing = 20;
+    alert.alertTextFieldMessageSpacing = 15;
+    alert.alertButtonHeight = 50;
+    alert.alertButtonAttributes = @{NSForegroundColorAttributeName:[UIColor qq_colorWithHexString:@"5c6e82"],NSFontAttributeName:[UIFont boldSystemFontOfSize:17]};
+    alert.alertCancelButtonAttributes = @{NSForegroundColorAttributeName:[UIColor qq_colorWithHexString:@"222222"],NSFontAttributeName:[UIFont boldSystemFontOfSize:17]};
+    
+    alert.alertTextFieldFont = [UIFont systemFontOfSize:15];
+    alert.alertTextFieldHeight = 40;
+    alert.alertTextFieldTextColor = [UIColor qq_colorWithHexString:@"222222"];
+    alert.alertSeparatorColor = [UIColor qq_colorWithHexString:@"e6e6e6"];
+    alert.alertTextFieldPlacehodlerColor = [UIColor qq_colorWithHexString:@"999999"];
+    alert.alertTextFieldBackgroundColor = [UIColor qq_colorWithHexString:@"eeeff1"];
+    
     return alert;
 }
 

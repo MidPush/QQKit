@@ -6,15 +6,14 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "QQTextField.h"
+#import "QQButton.h"
 
 NS_ASSUME_NONNULL_BEGIN
 /**
  一个和系统 UIAlertViewController 相似的控制器
  比系统提供更多可自定义的功能
  */
-
-@class QQButton;
-@class QQTextField;
 @class QQAlertController;
 
 typedef NS_ENUM(NSInteger, QQAlertActionStyle) {
@@ -36,9 +35,10 @@ typedef NS_ENUM(NSInteger, QQAlertControllerStyle) {
 @property (nonatomic, readonly) QQAlertActionStyle style;
 @property (nonatomic, getter=isEnabled) BOOL enabled;
 
+@property (nonatomic, strong, readonly) QQButton *button;
+
 @property (nullable, nonatomic, strong) NSDictionary<NSAttributedStringKey, id> *buttonAttributes;
 @property (nullable, nonatomic, strong) NSDictionary<NSAttributedStringKey, id> *buttonDisabledAttributes;
-
 
 @end
 
@@ -93,6 +93,8 @@ typedef NS_ENUM(NSInteger, QQAlertControllerStyle) {
 @property (nonatomic, strong) UIFont *alertTextFieldFont;
 // textField字体颜色
 @property (nonatomic, strong) UIColor *alertTextFieldTextColor;
+// textField placehodler颜色
+@property (nonatomic, strong) UIColor *alertTextFieldPlacehodlerColor;
 // textField背景颜色
 @property (nonatomic, strong) UIColor *alertTextFieldBackgroundColor;
 
@@ -135,7 +137,6 @@ typedef NS_ENUM(NSInteger, QQAlertControllerStyle) {
  */
 - (void)dismiss;
 - (void)dismissWithCompletion:(void (^ _Nullable)(void))completion;
-
 
 @end
 
