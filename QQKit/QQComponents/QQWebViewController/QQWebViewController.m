@@ -210,7 +210,10 @@
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     if (![self.navigationController.viewControllers containsObject:self]) {
-        self.popRectEdge = QQPopRectEdgeAll;
+        UIPanGestureRecognizer *panGesture = [self getFullScreenPopGesture];
+        if (panGesture) {
+            panGesture.enabled = YES;
+        }
     }
 }
 
@@ -243,7 +246,7 @@
 
 - (CGFloat)getWebViewMinY {
     CGFloat webViewMinY = 0;
-    if (self.navigationController.navigationBar && self.navigationController.navigationBar.translucent) {
+    if (self.navigationController.navigationBar && self.navigationController.navigationBar.translucent && !self.navigationController.navigationBarHidden && !self.navigationController.navigationBar.hidden) {
         webViewMinY = self.navigationController.navigationBar.qq_bottom;
     }
     return webViewMinY;
@@ -263,7 +266,11 @@
         }
         self.webView.frame = CGRectMake(0, webViewY, self.view.qq_width, toolbarTop - webViewY);
         self.progressView.frame = CGRectMake(0, webViewY, self.view.qq_width, 2.0);
-        self.hostLabel.frame = CGRectMake(10, self.webView.qq_top + 10, self.view.qq_width - 20, self.hostLabel.qq_height);
+        if (webViewY == 0) {
+            self.hostLabel.frame = CGRectMake(10, self.view.qq_safeAreaInsets.top + 10, self.view.qq_width - 20, self.hostLabel.qq_height);
+        } else {
+            self.hostLabel.frame = CGRectMake(10, self.webView.qq_top + 10, self.view.qq_width - 20, self.hostLabel.qq_height);
+        }
     }
 }
 
@@ -455,15 +462,7 @@
             self.hostLabel.text = nil;
         }
         [self.hostLabel sizeToFit];
-        self.hostLabel.frame = CGRectMake(10, self.webView.qq_top + 10, self.view.qq_width - 20, self.hostLabel.qq_height);
-    }
-}
-
-- (void)checkPopRectEdge {
-    if (_webView.canGoBack && _webView.allowsBackForwardNavigationGestures) {
-        self.popRectEdge = QQPopRectEdgeNone;
-    } else {
-        self.popRectEdge = QQPopRectEdgeAll;
+        self.hostLabel.frame = CGRectMake(10, self.hostLabel.qq_top, self.view.qq_width - 20, self.hostLabel.qq_height);
     }
 }
 
@@ -472,6 +471,8 @@
     if (scrollView.isDragging) {
         if (-scrollView.contentOffset.y > self.hostLabel.qq_bottom - self.webView.qq_top) {
             self.hostLabel.alpha = (-scrollView.contentOffset.y - (self.hostLabel.qq_bottom - self.webView.qq_top)) / 80;
+        } else {
+            self.hostLabel.alpha = 0;
         }
     } else {
         self.hostLabel.alpha = 0;
@@ -525,17 +526,23 @@
 
 // 决定是否允许或取消导航。
 - (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
-    NSLog(@"URLString:%@", navigationAction.request.URL.absoluteString);
-    if ([self canJump:navigationAction.request.URL.absoluteString]) {
-        if ([[UIApplication sharedApplication] canOpenURL:navigationAction.request.URL]) {
-            NSString *tips = [NSString stringWithFormat:@"可能离开%@，打开第三方应用", QQUIHelper.appName.length > 0 ? QQUIHelper.appName : @"APP"];
+    
+    NSLog(@"URL:%@", navigationAction.request.URL.absoluteString);
+    
+    NSURL *URL = navigationAction.request.URL;
+    NSString *scheme = URL.scheme;
+    
+    if ([self canJump:URL.absoluteString]) {
+        // app跳转
+        if ([[UIApplication sharedApplication] canOpenURL:URL]) {
+            NSString *tips = [NSString stringWithFormat:@"可能离开%@，打开第三方应用", QQUIHelper.appName.length > 0 ? QQUIHelper.appName : @"App"];
             
-            QQAlertController *alert = [self createWebAlertWithMessage:tips needsHostTitle:NO];
+            QQAlertController *alert = [self createWebAlertWithTitle:nil message:tips];
             QQAlertAction *cancelAction = [QQAlertAction actionWithTitle:@"取消" style:QQAlertActionStyleCancel handler:^(QQAlertAction * _Nonnull action) {
                 
             }];
             QQAlertAction *continueAction = [QQAlertAction actionWithTitle:@"继续" style:QQAlertActionStyleDefault handler:^(QQAlertAction * _Nonnull action) {
-                [[UIApplication sharedApplication] openURL:navigationAction.request.URL];
+                [[UIApplication sharedApplication] openURL:URL];
             }];
             [alert addAction:cancelAction];
             [alert addAction:continueAction];
@@ -543,6 +550,16 @@
             
             decisionHandler(WKNavigationActionPolicyCancel);
             return;
+        }
+    } else {
+        // 电话、短信、邮箱
+        if ([scheme isEqualToString:@"tel"] || [scheme isEqualToString:@"sms"] || [scheme isEqualToString:@"mailto"]) {
+            if ([[UIApplication sharedApplication] canOpenURL:URL]) {
+                [[UIApplication sharedApplication] openURL:URL];
+                
+                decisionHandler(WKNavigationActionPolicyCancel);
+                return;
+            }
         }
     }
     
@@ -629,14 +646,13 @@
 
 // 通知应用程序DOM窗口对象的close()方法成功完成。
 - (void)webViewDidClose:(WKWebView *)webView {
-
     NSLog(@"%s", __func__);
 }
 
 // 显示一个JavaScript警告面板。
 - (void)webView:(WKWebView *)webView runJavaScriptAlertPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(void))completionHandler {
     
-    QQAlertController *alert = [self createWebAlertWithMessage:message needsHostTitle:YES];
+    QQAlertController *alert = [self createWebAlertWithTitle:self.URL.host message:message];
     QQAlertAction *confirmAction = [QQAlertAction actionWithTitle:@"确定" style:QQAlertActionStyleDefault handler:^(QQAlertAction * _Nonnull action) {
         completionHandler();
     }];
@@ -649,7 +665,7 @@
 // 显示一个JavaScript确认面板。
 - (void)webView:(WKWebView *)webView runJavaScriptConfirmPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(BOOL result))completionHandler {
     
-    QQAlertController *alert = [self createWebAlertWithMessage:message needsHostTitle:YES];
+    QQAlertController *alert = [self createWebAlertWithTitle:self.URL.host message:message];
     QQAlertAction *cancelAction = [QQAlertAction actionWithTitle:@"取消" style:QQAlertActionStyleCancel handler:^(QQAlertAction * _Nonnull action) {
         completionHandler(NO);
     }];
@@ -666,7 +682,7 @@
 // 显示一个JavaScript文本输入面板。
 - (void)webView:(WKWebView *)webView runJavaScriptTextInputPanelWithPrompt:(NSString *)prompt defaultText:(nullable NSString *)defaultText initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(NSString * _Nullable result))completionHandler {
     
-    QQAlertController *alert = [self createWebAlertWithMessage:prompt needsHostTitle:YES];
+    QQAlertController *alert = [self createWebAlertWithTitle:self.URL.host message:prompt];
     QQAlertAction *cancelAction = [QQAlertAction actionWithTitle:@"取消" style:QQAlertActionStyleCancel handler:^(QQAlertAction * _Nonnull action) {
         completionHandler(nil);
     }];
@@ -723,28 +739,22 @@
 
 #pragma mark - More
 
-- (QQAlertController *)createWebAlertWithMessage:(NSString *)message needsHostTitle:(BOOL)needsHostTitle {
-    
-    NSString *title = nil;
-    if (needsHostTitle) {
-        title = self.webView.URL.host;
-    }
-    
+- (QQAlertController *)createWebAlertWithTitle:(NSString *)title message:(NSString *)message {
     QQAlertController *alert = [QQAlertController alertControllerWithTitle:title message:message preferredStyle:QQAlertControllerStyleAlert];
     alert.alertContentMaximumWidth = QQUIHelper.deviceWidth - 60;
     alert.alertContentCornerRadius = 10;
     if (title.length > 0) {
-        alert.alertTitleAttributes = @{NSFontAttributeName:[UIFont boldSystemFontOfSize:17], NSForegroundColorAttributeName:[UIColor qq_colorWithHexString:@"222222"]};
-        alert.alertMessageAttributes = @{NSFontAttributeName:[UIFont boldSystemFontOfSize:15], NSForegroundColorAttributeName:[UIColor qq_colorWithHexString:@"999999"]};
+        alert.alertTitleAttributes = @{NSFontAttributeName:[UIFont systemFontOfSize:17 weight:UIFontWeightMedium], NSForegroundColorAttributeName:[UIColor qq_colorWithHexString:@"222222"]};
+        alert.alertMessageAttributes = @{NSFontAttributeName:[UIFont systemFontOfSize:15 weight:UIFontWeightMedium], NSForegroundColorAttributeName:[UIColor qq_colorWithHexString:@"999999"]};
     } else {
-        alert.alertTitleAttributes = @{NSFontAttributeName:[UIFont boldSystemFontOfSize:17], NSForegroundColorAttributeName:[UIColor qq_colorWithHexString:@"222222"]};
-        alert.alertMessageAttributes = @{NSFontAttributeName:[UIFont boldSystemFontOfSize:17], NSForegroundColorAttributeName:[UIColor qq_colorWithHexString:@"222222"]};
+        alert.alertTitleAttributes = @{NSFontAttributeName:[UIFont systemFontOfSize:17 weight:UIFontWeightMedium], NSForegroundColorAttributeName:[UIColor qq_colorWithHexString:@"222222"]};
+        alert.alertMessageAttributes = @{NSFontAttributeName:[UIFont systemFontOfSize:17 weight:UIFontWeightMedium], NSForegroundColorAttributeName:[UIColor qq_colorWithHexString:@"222222"]};
     }
-    
+    alert.alertHeaderMinimumHeight = 100;
     alert.alertHeaderInsets = UIEdgeInsetsMake(30, 25, 30, 25);
     alert.alertTitleMessageSpacing = 20;
     alert.alertTextFieldMessageSpacing = 15;
-    alert.alertButtonHeight = 50;
+    alert.alertButtonHeight = 55;
     alert.alertButtonAttributes = @{NSForegroundColorAttributeName:[UIColor qq_colorWithHexString:@"5c6e82"],NSFontAttributeName:[UIFont boldSystemFontOfSize:17]};
     alert.alertCancelButtonAttributes = @{NSForegroundColorAttributeName:[UIColor qq_colorWithHexString:@"222222"],NSFontAttributeName:[UIFont boldSystemFontOfSize:17]};
     
@@ -768,16 +778,12 @@
     if (([urlString hasPrefix:@"https://itunes.apple.com/"] || [urlString hasPrefix:@"https://apps.apple.com/"]) && [urlString containsString:@"/id"]) {
         canJump = YES;
     }
-    
     return canJump;
 }
 
 - (NSArray *)someURLSchemes {
-    // 需在 info.plist 里面 配置白名单LSApplicationQueriesSchemes
+    // 需在 info.plist 里面配置白名单 LSApplicationQueriesSchemes
     return @[
-        @"tel://", //电话
-        @"sms://", //消息
-        @"calshow://", //日历
         @"message://", //邮箱
         @"maps://", //地图
         @"itms-apps://", //AppStore
@@ -788,11 +794,36 @@
         @"imeituan://", //美团
         @"taobao://", //淘宝
         @"pinduoduo://", //拼多多
-        @"alipay://", //ZFB
-        @"alipays://", //ZFB
+        @"alipay://", //支付宝
+        @"alipays://", //支付宝
         @"mqq://", //QQ
-        @"baiduboxapp://" //百度
     ];
+}
+
+- (void)checkPopRectEdge {
+    UIPanGestureRecognizer *panGesture = [self getFullScreenPopGesture];
+    if (panGesture) {
+        if (_webView.canGoBack && _webView.allowsBackForwardNavigationGestures) {
+            panGesture.enabled = NO;
+        } else {
+            panGesture.enabled = YES;
+        }
+    }
+}
+
+- (UIPanGestureRecognizer *)getFullScreenPopGesture {
+    if ([self.navigationController isKindOfClass:NSClassFromString(@"QQNavigationController")]) {
+        #pragma clang diagnostic push
+        #pragma clang diagnostic ignored "-Wundeclared-selector"
+        if ([self.navigationController respondsToSelector:@selector(fullScreenPopGesture)]) {
+            UIPanGestureRecognizer *panGesture = [self.navigationController performSelector:@selector(fullScreenPopGesture)];
+            if ([panGesture isKindOfClass:[UIPanGestureRecognizer class]]) {
+                return panGesture;
+            }
+        }
+        #pragma clang diagnostic pop
+    }
+    return nil;
 }
 
 @end

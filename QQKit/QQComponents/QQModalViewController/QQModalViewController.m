@@ -6,7 +6,6 @@
 //
 
 #import "QQModalViewController.h"
-#import "QQModalView.h"
 
 @interface QQModalViewController ()<QQModalViewDelegate>
 

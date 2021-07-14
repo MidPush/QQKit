@@ -53,6 +53,10 @@ static CGFloat pixelOne = -1.0f;
     return MAX([self screenWidth], [self screenHeight]);
 }
 
++ (UIEdgeInsets)deviceSafeAreaInsets {
+    return [UIDevice deviceSafeAreaInsets];
+}
+
 + (CGFloat)screenScale {
     return [UIScreen mainScreen].scale;
 }
@@ -151,8 +155,16 @@ static CGFloat pixelOne = -1.0f;
     return height + [UIDevice deviceSafeAreaInsets].bottom;
 }
 
-+ (UIEdgeInsets)deviceSafeAreaInsets {
-    return [UIDevice deviceSafeAreaInsets];
++ (BOOL)isSmallScreen {
+    return [self deviceWidth] <= 320.0 + FLT_EPSILON ;
+}
+
++ (BOOL)isMiddleScreen {
+    return ([self deviceWidth] > 320.0 + FLT_EPSILON) && ([self deviceWidth] <= 375.0 + FLT_EPSILON);
+}
+
++ (BOOL)isBigScreen {
+    return [self deviceWidth] > 375.0 + FLT_EPSILON;
 }
 
 #pragma mark - 屏幕旋转

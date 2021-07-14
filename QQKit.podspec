@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name          = 'QQKit'
-  s.version       = '1.0.0'
+  s.version       = '1.0.1'
   s.summary       = '常用的UI组件'
   s.homepage      = 'https://github.com/MidPush/QQKit'
   s.license       = 'MIT'
@@ -15,7 +15,7 @@ Pod::Spec.new do |s|
   end
 
   s.subspec 'QQResources' do |ss|
-    ss.resource_bundles = {'QQResources' => ['QQKit/QQResources/QQUIKit.bundle']}
+    ss.resources = 'QQKit/QQResources/QQUIKit.bundle'
   end
 
   s.subspec 'QQComponents' do |ss|
@@ -79,6 +79,12 @@ Pod::Spec.new do |s|
       sss.dependency 'QQKit/QQCore'
     end
 
+    ss.subspec 'QQModalViewController' do |sss|
+      sss.source_files = 'QQKit/QQComponents/QQModalViewController/*.{h,m}'
+      sss.dependency 'QQKit/QQCore'
+      sss.dependency 'QQKit/QQViews'
+    end
+
     ss.subspec 'QQPageViewController' do |sss|
       sss.source_files = 'QQKit/QQComponents/QQPageViewController/*.{h,m}'
       sss.dependency 'QQKit/QQCore'
@@ -89,6 +95,14 @@ Pod::Spec.new do |s|
       sss.source_files = 'QQKit/QQComponents/QQToast/*.{h,m}'
       sss.dependency 'QQKit/QQCore'
       sss.dependency 'QQKit/QQResources'
+    end
+
+    ss.subspec 'QQWebViewController' do |sss|
+      sss.source_files = 'QQKit/QQComponents/QQWebViewController/*.{h,m}'
+      sss.dependency 'QQKit/QQCore'
+      sss.dependency 'QQKit/QQResources'
+      sss.dependency 'QQKit/QQComponents/QQModalViewController'
+      sss.frameworks = 'WebKit'
     end
 
   end

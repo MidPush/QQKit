@@ -10,6 +10,7 @@
 #import "UIView+QQExtension.h"
 #import "CALayer+QQExtension.h"
 #import "UIColor+QQExtension.h"
+#import "UIImage+QQExtension.h"
 #import "UIScrollView+QQExtension.h"
 #import "QQModalView.h"
 
@@ -106,6 +107,7 @@
         // 样式
         _alertContainerBackgroundColor = alertStyle ? [UIColor qq_colorWithRGB:@[@247, @247, @247]] : [UIColor clearColor];
         _alertHeaderBackgroundColor = [UIColor qq_colorWithRGB:@[@247, @247, @247]];
+        _alertHeaderMinimumHeight = 0;
         _alertContentMaximumWidth = alertStyle ? 270 : [QQUIHelper deviceWidth] - 20;
         _alertContentCornerRadius = 13.0;
         _alertHeaderInsets = UIEdgeInsetsMake(20, 16, 20, 16);
@@ -116,7 +118,7 @@
         _alertTitleAttributes = @{NSForegroundColorAttributeName:[UIColor blackColor],NSFontAttributeName:[UIFont boldSystemFontOfSize:17]};
         _alertMessageAttributes = @{NSForegroundColorAttributeName:[UIColor blackColor],NSFontAttributeName:[UIFont systemFontOfSize:13]};
         
-        _alertTextFieldHeight = 43;
+        _alertTextFieldHeight = 35;
         _alertTextFieldsSpecing = 2.0;
         _alertTextFieldFont = [UIFont systemFontOfSize:13];
         _alertTextFieldTextColor = [UIColor blackColor];
@@ -301,6 +303,36 @@
                 lastTop = textField.qq_bottom + self.alertTextFieldsSpecing;
             }
             lastTop += contentPaddingBottom;
+        }
+        
+        if (lastTop < _alertHeaderMinimumHeight && (hasTitle || hasMessage || hasTextField)) {
+            // 如果 title + message + textfield 总高度小于最小高度，则重新计算
+            CGFloat titleHeight = hasTitle ? self.titleLabel.qq_height : 0;
+            CGFloat messageHeight = hasMessage ? self.messageLabel.qq_height : 0;
+            CGFloat textFieldHeight = 0;
+            if (hasTextField) {
+                for (int i = 0; i < self.alertTextFields.count; i++) {
+                    QQTextField *textField = self.alertTextFields[i];
+                    textFieldHeight += (textField.qq_height + self.alertTextFieldsSpecing);
+                }
+                textFieldHeight -= self.alertTextFieldsSpecing;
+            }
+            lastTop = (_alertHeaderMinimumHeight - (titleHeight + messageHeight + textFieldHeight)) / 2;
+            if (hasTitle) {
+                self.titleLabel.qq_top = lastTop;
+                lastTop = self.titleLabel.qq_bottom + (hasMessage ? self.alertTitleMessageSpacing : contentPaddingBottom);
+            }
+            if (hasMessage) {
+                self.messageLabel.qq_top = lastTop;
+                lastTop = self.messageLabel.qq_bottom + (hasTextField ? self.alertTextFieldMessageSpacing : contentPaddingBottom);
+            }
+            for (int i = 0; i < self.alertTextFields.count; i++) {
+                QQTextField *textField = self.alertTextFields[i];
+                CGRect textFieldFrame = CGRectMake(contentPaddingLeft, lastTop, headerLimitSize.width, self.alertTextFieldHeight);
+                textField.frame = textFieldFrame;
+                lastTop = textField.qq_bottom + self.alertTextFieldsSpecing;
+            }
+            lastTop = _alertHeaderMinimumHeight;
         }
         
         // headerScrollView、buttonScrollView
@@ -574,13 +606,25 @@
 
 - (void)dismissWithCompletion:(void (^)(void))completion {
     [self.modalView dismissWithCompletion:^(BOOL finished) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self dismissViewControllerAnimated:NO completion:^{
-                if (completion) {
-                    completion();
-                }
-            }];
-        });
+        if (self.textFields.count > 0) {
+            [self.view endEditing:YES];
+            // 如果有输入框 textField，延迟0.25s，让键盘有个下降隐藏动画，不然键盘直接没了不好看
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.25 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [self dismissViewControllerAnimated:NO completion:^{
+                    if (completion) {
+                        completion();
+                    }
+                }];
+            });
+        } else {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self dismissViewControllerAnimated:NO completion:^{
+                    if (completion) {
+                        completion();
+                    }
+                }];
+            });
+        }
     }];
 }
 
@@ -708,7 +752,9 @@
         _titleLabel.hidden = YES;
     } else {
         _titleLabel.hidden = NO;
+        [self updateTitleLabel];
     }
+    [self updateLayout];
 }
 
 - (NSString *)title {
@@ -729,6 +775,7 @@
         self.messageLabel.hidden = NO;
         [self updateMessageLabel];
     }
+    [self updateLayout];
 }
 
 - (NSArray<QQAlertAction *> *)actions {
@@ -749,6 +796,13 @@
 - (void)setAlertHeaderBackgroundColor:(UIColor *)alertHeaderBackgroundColor {
     _alertHeaderBackgroundColor = alertHeaderBackgroundColor;
     self.headerScrollView.backgroundColor = alertHeaderBackgroundColor;
+}
+
+- (void)setAlertHeaderMinimumHeight:(CGFloat)alertHeaderMinimumHeight {
+    if (_alertHeaderMinimumHeight != alertHeaderMinimumHeight) {
+        _alertHeaderMinimumHeight = alertHeaderMinimumHeight;
+        [self updateLayout];
+    }
 }
 
 - (void)setAlertContentMaximumWidth:(CGFloat)alertContentMaximumWidth {

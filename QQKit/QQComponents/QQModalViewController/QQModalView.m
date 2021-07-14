@@ -12,6 +12,7 @@
 
 @property (nonatomic, assign, readwrite, getter=isVisible) BOOL visible;
 @property (nonatomic, assign) BOOL inAnimation;
+@property (nonatomic, assign) BOOL isWillDismiss;
 @property(nonatomic, strong) UITapGestureRecognizer *dimmingViewTapGesture;
 @property (nonatomic, assign) CGFloat keyboardHeight;
 
@@ -33,7 +34,9 @@
 
 - (void)layoutSubviews {
     [super layoutSubviews];
-    self.dimmingView.frame = self.bounds;
+    // removeFromSuperview 时会触发 layoutSubviews
+    if (_isWillDismiss) return;
+    [self updateLayout];
 }
 
 #pragma mark - Keyboard
@@ -135,6 +138,7 @@
 - (void)showInView:(UIView *)view completion:(void (^)(BOOL))completion {
     if (!view || self.isVisible || self.inAnimation) return;
     self.visible = YES;
+    self.isWillDismiss = NO;
     
     self.hidden = NO;
     [view addSubview:self];
@@ -213,6 +217,7 @@
     if ([self.delegate respondsToSelector:@selector(willDismissModalView:)]) {
         [self.delegate willDismissModalView:self];
     }
+    self.isWillDismiss = YES;
     
     void (^didDismissCompletion)(BOOL finished) = ^(BOOL finished) {
         if (self.removeWhenDismiss) {

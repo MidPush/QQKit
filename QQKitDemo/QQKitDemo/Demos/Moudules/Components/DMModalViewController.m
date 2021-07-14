@@ -142,12 +142,12 @@
             
         }
     } else if (indexPath.section == 3) {
-        NSString *title = @"ceil用 法： double ceil(double x);功 能： 返回大于或者等于指定表达式的最小整数头文件：math.h返回数据类型：double";
-        NSString *message = @"ceil用 法： double ceil(double x);功 能：";
+        NSString *title = @"标题";
+        NSString *message = @"信息";
         
-        NSInteger addCount = 10;
-//        title = nil;
-//        message = nil;
+        NSInteger addActionCount = 0;
+        NSInteger addTextFieldCount = 0;
+
         NSInteger preferredStyle = QQAlertControllerStyleAlert;
         if (indexPath.row == 0) {
             QQAlertController *alert = [QQAlertController alertControllerWithTitle:title message:message preferredStyle:preferredStyle];
@@ -158,20 +158,29 @@
             [alert addAction:action2];
             
             QQAlertAction *action3 = [QQAlertAction actionWithTitle:@"确认" style:QQAlertActionStyleDestructive handler:^(QQAlertAction * _Nonnull action) {
+                static BOOL flag = YES;
+                if (flag) {
+                    alert.title = nil;
+                    alert.message = @"哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈";
+                } else {
+                    alert.title = @"哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈";
+                    alert.message = nil;
+                }
+                flag = !flag;
                 
             }] ;
             [alert addAction:action3];
             
-            for (NSInteger i = 0; i < addCount; i++) {
+            for (NSInteger i = 0; i < addActionCount; i++) {
                 QQAlertAction *action4 = [QQAlertAction actionWithTitle:@"确认" style:QQAlertActionStyleDestructive handler:^(QQAlertAction * _Nonnull action) {
-
+                        
                 }] ;
                 [alert addAction:action4];
             }
 
-//            for (NSInteger i = 0; i < 2; i++) {
-//                [alert addTextFieldWithConfigurationHandler:nil];
-//            }
+            for (NSInteger i = 0; i < addTextFieldCount; i++) {
+                [alert addTextFieldWithConfigurationHandler:nil];
+            }
             
             
             UIVisualEffectView *visualEffectView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:UIBlurEffectStyleLight]];
@@ -199,16 +208,16 @@
             }] ;
             [alert addAction:action3];
             
-            for (NSInteger i = 0; i < addCount; i++) {
+            for (NSInteger i = 0; i < addActionCount; i++) {
                 UIAlertAction *action4 = [UIAlertAction actionWithTitle:@"确认" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
 
                 }] ;
                 [alert addAction:action4];
             }
             
-//            for (NSInteger i = 0; i < 2; i++) {
-//                [alert addTextFieldWithConfigurationHandler:nil];
-//            }
+            for (NSInteger i = 0; i < addTextFieldCount; i++) {
+                [alert addTextFieldWithConfigurationHandler:nil];
+            }
             
             [self presentViewController:alert animated:YES completion:nil];
         }
@@ -238,11 +247,11 @@
         dimmingView.backgroundColor = [UIColor.dm_tintColor colorWithAlphaComponent:.35];
     }
     
-    static QQModalAnimationStyle style = QQModalAnimationStyleFade;
+    static QQModalAnimationStyle style = QQModalAnimationStyleNone;
     
     if (isVC) {
         QQModalViewController *modalVC = [[QQModalViewController alloc] init];
-        modalVC.modalAnimationStyle = style % 3;
+        modalVC.modalAnimationStyle = style % 4;
         modalVC.contentView = contentView;
         if (dimmingView) {
             modalVC.dimmingView = dimmingView;
@@ -250,7 +259,7 @@
         [modalVC show];
     } else {
         QQModalView *modalView = [[QQModalView alloc] initWithFrame:CGRectZero];
-        modalView.modalAnimationStyle = style % 3;
+        modalView.modalAnimationStyle = style % 4;
         modalView.contentView = contentView;
         if (dimmingView) {
             modalView.dimmingView = dimmingView;

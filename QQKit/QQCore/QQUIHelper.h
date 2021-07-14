@@ -54,6 +54,15 @@
 /// tabBar的静态高度，如果是 NotchedScreen 设备会加上设备的 safeAreaInsets.bottom 值，有新设备时可能需要更新
 + (CGFloat)tabBarHeight;
 
+/// 是否是小屏幕，屏幕宽 <= 320
++ (BOOL)isSmallScreen;
+
+/// 是否是中屏幕，屏幕宽 > 320 && <=375
++ (BOOL)isMiddleScreen;
+
+/// 是否是大屏幕，屏幕宽 > 375
++ (BOOL)isBigScreen;
+
 #pragma mark - 屏幕旋转
 
 /// 记录手动旋转方向前的设备方向，当值不为 UIDeviceOrientationUnknown 时表示设备方向有经过了手动调整。默认值为 UIDeviceOrientationUnknown。

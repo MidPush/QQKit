@@ -5,13 +5,12 @@
 //  Created by Mac on 2021/7/8.
 //
 
-#import "QQViewController.h"
+#import <UIKit/UIKit.h>
 #import <WebKit/WebKit.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-
-@interface QQWebViewController : QQViewController
+@interface QQWebViewController : UIViewController
 
 - (instancetype)init NS_UNAVAILABLE;
 - (instancetype)initWithCoder:(NSCoder *)aDecoder NS_UNAVAILABLE;

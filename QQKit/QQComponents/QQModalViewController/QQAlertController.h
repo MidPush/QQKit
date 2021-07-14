@@ -67,6 +67,8 @@ typedef NS_ENUM(NSInteger, QQAlertControllerStyle) {
 @property (nullable, nonatomic, strong) UIColor *alertContainerBackgroundColor;
 /// alert 头部（非按钮部分）背景色
 @property (nullable, nonatomic, strong) UIColor *alertHeaderBackgroundColor;
+/// alert 头部（非按钮部分）最新高度，默认为0，当有title或message或textFiled时才有效
+@property (nonatomic, assign) CGFloat alertHeaderMinimumHeight;
 /// alert 最大宽度，style为Alert时默认为270，style为Sheet时默认为设备的宽度减20
 @property (nonatomic, assign) CGFloat alertContentMaximumWidth;
 /// alert 圆角。默认13.0
@@ -85,7 +87,7 @@ typedef NS_ENUM(NSInteger, QQAlertControllerStyle) {
 @property(nullable, nonatomic, strong) NSDictionary<NSAttributedStringKey, id> *alertMessageAttributes;
 
 #pragma mark - 设置TextField样式
-// textField高度，默认40
+// textField高度，默认35
 @property (nonatomic, assign) CGFloat alertTextFieldHeight;
 // textField之间间隙，默认2.0
 @property (nonatomic, assign) CGFloat alertTextFieldsSpecing;

@@ -257,8 +257,10 @@ static const void * const kQQFakeNavigationBarKey = &kQQFakeNavigationBarKey;
         return;
     }
     if (navigationBar2.hidden) {
+        self.navigationController.navigationBar.hidden = YES;
         [self.navigationController setNavigationBarHidden:YES animated:NO];
     } else {
+        self.navigationController.navigationBar.hidden = NO;
         [self.navigationController setNavigationBarHidden:NO animated:NO];
     }
 }
@@ -273,14 +275,10 @@ static const void * const kQQFakeNavigationBarKey = &kQQFakeNavigationBarKey;
         self.qq_fakeNavigationBar = fakeNavigationBar;
         UINavigationBar *originNavigationBar = self.navigationController.navigationBar;
         fakeNavigationBar.originalNavigationBar = originNavigationBar;
-        if ([self respondsToSelector:@selector(prefersNavigationBarHidden)]) {
-            BOOL hidden = [self performSelector:@selector(prefersNavigationBarHidden)];
-            fakeNavigationBar.hidden = hidden;
-        }
     }
-
+    
     [self layoutFakeNavigationBarFrame];
-    if (!self.navigationController.navigationBarHidden) {
+    if (!self.navigationController.navigationBarHidden && !self.navigationController.navigationBar.hidden) {
         [self.view addSubview:self.qq_fakeNavigationBar];
     }
 }
@@ -288,7 +286,11 @@ static const void * const kQQFakeNavigationBarKey = &kQQFakeNavigationBarKey;
 - (void)removeFakeNavigationBar {
     if (self.qq_fakeNavigationBar) {
         // 解决某些情况下，导航栏显隐设置时机比较晚，fakeNavigationBar得到错误的hidden值。如：系统的照相机
-        self.qq_fakeNavigationBar.hidden = self.navigationController.navigationBarHidden;
+        BOOL isHedden = NO;
+        if (self.navigationController.navigationBarHidden || self.navigationController.navigationBar.hidden) {
+            isHedden = YES;
+        }
+        self.qq_fakeNavigationBar.hidden = isHedden;
         if ([self respondsToSelector:@selector(prefersNavigationBarHidden)]) {
             BOOL hidden = [self performSelector:@selector(prefersNavigationBarHidden)];
             self.qq_fakeNavigationBar.hidden = hidden;

@@ -8,6 +8,7 @@
 #import "UIView+QQExtension.h"
 #import "CALayer+QQExtension.h"
 #import "UIImage+QQExtension.h"
+#import "QQRuntime.h"
 
 @interface QQBorderLayer : CAShapeLayer
 

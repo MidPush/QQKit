@@ -42,10 +42,6 @@ static NSString * const QQKIT_VERSION = @"1.0.0";
 #import "NSString+QQExtension.h"
 #endif
 
-#if __has_include("UIBarButtonItem+QQExtension.h")
-#import "UIBarButtonItem+QQExtension.h"
-#endif
-
 #if __has_include("UIColor+QQExtension.h")
 #import "UIColor+QQExtension.h"
 #endif
@@ -78,6 +74,10 @@ static NSString * const QQKIT_VERSION = @"1.0.0";
 #import "UIView+QQExtension.h"
 #endif
 
+#if __has_include("CALayer+QQExtension")
+#import "CALayer+QQExtension.h"
+#endif
+
 #if __has_include("UIViewController+QQExtension.h")
 #import "UIViewController+QQExtension.h"
 #endif
@@ -97,6 +97,10 @@ static NSString * const QQKIT_VERSION = @"1.0.0";
 
 #if __has_include("QQViewController.h")
 #import "QQViewController.h"
+#endif
+
+#if __has_include("QQWebViewController.h")
+#import "QQWebViewController.h"
 #endif
 
 /// Views
@@ -175,6 +179,22 @@ static NSString * const QQKIT_VERSION = @"1.0.0";
 
 #if __has_include("QQPageViewController.h")
 #import "QQPageViewController.h"
+#endif
+
+#if __has_include("QQModalView.h")
+#import "QQModalView.h"
+#endif
+
+#if __has_include("QQModalViewController.h")
+#import "QQModalViewController.h"
+#endif
+
+#if __has_include("QQConfirmModalController.h")
+#import "QQConfirmModalController.h"
+#endif
+
+#if __has_include("QQAlertController.h")
+#import "QQAlertController.h"
 #endif
 
 #if __has_include("QQProgressHUD.h")

@@ -6,6 +6,7 @@
 //
 
 #import "CALayer+QQExtension.h"
+#import "UIView+QQExtension.h"
 #import "QQRuntime.h"
 
 @implementation CALayer (QQExtension)

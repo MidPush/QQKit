@@ -19,7 +19,5 @@ typedef NS_ENUM(NSInteger, QQPopRectEdge) {
 /// 设置全屏返回手势作用区域
 @property (nonatomic, assign) QQPopRectEdge popRectEdge;
 
-@property (nonatomic, copy) QQPopRectEdge (^shouldCanPopGesture)(void);
-
 @end
 

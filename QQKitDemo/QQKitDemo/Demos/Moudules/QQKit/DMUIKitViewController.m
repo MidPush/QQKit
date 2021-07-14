@@ -33,7 +33,6 @@
         @{@"ViewController Orientation" : @"DMOrientationViewController"},
         @{@"UITabBarItem+QQExtension" : @"DMUITabBarItemViewController"},
         @{@"UIView+QQExtension" : @"DMViewBorderViewController"},
-        @{@"QQWebViewController" : @"DMWebViewController"},
     ];
 }
 

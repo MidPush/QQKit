@@ -136,5 +136,4 @@
     return [super childViewControllerForHomeIndicatorAutoHidden];
 }
 
-
 @end

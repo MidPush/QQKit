@@ -31,6 +31,7 @@
         @{@"QQToast" : @"DMToastViewController"},
         @{@"QQCircularProgress" : @"DMCircularProgressViewController"},
         @{@"QQModalViewController" : @"DMModalViewController"},
+        @{@"QQWebViewController" : @"DMWebViewController"},
     ];
 }
 
