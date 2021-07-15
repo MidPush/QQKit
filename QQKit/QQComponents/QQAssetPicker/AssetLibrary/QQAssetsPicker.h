@@ -63,10 +63,10 @@ extern NSString *const QQPickerUsingOriginalImageKey;
 /// 是否允许图片多选，默认为 YES。如果为 NO，则不显示 checkbox 和底部工具栏。
 @property (nonatomic, assign) BOOL allowsMultipleSelection;
 
-/// 是否允许编辑图片
+/// 是否允许编辑图片，默认为NO
 @property (nonatomic, assign) BOOL allowsImageEditing;
 
-/// 是否允许编辑视频
+/// 是否允许编辑视频，默认为NO
 @property (nonatomic, assign) BOOL allowsVideoEditing;
 
 /**

@@ -337,6 +337,8 @@ static const CGFloat QQProgressHUDUndefinedProgress = -1;
 - (void)updateViewHierarchy {
     if (!self.superview) {
         [self.frontWindow addSubview:self];
+    } else {
+        [self.superview bringSubviewToFront:self];
     }
     if (!self.maskView.superview) {
         [self addSubview:self.maskView];

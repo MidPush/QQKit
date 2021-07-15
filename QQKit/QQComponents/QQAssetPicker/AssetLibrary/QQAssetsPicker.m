@@ -20,8 +20,8 @@ NSString *const QQPickerUsingOriginalImageKey = @"QQPickerUsingOriginalImageKey"
         self.selectionLimit = 9;
         self.filterType = QQPickerFilterTypeAll;
         self.allowsMultipleSelection = YES;
-        self.allowsImageEditing = YES;
-        self.allowsVideoEditing = YES;
+        self.allowsImageEditing = NO;
+        self.allowsVideoEditing = NO;
         self.allowsSelectionLivePhoto = NO;
         self.allowsSelectionGIF = NO;
         
