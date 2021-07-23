@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
   s.name          = 'QQKit'
-  s.version       = '1.0.1'
-  s.summary       = '常用的UI组件'
+  s.version       = '1.0.2'
+  s.summary       = 'QQKit'
   s.homepage      = 'https://github.com/MidPush/QQKit'
   s.license       = 'MIT'
   s.author        = { 'xz' => '497569855@qq.com' }
