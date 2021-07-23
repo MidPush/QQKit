@@ -149,6 +149,10 @@
         if (!configuration) {
             configuration = [[WKWebViewConfiguration alloc] init];
             configuration.allowsInlineMediaPlayback = YES;
+            
+            WKPreferences *preferences = [[WKPreferences alloc] init];
+            preferences.javaScriptCanOpenWindowsAutomatically = YES;
+            configuration.preferences = preferences;
         }
 
         _webView = [[WKWebView alloc] initWithFrame:CGRectZero configuration:configuration];

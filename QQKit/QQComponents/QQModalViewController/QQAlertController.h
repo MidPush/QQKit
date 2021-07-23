@@ -37,6 +37,9 @@ typedef NS_ENUM(NSInteger, QQAlertControllerStyle) {
 
 @property (nonatomic, strong, readonly) QQButton *button;
 
+/// 点击 action button 是否隐藏 QQAlertController，默认为YES，当设置为NO时，需手动隐藏
+@property (nonatomic, assign) BOOL dismissWhenTapButton;
+
 @property (nullable, nonatomic, strong) NSDictionary<NSAttributedStringKey, id> *buttonAttributes;
 @property (nullable, nonatomic, strong) NSDictionary<NSAttributedStringKey, id> *buttonDisabledAttributes;
 

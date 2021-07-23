@@ -46,7 +46,7 @@
 }
 
 - (CGSize)qq_sizeForFont:(UIFont *)font size:(CGSize)size {
-    return [self qq_sizeForFont:font size:size mode:NSLineBreakByTruncatingTail];
+    return [self qq_sizeForFont:font size:size mode:NSLineBreakByWordWrapping];
 }
 
 - (CGSize)qq_sizeForFont:(UIFont *)font size:(CGSize)size mode:(NSLineBreakMode)lineBreakMode {

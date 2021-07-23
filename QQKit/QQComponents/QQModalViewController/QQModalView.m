@@ -169,9 +169,7 @@
         }
         self.showingAnimation(self.dimmingView, self.bounds, self.keyboardHeight, contentViewFrame, didShowCompletion);
     } else {
-        self.contentView.frame = contentViewFrame;
-        [self.contentView setNeedsLayout];
-        [self.contentView layoutIfNeeded];
+        [self updateLayout];
         
         if (self.modalAnimationStyle == QQModalAnimationStyleFade) {
             self.dimmingView.alpha = 0.0;
@@ -185,7 +183,7 @@
         } else if (self.modalAnimationStyle == QQModalAnimationStylePopup) {
             self.dimmingView.alpha = 0.0;
             self.contentView.transform = CGAffineTransformMakeScale(0, 0);
-            [UIView animateWithDuration:0.3 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+            [UIView animateWithDuration:0.25 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
                 self.dimmingView.alpha = 1.0;
                 self.contentView.transform = CGAffineTransformMakeScale(1, 1);
             } completion:^(BOOL finished) {
@@ -195,7 +193,7 @@
         } else if (self.modalAnimationStyle == QQModalAnimationStyleSheet) {
             self.dimmingView.alpha = 0.0;
             self.contentView.transform = CGAffineTransformMakeTranslation(0, CGRectGetHeight(self.bounds) - CGRectGetMinY(self.contentView.frame));
-            [UIView animateWithDuration:0.3 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+            [UIView animateWithDuration:0.25 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
                 self.dimmingView.alpha = 1.0;
                 self.contentView.transform = CGAffineTransformIdentity;
             } completion:^(BOOL finished) {
@@ -253,7 +251,7 @@
                 
             }];
         } else if (self.modalAnimationStyle == QQModalAnimationStylePopup) {
-            [UIView animateWithDuration:0.3 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+            [UIView animateWithDuration:0.25 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
                 self.dimmingView.alpha = 0.0;
                 self.contentView.transform = CGAffineTransformMakeScale(0.01, 0.01);
             } completion:^(BOOL finished) {
@@ -262,7 +260,7 @@
                 didDismissCompletion(finished);
             }];
         } else if (self.modalAnimationStyle == QQModalAnimationStyleSheet) {
-            [UIView animateWithDuration:0.3 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+            [UIView animateWithDuration:0.25 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
                 self.dimmingView.alpha = 0.0;
                 self.contentView.transform = CGAffineTransformMakeTranslation(0, CGRectGetHeight(self.bounds) - CGRectGetMinY(self.contentView.frame));
             } completion:^(BOOL finished) {

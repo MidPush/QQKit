@@ -1012,4 +1012,11 @@ static const CGFloat QQProgressHUDUndefinedProgress = -1;
     return duration;
 }
 
++ (void)bringHUDToFront {
+    QQProgressHUD *hud = [self sharedView];
+    if (hud.superview) {
+        [hud.superview bringSubviewToFront:hud];
+    }
+}
+
 @end

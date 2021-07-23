@@ -59,6 +59,11 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)hideToast;
 
 /**
+ 将 toast 显示在最前面
+ */
++ (void)bringToastToFront;
+
+/**
  主题颜色
  */
 + (void)setTintColor:(UIColor *)color;

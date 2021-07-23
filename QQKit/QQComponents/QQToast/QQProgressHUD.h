@@ -57,6 +57,7 @@ typedef NS_ENUM(NSInteger, QQProgressHUDAnimationType) {
 + (void)dismissWithDelay:(NSTimeInterval)delay;
 
 + (NSTimeInterval)displayDurationForString:(NSString *)string;
++ (void)bringHUDToFront;
 
 @end
 

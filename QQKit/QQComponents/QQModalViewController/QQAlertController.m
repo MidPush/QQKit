@@ -36,6 +36,7 @@
     action.title = title;
     action.style = style;
     action.handler = handler;
+    action.dismissWhenTapButton = YES;
     return action;
 }
 
@@ -635,11 +636,17 @@
 
 #pragma mark - QQAlertActionDelegate
 - (void)alertActionClicked:(QQAlertAction *)action {
-    [self dismissWithCompletion:^{
+    if (action.dismissWhenTapButton) {
+        [self dismissWithCompletion:^{
+            if (action.handler) {
+                action.handler(action);
+            }
+        }];
+    } else {
         if (action.handler) {
             action.handler(action);
         }
-    }];
+    }
 }
 
 #pragma mark - Getters & Setters

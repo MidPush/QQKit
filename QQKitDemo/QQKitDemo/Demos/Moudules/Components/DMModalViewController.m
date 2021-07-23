@@ -168,7 +168,8 @@
                 }
                 flag = !flag;
                 
-            }] ;
+            }];
+            action3.dismissWhenTapButton = NO;
             [alert addAction:action3];
             
             for (NSInteger i = 0; i < addActionCount; i++) {

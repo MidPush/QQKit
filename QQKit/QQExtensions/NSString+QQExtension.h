@@ -25,8 +25,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSString *)qq_md5;
 
 /**
- 计算字符串 size，lineBreakMode 默认为 UILabel 的 NSLineBreakByTruncatingTail
- 若是计算 UILabel 的 lineBreakMode 设置了 mode 不为 NSLineBreakByTruncatingTail，请用
+ 计算字符串 size，lineBreakMode 默认为 UILabel 的 NSLineBreakByWordWrapping
+ 若是计算 UILabel 的 lineBreakMode 设置了 mode 不为 NSLineBreakByWordWrapping，请用
  - (CGSize)qq_sizeForFont:(UIFont *)font size:(CGSize)size mode:(NSLineBreakMode)lineBreakMode
  指定 lineBreakMode 去计算
  */

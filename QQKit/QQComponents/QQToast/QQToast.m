@@ -94,6 +94,10 @@
     [QQProgressHUD dismiss];
 }
 
++ (void)bringToastToFront {
+    [QQProgressHUD bringHUDToFront];
+}
+
 + (void)setTintColor:(UIColor *)color {
     [QQProgressHUD setTintColor:color];
 }

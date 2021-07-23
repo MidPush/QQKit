@@ -74,7 +74,7 @@ static NSString * const QQKIT_VERSION = @"1.0.1";
 #import "UIView+QQExtension.h"
 #endif
 
-#if __has_include("CALayer+QQExtension")
+#if __has_include("CALayer+QQExtension.h")
 #import "CALayer+QQExtension.h"
 #endif
 
