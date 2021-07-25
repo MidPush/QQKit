@@ -230,6 +230,7 @@
     }
     self.automaticallyAdjustsScrollViewInsets = NO;
     
+    self.view.backgroundColor = [UIColor whiteColor];
     [self.view addSubview:self.webView];
     [self.view addSubview:self.progressView];
     [self.view addSubview:self.hostLabel];

@@ -24,7 +24,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)applyTemplate:(Class<QQUIConfigurationTemplateProtocol>)cls;
 
 #pragma mark - 控制器（只作用于QQViewController）
-@property (nonatomic, strong, nullable) UIColor *commonViewContorllerBackgroundColor;
+@property (nonatomic, strong, nullable) UIColor *commonViewControllerBackgroundColor;
 @property (nonatomic, assign) UIInterfaceOrientationMask supportedOrientationMask;
 
 #pragma mark - 导航栏（UINavigationBar 只作用于QQNavigationController）
@@ -41,7 +41,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong, nullable) UIFont  *navBarBackTitleFont;
 @property (nonatomic, assign)           CGFloat navBarBackImageTitleSpacing;
 @property (nonatomic, assign)           CGFloat navBarBackMarginOffset;
-@property (nonatomic, assign) BOOL              needsBackBarButtonItemTitle;
+@property (nonatomic, assign)           BOOL    needsBackBarButtonItemTitle;
 
 #pragma mark - 输入框（QQTextField & QQTextView 不影响系统输入框）
 @property (nonatomic, strong, nullable) UIColor *textFieldTextColor;

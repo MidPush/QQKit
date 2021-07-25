@@ -8,6 +8,7 @@
 #import "QQNavigationController.h"
 #import "QQUIConfiguration.h"
 #import "QQNavigationButton.h"
+#import "QQViewController.h"
 #import "QQUIHelper.h"
 
 @interface QQNavigationController ()<UIGestureRecognizerDelegate>
@@ -89,13 +90,23 @@
         // 这里没用 backBarButtonItem 而是用 leftBarButtonItem，因为 leftBarButtonItem 更加灵活，比较好自定义
         // 使用 leftBarButtonItem 会使系统返回手势失效，这里使用 fullScreenPopGesture 替代
         // 这里没有传 target、action，而是在 QQViewController 里添加，方便拦截返回点击事件
-        UIBarButtonItem *leftItem = [UIBarButtonItem qq_leftItemWithImage:backImage title:backTitle titleColor:nil target:nil action:nil];
+        UIBarButtonItem *leftItem = nil;
+        if ([viewController isKindOfClass:[QQViewController class]]) {
+            leftItem = [UIBarButtonItem qq_leftItemWithImage:backImage title:backTitle titleColor:nil target:nil action:nil];
+        } else {
+            leftItem = [UIBarButtonItem qq_leftItemWithImage:backImage title:backTitle titleColor:nil target:self action:@selector(onBackBarButtonItemClicked)];
+        }
+        
         viewController.navigationItem.leftBarButtonItem = leftItem;
         
         // 一般只有首页才需要显示 UITabBar
         viewController.hidesBottomBarWhenPushed = YES;
     }
     [super pushViewController:viewController animated:animated];
+}
+
+- (void)onBackBarButtonItemClicked {
+    [self popViewControllerAnimated:YES];
 }
 
 #pragma mark - 状态栏

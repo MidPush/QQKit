@@ -16,7 +16,7 @@
     QQUIConfiguration *configuration = [QQUIConfiguration sharedInstance];
     
 #pragma mark - 控制器
-    configuration.commonViewContorllerBackgroundColor = [UIColor qq_colorWithHexString:@"ededed"];
+    configuration.commonViewControllerBackgroundColor = [UIColor qq_colorWithHexString:@"ededed"];
     configuration.supportedOrientationMask = UIInterfaceOrientationMaskAll;
     
 #pragma mark - 导航栏（UINavigationBar）

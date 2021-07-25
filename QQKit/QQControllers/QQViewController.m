@@ -41,7 +41,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.view.backgroundColor = [QQUIConfiguration sharedInstance].commonViewContorllerBackgroundColor;
+    self.view.backgroundColor = [QQUIConfiguration sharedInstance].commonViewControllerBackgroundColor;
     UIBarButtonItem *leftItem = self.navigationItem.leftBarButtonItem;
     if (leftItem) {
         UIButton *backButton = leftItem.customView;
@@ -77,7 +77,7 @@
 #pragma mark - 屏幕旋转
 
 - (BOOL)shouldAutorotate {
-    return YES;
+    return [super shouldAutorotate];
 }
 
 - (UIInterfaceOrientationMask)supportedInterfaceOrientations {
@@ -87,11 +87,11 @@
 #pragma mark - 状态栏
 
 - (BOOL)prefersStatusBarHidden {
-    return NO;
+    return [super prefersStatusBarHidden];
 }
 
 - (UIStatusBarStyle)preferredStatusBarStyle {
-    return UIStatusBarStyleDefault;
+    return [super preferredStatusBarStyle];
 }
 
 #pragma mark - UINavigationBarAppearanceProtocol

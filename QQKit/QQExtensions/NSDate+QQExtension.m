@@ -151,7 +151,6 @@
 }
 
 + (nullable NSString *)qq_stringWithTimestamp:(NSTimeInterval)timestamp format:(NSString *)format {
-    
     NSDate *date = [NSDate dateWithTimeIntervalSince1970:timestamp];
     return [date qq_stringWithFormat:format];
 }

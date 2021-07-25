@@ -173,8 +173,8 @@ static NSString * const QQKIT_VERSION = @"1.0.2";
 #import "QQCircularProgressView.h"
 #endif
 
-#if __has_include("UIViewController+QQFakeNavigationBar.h")
-#import "UIViewController+QQFakeNavigationBar.h"
+#if __has_include("UIViewController+QQFakerNavigationBar.h")
+#import "UIViewController+QQFakerNavigationBar.h"
 #endif
 
 #if __has_include("QQPageViewController.h")

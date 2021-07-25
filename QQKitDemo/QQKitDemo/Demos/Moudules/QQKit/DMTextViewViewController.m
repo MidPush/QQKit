@@ -22,6 +22,7 @@
 }
 
 - (void)initSubviews {
+    self.automaticallyAdjustsScrollViewInsets = NO;
     _textView = [[QQTextView alloc] init];
     _textView.placeholder = @"可设置placeholder、限制文本输入长度";
     _textView.placeholderColor = UIColor.dm_placeholderColor;
@@ -34,7 +35,7 @@
     [self.view addSubview:_textView];
     
     _tipsLabel = [[UILabel alloc] init];
-    _tipsLabel.text = [NSString stringWithFormat:@"最长不超过 %@ 个文字，可尝试输入 emoji、粘贴一大段文字。", @(self.textView.maximumTextLength)];
+//    _tipsLabel.text = [NSString stringWithFormat:@"最长不超过 %@ 个文字，可尝试输入 emoji、粘贴一大段文字。", @(self.textView.maximumTextLength)];
     _tipsLabel.textColor = UIColor.dm_lightGrayColor;
     _tipsLabel.font = [UIFont systemFontOfSize:12];
     _tipsLabel.numberOfLines = 0;

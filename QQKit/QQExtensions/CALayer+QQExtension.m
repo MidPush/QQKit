@@ -11,7 +11,6 @@
 
 @implementation CALayer (QQExtension)
 
-
 static NSString *kMaskName = @"QQ_CornerRadius_Mask";
 
 + (void)load {

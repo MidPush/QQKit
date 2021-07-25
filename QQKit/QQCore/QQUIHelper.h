@@ -115,8 +115,7 @@ CG_INLINE CGFloat flat(CGFloat floatValue) {
     return flatSpecificScale(floatValue, 0);
 }
 
-
-/// 创建一个像素对齐的CGRec
+/// 创建一个像素对齐的CGRect
 CG_INLINE CGRect CGRectFlatMake(CGFloat x, CGFloat y, CGFloat width, CGFloat height) {
     return CGRectMake(flat(x), flat(y), flat(width), flat(height));
 }

@@ -37,6 +37,9 @@ typedef NS_ENUM(NSInteger, QQNavigationButtonType) {
 
 + (UIBarButtonItem *)qq_rightItemWithTitle:(nullable NSString *)title titleColor:(nullable UIColor *)titleColor font:(nullable UIFont *)font target:(nullable id)target action:(nullable SEL)action;
 
+// CustomItem
++ (UIBarButtonItem *)qq_itemWithButton:(QQNavigationButton *)button target:(nullable id)target action:(nullable SEL)action;
+
 @end
 
 NS_ASSUME_NONNULL_END

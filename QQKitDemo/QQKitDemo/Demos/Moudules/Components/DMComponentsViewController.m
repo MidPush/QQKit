@@ -24,7 +24,7 @@
 
 - (void)initDataSource {
     self.dataSource = @[
-        @{@"QQFakeNavigationBar" : @"DMFakeNavigationBarViewController"},
+        @{@"QQFakerNavigationBar" : @"DMFakeNavigationBarViewController"},
         @{@"QQPageViewController" : @"DMPageViewController"},
         @{@"QQAssetPicker" : @"DMAssetPickerViewController"},
         @{@"QQBadge" : @"DMBadgeViewController"},

@@ -7,6 +7,7 @@
 
 #import "DMFakeNavigationBarViewController.h"
 #import "QQNavigationButton.h"
+#import "DMNormalViewController.h"
 
 @interface DMNavBarStyleData : NSObject
 @property (nonatomic, assign) UIBarStyle barStyle;
@@ -44,6 +45,7 @@
             @"黑色 navBar 样式",
             @"红色 navBar 样式",
             @"隐藏 navBar 样式",
+            @"不继承 QQViewController"
         ];
     }
     return _datas;
@@ -60,11 +62,11 @@
         self.navigationItem.rightBarButtonItem = [UIBarButtonItem qq_rightItemWithTitle:@"确定" titleColor:UIColor.dm_blackColor font:[UIFont systemFontOfSize:16] target:nil action:nil];
     } else if (self.barStyle == DMNavigationBarStyleDark) {
         self.navigationItem.title = @"黑色 navBar 样式";
-        self.navigationItem.leftBarButtonItem = [UIBarButtonItem qq_leftItemWithImage:[UIImage imageNamed:@"nav_back_white"] title:@"返回" titleColor:[UIColor dm_whiteTextColor] target:self action:@selector(onBackBarButtonItemClicked)];
+        self.navigationItem.leftBarButtonItem = [UIBarButtonItem qq_leftItemWithImage:[UIImage imageNamed:@"nav_back_black"] title:@"返回" titleColor:[UIColor dm_whiteTextColor] target:self action:@selector(onBackBarButtonItemClicked)];
         self.navigationItem.rightBarButtonItem = [UIBarButtonItem qq_rightItemWithTitle:@"确定" titleColor:UIColor.dm_whiteTextColor font:[UIFont systemFontOfSize:16] target:nil action:nil];
     } else if (self.barStyle == DMNavigationBarStyleRed) {
         self.navigationItem.title = @"红色 navBar 样式";
-        self.navigationItem.leftBarButtonItem = [UIBarButtonItem qq_leftItemWithImage:[UIImage imageNamed:@"nav_back_white"] title:@"绿色" titleColor:[UIColor greenColor] target:self action:@selector(onBackBarButtonItemClicked)];
+        self.navigationItem.leftBarButtonItem = [UIBarButtonItem qq_leftItemWithImage:[UIImage imageNamed:@"nav_back_black"] title:@"绿色" titleColor:[UIColor greenColor] target:self action:@selector(onBackBarButtonItemClicked)];
         self.navigationItem.rightBarButtonItem = [UIBarButtonItem qq_rightItemWithTitle:@"确定" titleColor:UIColor.greenColor font:[UIFont systemFontOfSize:16] target:nil action:nil];
     } else if (self.barStyle == DMNavigationBarStyleHideBar) {
         
@@ -103,6 +105,11 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.row == 4) {
+        DMNormalViewController *vc = [[DMNormalViewController alloc] init];
+        [self.navigationController pushViewController:vc animated:YES];
+        return;
+    }
     DMNavigationBarStyle barStyle = 0;
     if (indexPath.row == 0) {
         barStyle = DMNavigationBarStyleOrigin;

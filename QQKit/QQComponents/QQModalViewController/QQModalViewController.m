@@ -94,12 +94,27 @@
 
 - (void)showFromController:(UIViewController *)viewController {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [viewController presentViewController:self animated:NO completion:nil];
+        [viewController presentViewController:self animated:NO completion:^{
+            self->_visible = YES;
+        }];
     });
 }
 
 - (void)dismiss {
-    [self.modalView dismiss];
+    [self dismissWithCompletion:nil];
+}
+
+- (void)dismissWithCompletion:(void (^ _Nullable)(void))completion {
+    [self.modalView dismissWithCompletion:^(BOOL finished) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self dismissViewControllerAnimated:NO completion:^{
+                if (completion) {
+                    completion();
+                }
+                self->_visible = NO;
+            }];
+        });
+    }];
 }
 
 #pragma mark - QQModalViewDelegate

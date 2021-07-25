@@ -109,6 +109,12 @@
     return [[UIBarButtonItem alloc] initWithCustomView:barButton];
 }
 
++ (UIBarButtonItem *)qq_itemWithButton:(QQNavigationButton *)button target:(nullable id)target action:(nullable SEL)action {
+    if (!button) return nil;
+    [button addTarget:target action:action forControlEvents:UIControlEventTouchUpInside];
+    return [[self alloc] initWithCustomView:button];
+}
+
 @end
 
 @implementation UINavigationBar (QQNavigationButton)
@@ -164,11 +170,28 @@
                     
                     // change insets
                     if (navBar) {
-                        UIView *customView = navBar.topItem.leftBarButtonItem.customView;
-                        if ([customView isKindOfClass:[QQNavigationButton class]]) {
-                            QQNavigationButton *backButton = (QQNavigationButton *)customView;
+                        UIView *leftCustomView = navBar.topItem.leftBarButtonItem.customView;
+                        if ([leftCustomView isKindOfClass:[QQNavigationButton class]]) {
+                            QQNavigationButton *backButton = (QQNavigationButton *)leftCustomView;
                             if (backButton.type == QQNavigationButtonTypeBack) {
                                 frame.origin.x -= 16;
+                            }
+                        }
+                        
+                        if (selfObject == leftCustomView) {
+                            // call super
+                            void (*originSelectorIMP)(id, SEL, CGRect);
+                            originSelectorIMP = (void (*)(id, SEL, CGRect))originalIMPProvider();
+                            originSelectorIMP(selfObject, originCMD, frame);
+                            return;
+                        }
+                        
+                        // iOS11之前 rightBarButtonItem 距离右边太远
+                        UIView *rightCustomView = navBar.topItem.rightBarButtonItems.firstObject.customView;
+                        if ([rightCustomView isKindOfClass:[QQNavigationButton class]]) {
+                            QQNavigationButton *backButton = (QQNavigationButton *)rightCustomView;
+                            if (backButton.type == QQNavigationButtonTypeNormal) {
+                                frame.origin.x += 11;
                             }
                         }
                     }

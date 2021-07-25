@@ -89,6 +89,7 @@ NS_ASSUME_NONNULL_BEGIN
  * dismiss alert viewController
  */
 - (void)dismiss;
+- (void)dismissWithCompletion:(void (^ _Nullable)(void))completion;
 
 @end
 

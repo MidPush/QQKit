@@ -1,32 +1,33 @@
 //
-//  UIViewController+QQFakeNavigationBar.m
-//  NNKit
+//  UIViewController+QQFakerNavigationBar.m
+//  QQKitDemo
 //
-//  Created by Mac on 2021/3/1.
+//  Created by xuze on 2021/7/23.
 //
 
-#import "UIViewController+QQFakeNavigationBar.h"
+#import "UIViewController+QQFakerNavigationBar.h"
 #import "QQRuntime.h"
 #import "UINavigationBarAppearanceProtocol.h"
 #import "UINavigationBar+QQExtension.h"
 #import "UIImage+QQExtension.h"
 
-@interface QQFakeNavigationBar : UINavigationBar
+@interface QQFakerNavigationBar : UINavigationBar
 
 @property (nonatomic, weak) UINavigationBar *originalNavigationBar;
+@property (nonatomic, assign) BOOL updateFinal; //标志假导航栏是否更新完成
 
 @end
 
-@implementation QQFakeNavigationBar
+@implementation QQFakerNavigationBar
 
 + (void)load {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        
+
         // iOS 14 Beta 6 开始，UINavigationBar 无法直接初始化后使用，必须关联在某个 UINavigationController 里，否则内部的 subviews 不会被创建出来。
         if (@available(iOS 14.0, *)) {
-            OverrideImplementation([QQFakeNavigationBar class], NSSelectorFromString([NSString stringWithFormat:@"_%@_%@", @"accessibility", @"navigationController"]), ^id(__unsafe_unretained Class originClass, SEL originCMD, IMP (^originalIMPProvider)(void)) {
-                return ^UINavigationController *(QQFakeNavigationBar *selfObject) {
+            OverrideImplementation([QQFakerNavigationBar class], NSSelectorFromString([NSString stringWithFormat:@"_%@_%@", @"accessibility", @"navigationController"]), ^id(__unsafe_unretained Class originClass, SEL originCMD, IMP (^originalIMPProvider)(void)) {
+                return ^UINavigationController *(QQFakerNavigationBar *selfObject) {
                     if (selfObject.originalNavigationBar) {
                         #pragma clang diagnostic push
                         #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
@@ -36,7 +37,7 @@
                         return nil;
                         #pragma clang diagnostic pop
                     }
-                    
+
                     // call super
                     UINavigationController *(*originSelectorIMP)(id, SEL);
                     originSelectorIMP = (UINavigationController *(*)(id, SEL))originalIMPProvider();
@@ -50,7 +51,7 @@
 
 - (void)layoutSubviews {
     [super layoutSubviews];
-    if (@available(iOS 11, *)) {
+    if (@available(iOS 11.0, *)) {
         // iOS 11 以前，自己 init 的 navigationBar，它的 backgroundView 默认会一直保持与 navigationBar 的高度相等，但 iOS 11 Beta 1-5 里，自己 init 的 navigationBar.backgroundView.height 默认一直是 44，所以才加上这个兼容
         self.qq_backgroundView.frame = self.bounds;
     }
@@ -58,38 +59,44 @@
 
 - (void)setOriginalNavigationBar:(UINavigationBar *)originBar {
     _originalNavigationBar = originBar;
-    
+
     if (self.barStyle != originBar.barStyle) {
         self.barStyle = originBar.barStyle;
     }
-    
+
     if (self.translucent != originBar.translucent) {
         self.translucent = originBar.translucent;
     }
-    
+
     if (![self.barTintColor isEqual:originBar.barTintColor]) {
         self.barTintColor = originBar.barTintColor;
     }
-    
+
     if (![self.tintColor isEqual:originBar.tintColor]) {
         self.tintColor = originBar.tintColor;
     }
 
     self.titleTextAttributes = originBar.titleTextAttributes;
-    
+
     UIImage *backgroundImage = [originBar backgroundImageForBarMetrics:UIBarMetricsDefault];
     if (backgroundImage && backgroundImage.size.width <= 0 && backgroundImage.size.height <= 0) {
         // 假设这里的图片时通过`[UIImage new]`这种形式创建的，那么会navBar会奇怪地显示为系统默认navBar的样式。不知道为什么 navController 设置自己的 navBar 为 [UIImage new] 却没事，所以这里做个保护。
         backgroundImage = [UIImage qq_imageWithColor:[UIColor clearColor]];
     }
     [self setBackgroundImage:backgroundImage forBarMetrics:UIBarMetricsDefault];
-    
+
     self.shadowImage = originBar.shadowImage;
 }
 
 @end
 
-@implementation UIViewController (QQFakeNavigationBar)
+@interface UIViewController (QQFakerNavigationBar)
+
+@property (nonatomic, strong) QQFakerNavigationBar *qq_fakerNavigationBar;
+
+@end
+
+@implementation UIViewController (QQFakerNavigationBar)
 
 + (void)load {
     static dispatch_once_t onceToken;
@@ -99,13 +106,13 @@
         OverrideImplementation([UIViewController class], @selector(viewWillAppear:), ^id(__unsafe_unretained Class originClass, SEL originCMD, IMP (^originalIMPProvider)(void)) {
             return ^(UIViewController *selfObject, BOOL firstArgv) {
     
-                // 在某些情况下，UIViewController并不会被当成一个完整的界面来使用，例如在浮层里、或者直接拿 vc.view 当成一个 subview 使用, 比如：QQPageViewController，此时不需要添加 FakeNavigationBar
+                // 在某些情况下，UIViewController并不会被当成一个完整的界面来使用，例如在浮层里、或者直接拿 vc.view 当成一个 subview 使用, 比如：QQPageViewController，此时不需要添加 FakerNavigationBar
                 if (![selfObject.navigationController.viewControllers containsObject:selfObject]) {
                     return;
                 }
                 
                 [selfObject renderOriginNavigationBarStyleAnimated:firstArgv];
-                [selfObject addFakeNavigationBarIfNeeded];
+                [selfObject addFakerNavigationBarIfNeeded];
                 
                 selfObject.navigationController.navigationBar.qq_backgroundView.layer.mask = [CALayer layer];
 
@@ -120,7 +127,7 @@
         OverrideImplementation([UIViewController class], @selector(viewDidAppear:), ^id(__unsafe_unretained Class originClass, SEL originCMD, IMP (^originalIMPProvider)(void)) {
             return ^(UIViewController *selfObject, BOOL firstArgv) {
 
-                [selfObject removeFakeNavigationBar];
+                [selfObject removeFakerNavigationBar];
                 selfObject.navigationController.navigationBar.qq_backgroundView.layer.mask = nil;
 
                 // call super
@@ -133,7 +140,7 @@
         // 重写 viewWillDisappear:
         OverrideImplementation([UIViewController class], @selector(viewWillDisappear:), ^id(__unsafe_unretained Class originClass, SEL originCMD, IMP (^originalIMPProvider)(void)) {
             return ^(UIViewController *selfObject, BOOL firstArgv) {
-                [selfObject addFakeNavigationBarIfNeeded];
+                [selfObject addFakerNavigationBarIfNeeded];
                 // call super
                 void (*originSelectorIMP)(id, SEL, BOOL);
                 originSelectorIMP = (void (*)(id, SEL, BOOL))originalIMPProvider();
@@ -144,8 +151,11 @@
         // 重写 viewWillLayoutSubviews:
         OverrideImplementation([UIViewController class], @selector(viewWillLayoutSubviews), ^id(__unsafe_unretained Class originClass, SEL originCMD, IMP (^originalIMPProvider)(void)) {
             return ^(UIViewController *selfObject) {
-                
-                [selfObject layoutFakeNavigationBarFrame];
+                QQFakerNavigationBar *fakerNavigationBar = (QQFakerNavigationBar *)selfObject.qq_fakerNavigationBar;
+                if (fakerNavigationBar && !fakerNavigationBar.updateFinal && selfObject.navigationController.viewControllers.lastObject == selfObject) {
+                    [selfObject updateFakerNavigationBar];
+                }
+                [selfObject layoutFakerNavigationBarFrame];
                 // call super
                 void (*originSelectorIMP)(id, SEL);
                 originSelectorIMP = (void (*)(id, SEL))originalIMPProvider();
@@ -155,13 +165,13 @@
     });
 }
 
-static const void * const kQQFakeNavigationBarKey = &kQQFakeNavigationBarKey;
-- (UINavigationBar *)qq_fakeNavigationBar {
-    return objc_getAssociatedObject(self, kQQFakeNavigationBarKey);
+static const void * const kQQFakerNavigationBarKey = &kQQFakerNavigationBarKey;
+- (QQFakerNavigationBar *)qq_fakerNavigationBar {
+    return objc_getAssociatedObject(self, kQQFakerNavigationBarKey);
 }
 
-- (void)setQq_fakeNavigationBar:(UINavigationBar *)qq_fakeNavigationBar {
-    objc_setAssociatedObject(self, kQQFakeNavigationBarKey, qq_fakeNavigationBar, OBJC_ASSOCIATION_RETAIN);
+- (void)setQq_fakerNavigationBar:(QQFakerNavigationBar *)qq_fakerNavigationBar {
+    objc_setAssociatedObject(self, kQQFakerNavigationBarKey, qq_fakerNavigationBar, OBJC_ASSOCIATION_RETAIN);
 }
 
 #pragma mark -
@@ -173,10 +183,10 @@ static const void * const kQQFakeNavigationBarKey = &kQQFakeNavigationBarKey;
     }
 
     if (![self conformsToProtocol:@protocol(UINavigationBarAppearanceProtocol)]) {
-        QQFakeNavigationBar *fakeNavigationBar = (QQFakeNavigationBar *)self.qq_fakeNavigationBar;
-        if (fakeNavigationBar) {
+        QQFakerNavigationBar *fakerNavigationBar = (QQFakerNavigationBar *)self.qq_fakerNavigationBar;
+        if (fakerNavigationBar) {
             UINavigationBar *navigationBar = self.navigationController.navigationBar;
-            navigationBar.titleTextAttributes = [fakeNavigationBar.titleTextAttributes copy];
+            navigationBar.titleTextAttributes = [fakerNavigationBar.titleTextAttributes copy];
         }
         return;
     }
@@ -187,7 +197,7 @@ static const void * const kQQFakeNavigationBarKey = &kQQFakeNavigationBarKey;
 
     // barHidden
     if ([vc respondsToSelector:@selector(prefersNavigationBarHidden)]) {
-        BOOL hidden = [vc prefersNavigationBarHidden];
+        BOOL hidden = (BOOL)[vc prefersNavigationBarHidden];
         if (hidden) {
             if (!navigationController.isNavigationBarHidden) {
                 [navigationController setNavigationBarHidden:YES animated:animated];
@@ -230,10 +240,10 @@ static const void * const kQQFakeNavigationBarKey = &kQQFakeNavigationBarKey;
     }
     
     // title
-    QQFakeNavigationBar *fakeNavigationBar = (QQFakeNavigationBar *)self.qq_fakeNavigationBar;
-    if (!fakeNavigationBar.hidden) {
-        if (fakeNavigationBar) {
-            navigationBar.titleTextAttributes = [fakeNavigationBar.titleTextAttributes copy];
+    QQFakerNavigationBar *fakerNavigationBar = (QQFakerNavigationBar *)self.qq_fakerNavigationBar;
+    if (!fakerNavigationBar.hidden) {
+        if (fakerNavigationBar) {
+            navigationBar.titleTextAttributes = [fakerNavigationBar.titleTextAttributes copy];
         } else {
             if ([vc respondsToSelector:@selector(navBarTitleTextAttributes)] && !self.navigationController.isNavigationBarHidden) {
                 NSDictionary *titleTextAttributes = [vc navBarTitleTextAttributes];
@@ -265,54 +275,63 @@ static const void * const kQQFakeNavigationBarKey = &kQQFakeNavigationBarKey;
     }
 }
 
-- (void)addFakeNavigationBarIfNeeded {
+- (void)addFakerNavigationBarIfNeeded {
     if (!self.navigationController.navigationBar) {
         return;
     }
     
-    if (!self.qq_fakeNavigationBar) {
-        QQFakeNavigationBar *fakeNavigationBar = [[QQFakeNavigationBar alloc] init];
-        self.qq_fakeNavigationBar = fakeNavigationBar;
+    if (!self.qq_fakerNavigationBar) {
+        QQFakerNavigationBar *fakerNavigationBar = [[QQFakerNavigationBar alloc] init];
+        self.qq_fakerNavigationBar = fakerNavigationBar;
         UINavigationBar *originNavigationBar = self.navigationController.navigationBar;
-        fakeNavigationBar.originalNavigationBar = originNavigationBar;
+        fakerNavigationBar.originalNavigationBar = originNavigationBar;
     }
     
-    [self layoutFakeNavigationBarFrame];
+    [self layoutFakerNavigationBarFrame];
     if (!self.navigationController.navigationBarHidden && !self.navigationController.navigationBar.hidden) {
-        [self.view addSubview:self.qq_fakeNavigationBar];
+        [self.view addSubview:self.qq_fakerNavigationBar];
     }
 }
 
-- (void)removeFakeNavigationBar {
-    if (self.qq_fakeNavigationBar) {
-        // 解决某些情况下，导航栏显隐设置时机比较晚，fakeNavigationBar得到错误的hidden值。如：系统的照相机
-        BOOL isHedden = NO;
-        if (self.navigationController.navigationBarHidden || self.navigationController.navigationBar.hidden) {
-            isHedden = YES;
-        }
-        self.qq_fakeNavigationBar.hidden = isHedden;
+- (void)removeFakerNavigationBar {
+    QQFakerNavigationBar *fakerNavigationBar = (QQFakerNavigationBar *)self.qq_fakerNavigationBar;
+    if (fakerNavigationBar.updateFinal) {
+        [self replaceNavigationBarStyle:self.navigationController.navigationBar withNavigationBar:fakerNavigationBar];
+    } else {
+        [self updateFakerNavigationBar];
+        fakerNavigationBar.updateFinal = YES;
+    }
+    [self.qq_fakerNavigationBar removeFromSuperview];
+}
+
+- (void)updateFakerNavigationBar {
+    if (self.qq_fakerNavigationBar) {
+        BOOL isHidden = NO;
         if ([self respondsToSelector:@selector(prefersNavigationBarHidden)]) {
-            BOOL hidden = [self performSelector:@selector(prefersNavigationBarHidden)];
-            self.qq_fakeNavigationBar.hidden = hidden;
+            isHidden = (BOOL)[self performSelector:@selector(prefersNavigationBarHidden)];
+        } else {
+            if (self.navigationController.navigationBarHidden || self.navigationController.navigationBar.hidden) {
+                isHidden = YES;
+            }
         }
-        [self replaceNavigationBarStyle:self.navigationController.navigationBar withNavigationBar:self.qq_fakeNavigationBar];
-        [self.qq_fakeNavigationBar removeFromSuperview];
-        self.qq_fakeNavigationBar = nil;
+        QQFakerNavigationBar *fakerNavigationBar = (QQFakerNavigationBar *)self.qq_fakerNavigationBar;
+        fakerNavigationBar.hidden = isHidden;
+        fakerNavigationBar.originalNavigationBar = self.navigationController.navigationBar;
     }
 }
 
-- (void)layoutFakeNavigationBarFrame {
+- (void)layoutFakerNavigationBarFrame {
     if (!self.navigationController.navigationBar) {
         return;
     }
     UIView *backgroundView = self.navigationController.navigationBar.qq_backgroundView;
     CGRect rect = [backgroundView.superview convertRect:backgroundView.frame toView:self.view];
-    if (self.qq_fakeNavigationBar && backgroundView) {
+    if (self.qq_fakerNavigationBar && backgroundView) {
         if (rect.origin.x != 0) {
             // 在 push 动画过程中 rect.origin.x可能不为0，backgroundView被隐藏。导致可以看到一部分导航栏后面的内容
             rect.origin.x = 0;
         }
-        self.qq_fakeNavigationBar.frame = rect;
+        self.qq_fakerNavigationBar.frame = rect;
     }
 }
 

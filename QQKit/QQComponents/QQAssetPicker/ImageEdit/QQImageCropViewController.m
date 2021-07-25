@@ -1010,9 +1010,4 @@ static const CGFloat kTOCropViewControllerToolbarHeight = 50.0f;
     return self.cropView.minimumAspectRatio;
 }
 
-/// 因为导航栏的显示和隐藏是在 viewWillAppear 中设置的，在添加 FakeNavigationBar 时，拿到的还是之前的属性
-- (BOOL)prefersNavigationBarHidden {
-    return YES;
-}
-
 @end

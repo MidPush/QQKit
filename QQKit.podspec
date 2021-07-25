@@ -74,8 +74,8 @@ Pod::Spec.new do |s|
       sss.source_files = 'QQKit/QQComponents/QQCircularProgress/*.{h,m}'
     end
 
-    ss.subspec 'QQFakeNavigationBar' do |sss|
-      sss.source_files = 'QQKit/QQComponents/QQFakeNavigationBar/*.{h,m}'
+    ss.subspec 'QQFakerNavigationBar' do |sss|
+      sss.source_files = 'QQKit/QQComponents/QQFakerNavigationBar/*.{h,m}'
       sss.dependency 'QQKit/QQCore'
     end
 
@@ -110,7 +110,7 @@ Pod::Spec.new do |s|
   s.subspec 'QQControllers' do |ss|
     ss.source_files = 'QQKit/QQControllers/*.{h,m}'
     ss.dependency 'QQKit/QQCore'
-    ss.dependency 'QQKit/QQComponents/QQFakeNavigationBar'
+    ss.dependency 'QQKit/QQComponents/QQFakerNavigationBar'
     ss.dependency 'QQKit/QQViews'
   end
 

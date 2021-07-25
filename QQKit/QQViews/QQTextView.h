@@ -7,6 +7,10 @@
 
 #import <UIKit/UIKit.h>
 
+/**
+ 如果 TextView 是第一个添加到控制器的 view 上，iOS11之前需要设置控制器的 automaticallyAdjustsScrollViewInsets 为 NO，
+ 否则会自动偏移导航栏高度的距离，因为 UITextView 是继承自 UIScrollView
+ */
 @interface QQTextView : UITextView
 
 /// placeholder

@@ -273,7 +273,7 @@
 - (void)showLayoutBlock:(BOOL)isVC {
     UIView *contentView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 300, 150)];
     contentView.backgroundColor = UIColor.dm_whiteColor;
-    contentView.layer.cornerRadius = 10;
+    contentView.layer.qq_cornerRadius = 10;
     contentView.layer.qq_maskedCorners = QQLayerMinXMinYCorner|QQLayerMaxXMinYCorner;
     
     UILabel *label = [[UILabel alloc] init];

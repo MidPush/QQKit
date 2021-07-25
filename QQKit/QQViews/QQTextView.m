@@ -39,6 +39,9 @@ const UIEdgeInsets kSystemTextViewFixTextInsets = {0, 5, 0, 5};
 
 - (void)didInitialize {
     self.maximumTextLength = NSUIntegerMax;
+    if (@available(iOS 11.0, *)) {
+        self.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+    }
     
     self.placeholderLabel = [[UILabel alloc] init];
     self.placeholderLabel.hidden = YES;

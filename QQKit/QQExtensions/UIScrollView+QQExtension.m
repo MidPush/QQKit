@@ -10,7 +10,7 @@
 @implementation UIScrollView (QQExtension)
 
 - (UIEdgeInsets)qq_contentInset {
-    if (@available(iOS 11, *)) {
+    if (@available(iOS 11.0, *)) {
         return self.adjustedContentInset;
     } else {
         return self.contentInset;

@@ -38,7 +38,7 @@
 - (void)initDefaultConfiguration {
     
 #pragma mark - 控制器
-    self.commonViewContorllerBackgroundColor = [UIColor whiteColor];
+    self.commonViewControllerBackgroundColor = [UIColor whiteColor];
     self.supportedOrientationMask = UIInterfaceOrientationMaskAll;
     
 #pragma mark - 导航栏（UINavigationBar）
