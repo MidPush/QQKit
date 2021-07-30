@@ -153,8 +153,10 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    QQTextField *firstTextField = self.alertTextFields.firstObject;
-    [firstTextField becomeFirstResponder];
+    if (self.alertTextFields.count > 0) {
+        QQTextField *firstTextField = self.alertTextFields.firstObject;
+        [firstTextField becomeFirstResponder];
+    }
 }
 
 - (void)viewDidLoad {
@@ -676,6 +678,7 @@
     if (!_headerScrollView) {
         _headerScrollView = [[UIScrollView alloc] init];
         _headerScrollView.scrollsToTop = NO;
+        _headerScrollView.showsHorizontalScrollIndicator = NO;
         if (@available(iOS 11, *)) {
             _headerScrollView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
         }
@@ -687,6 +690,7 @@
     if (!_buttonScrollView) {
         _buttonScrollView = [[UIScrollView alloc] init];
         _buttonScrollView.scrollsToTop = NO;
+        _buttonScrollView.showsHorizontalScrollIndicator = NO;
         if (@available(iOS 11, *)) {
             _buttonScrollView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
         }

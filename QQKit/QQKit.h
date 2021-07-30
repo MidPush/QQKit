@@ -124,10 +124,6 @@ static NSString * const QQKIT_VERSION = @"1.0.2";
 #import "QQCollectionView.h"
 #endif
 
-#if __has_include("QQCollectionViewCell.h")
-#import "QQCollectionViewCell.h"
-#endif
-
 #if __has_include("QQLabel.h")
 #import "QQLabel.h"
 #endif

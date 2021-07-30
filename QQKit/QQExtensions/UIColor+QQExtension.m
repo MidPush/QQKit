@@ -94,6 +94,29 @@
     return [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:a];
 }
 
++ (UIColor *)qq_colorFromColor:(UIColor *)fromColor toColor:(UIColor *)toColor progress:(CGFloat)progress {
+    if (!fromColor && !toColor) {
+        return nil;
+    }
+    progress = MIN(progress, 1.0f);
+    CGFloat fromRed = fromColor.qq_red;
+    CGFloat fromGreen = fromColor.qq_green;
+    CGFloat fromBlue = fromColor.qq_blue;
+    CGFloat fromAlpha = fromColor.qq_alpha;
+    
+    CGFloat toRed = toColor.qq_red;
+    CGFloat toGreen = toColor.qq_green;
+    CGFloat toBlue = toColor.qq_blue;
+    CGFloat toAlpha = toColor.qq_alpha;
+    
+    CGFloat finalRed = fromRed + (toRed - fromRed) * progress;
+    CGFloat finalGreen = fromGreen + (toGreen - fromGreen) * progress;
+    CGFloat finalBlue = fromBlue + (toBlue - fromBlue) * progress;
+    CGFloat finalAlpha = fromAlpha + (toAlpha - fromAlpha) * progress;
+    
+    return [UIColor colorWithRed:finalRed green:finalGreen blue:finalBlue alpha:finalAlpha];
+}
+
 - (NSString *)qq_hexString {
     return [self qq_hexStringWithAlpha:NO];
 }

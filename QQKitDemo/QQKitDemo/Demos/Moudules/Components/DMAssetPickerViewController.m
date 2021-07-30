@@ -53,7 +53,7 @@
 
 @end
 
-@interface DMPhotoCell : QQCollectionViewCell
+@interface DMPhotoCell : UICollectionViewCell
 
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) QQButton *deleteButton;
@@ -259,7 +259,7 @@ static NSString *kCellReuseID = @"PhotoCell";
 
 - (CGSize)itemSize {
     CGFloat itemWidth = (self.view.qq_width - 10 * 4) / 3;
-    return CGSizeMake(itemWidth, itemWidth);;
+    return CGSizeMake(itemWidth, itemWidth);
 }
 
 #pragma mark - DMPhotoCellDelegate

@@ -65,12 +65,14 @@
     if (barButton.qq_width < (44.0 + configuration.navBarBackMarginOffset)) {
         // 增加响应区域
         barButton.qq_width = 44.0 + configuration.navBarBackMarginOffset;
+    } else {
+        barButton.qq_width += configuration.navBarBackMarginOffset;
     }
     if (barButton.qq_height < QQUIHelper.navigationBarHeight) {
         barButton.qq_height = QQUIHelper.navigationBarHeight;
     }
     if (title) {
-        barButton.qq_width += configuration.navBarBackMarginOffset;
+        barButton.qq_width += configuration.navBarBackImageTitleSpacing;
     }
     return [[UIBarButtonItem alloc] initWithCustomView:barButton];
 }

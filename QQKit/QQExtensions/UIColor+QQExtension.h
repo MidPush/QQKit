@@ -27,6 +27,14 @@ NS_ASSUME_NONNULL_BEGIN
 + (nullable UIColor *)qq_colorWithRGBA:(NSArray<NSNumber *> *)rgba;
 
 /**
+ *  将颜色A变化到颜色B，可通过progress控制变化的程度
+ *  @param fromColor 起始颜色
+ *  @param toColor 目标颜色
+ *  @param progress 变化程度，取值范围0.0f~1.0f
+ */
++ (nullable UIColor *)qq_colorFromColor:(UIColor *)fromColor toColor:(UIColor *)toColor progress:(CGFloat)progress;
+
+/**
  将当前色值 RGB 转换为hex字符串，不包含 alpha
  例如：0066bb
  */

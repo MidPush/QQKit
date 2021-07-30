@@ -8,7 +8,7 @@
 #import "DMGridViewController.h"
 
 static NSString *kGridCellReuseID = @"DMGridCell";
-@interface DMGridCell : QQCollectionViewCell
+@interface DMGridCell : UICollectionViewCell
 
 @property (nonatomic, strong) UILabel *titleLabel;
 

@@ -27,7 +27,7 @@ const CGFloat kQQSearchBarMargin = 8;
         _searchBarButton = [[UIButton alloc] init];
         _searchBarButton.backgroundColor = [UIColor clearColor];
     }
-    return _searchBarButton;;
+    return _searchBarButton;
 }
 
 - (instancetype)initWithFrame:(CGRect)frame {

@@ -33,7 +33,7 @@
                 UIView *view = selfObject.qq_targetBorderView;
                 CGFloat borderWidth = selfObject.lineWidth;
                 
-                UIBezierPath *path = [UIBezierPath bezierPath];;
+                UIBezierPath *path = [UIBezierPath bezierPath];
                 
                 CGFloat (^adjustsLocation)(CGFloat, CGFloat, CGFloat) = ^CGFloat(CGFloat inside, CGFloat center, CGFloat outside) {
                     return view.qq_borderLocation == QQViewBorderLocationInside ? inside : (view.qq_borderLocation == QQViewBorderLocationCenter ? center : outside);

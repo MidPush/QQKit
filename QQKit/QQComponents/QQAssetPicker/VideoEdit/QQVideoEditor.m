@@ -228,7 +228,7 @@ static char * const QQVideoEditorSessionQueueKey = "QQVideoEditorSessionQueueKey
     CALayer *exportWatermarkLayer = nil;
     if (image) {
         exportWatermarkLayer = [CALayer layer];
-        exportWatermarkLayer.contents = (__bridge id)(image.CGImage);;
+        exportWatermarkLayer.contents = (__bridge id)(image.CGImage);
         exportWatermarkLayer.frame = CGRectMake(0, 0, self.mutableVideoComposition.renderSize.width, self.mutableVideoComposition.renderSize.height);
         [parentLayer addSublayer:exportWatermarkLayer];
     }

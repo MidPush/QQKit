@@ -24,7 +24,7 @@ static const CGFloat kTOCropViewControllerToolbarHeight = 50.0f;
 @property (nonatomic, assign, readwrite) QQImageCropStyle croppingStyle;
 
 //
-@property (nonatomic, strong) QQAssetPreviewCell *fromView;;
+@property (nonatomic, strong) QQAssetPreviewCell *fromView;
 
 /* Views */
 @property (nonatomic, strong) QQCropToolBar *toolBar;
