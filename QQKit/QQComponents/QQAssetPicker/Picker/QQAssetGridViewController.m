@@ -19,7 +19,6 @@
 #import "QQImageCropViewController.h"
 #import "QQVideoEditViewController.h"
 #import "QQToast.h"
-#import "QQUIHelper.h"
 
 static NSString * const kQQAssetGridCellReuseID = @"QQAssetGridCell";
 @interface QQAssetGridViewController ()<UICollectionViewDelegate, UICollectionViewDataSource, QQAssetGridCellDelegate, QQAlbumsListViewDelegate, QQAssetPreviewViewControllerDelegate, QQImageCropViewControllerDelegate>
@@ -146,8 +145,10 @@ static NSString * const kQQAssetGridCellReuseID = @"QQAssetGridCell";
     [super viewDidLayoutSubviews];
     _collectionView.frame = self.view.bounds;
     
+    CGFloat navigationBarMaxY = self.navigationController.navigationBar.qq_bottom;
+    
     [_loadingView sizeToFit];
-    _loadingView.frame = CGRectMake((self.view.qq_width - _loadingView.qq_width) / 2, QQUIHelper.navigationBarMaxY + 10, _loadingView.qq_width, _loadingView.qq_height);
+    _loadingView.frame = CGRectMake((self.view.qq_width - _loadingView.qq_width) / 2, navigationBarMaxY + 10, _loadingView.qq_width, _loadingView.qq_height);
     
     CGFloat toolBarHeight = 0;
     if ([QQAssetsPicker sharedPicker].configuration.allowsMultipleSelection) {
@@ -155,7 +156,6 @@ static NSString * const kQQAssetGridCellReuseID = @"QQAssetGridCell";
         self.toolBar.frame = CGRectMake(0, self.view.qq_height - toolBarHeight, self.view.qq_width, toolBarHeight);
     }
     
-    CGFloat navigationBarMaxY = self.navigationController.navigationBar.qq_bottom;
     UIEdgeInsets contentInset = UIEdgeInsetsMake(navigationBarMaxY, 0, MAX(toolBarHeight, self.view.qq_safeAreaInsets.bottom), 0);
     if (!UIEdgeInsetsEqualToEdgeInsets(self.collectionView.contentInset, contentInset)) {
         self.collectionView.contentInset = contentInset;
