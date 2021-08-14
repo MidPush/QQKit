@@ -68,6 +68,7 @@
 - (instancetype)init {
     if (self = [super init]) {
         _scrollAnimated = YES;
+        _scrollEnabled = YES;
         _previousSelectedIndex = -1;
     }
     return self;
@@ -88,6 +89,7 @@
     _scrollView.scrollsToTop = NO;
     _scrollView.showsVerticalScrollIndicator = NO;
     _scrollView.showsHorizontalScrollIndicator = NO;
+    _scrollView.scrollEnabled = _scrollEnabled;
     [self.view addSubview:_scrollView];
     if (@available(iOS 11.0, *)) {
         self.scrollView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
@@ -205,6 +207,13 @@
     [self.cache removeAllObjects];
     self.selectedIndex = 0;
     [self reloadData];
+}
+
+- (void)setScrollEnabled:(BOOL)scrollEnabled {
+    _scrollEnabled = scrollEnabled;
+    if (self.isViewLoaded) {
+        _scrollView.scrollEnabled = scrollEnabled;
+    }
 }
 
 - (__kindof UIViewController *)selectedViewController {

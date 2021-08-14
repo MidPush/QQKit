@@ -34,6 +34,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, assign) BOOL scrollAnimated;
 
+@property (nonatomic, assign) BOOL scrollEnabled;
+
 @property (nonatomic, assign) BOOL loadAll;
 
 @property (nullable, nonatomic, weak) id<QQPageViewControllerDelegate> delegate;
