@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name          = 'QQKit'
-  s.version       = '1.0.2'
+  s.version       = '1.0.3'
   s.summary       = 'QQKit'
   s.homepage      = 'https://github.com/MidPush/QQKit'
   s.license       = 'MIT'

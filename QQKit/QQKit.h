@@ -10,7 +10,7 @@
 #ifndef QQKit_h
 #define QQKit_h
 
-static NSString * const QQKIT_VERSION = @"1.0.2";
+static NSString * const QQKIT_VERSION = @"1.0.3";
 
 /// Core
 #if __has_include("QQRuntime.h")

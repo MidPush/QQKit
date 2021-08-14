@@ -15,14 +15,6 @@
     if (self = [super init]) {
         _phAsset = phAsset;
         _identifier = phAsset.localIdentifier;
-        NSArray *resourceArray = [PHAssetResource assetResourcesForAsset:phAsset];
-        if (resourceArray.count > 0) {
-            _iCloud = [[resourceArray.firstObject qq_valueForKey:@"locallyAvailable"] boolValue];
-        }
-        _fileName = ((PHAssetResource *)resourceArray.firstObject).originalFilename;
-        if (!_fileName) {
-            _fileName = [self randomString:8];
-        }
         QQPickerConfiguration *configuration = [QQAssetsPicker sharedPicker].configuration;
         if (phAsset.mediaType == PHAssetMediaTypeImage) {
             if ([[[phAsset qq_valueForKey:@"filename"] lowercaseString] hasSuffix:@"gif"] && configuration.allowsSelectionGIF) {
@@ -61,6 +53,27 @@
     _downloadStatus = QQAssetDownloadStatusDownloading;
 }
 
+- (NSString *)fileName {
+    NSArray *resourceArray = [PHAssetResource assetResourcesForAsset:_phAsset];
+    NSString *fileName = nil;
+    if (resourceArray.count > 0) {
+        fileName = ((PHAssetResource *)resourceArray.firstObject).originalFilename;
+    }
+    if (!fileName) {
+        fileName = [self randomString:8];
+    }
+    return fileName;
+}
+
+- (BOOL)iCloud {
+    NSArray *resourceArray = [PHAssetResource assetResourcesForAsset:_phAsset];
+    if (resourceArray.count > 0) {
+        BOOL iCloud = [[resourceArray.firstObject qq_valueForKey:@"locallyAvailable"] boolValue];
+        return iCloud;
+    }
+    return NO;
+}
+
 - (NSString *)randomString:(NSUInteger)length {
     static NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     NSMutableString *randomString = [NSMutableString stringWithCapacity:length];
@@ -68,6 +81,13 @@
         [randomString appendFormat:@"%C", [letters characterAtIndex: arc4random_uniform((u_int32_t)[letters length])]];
     }
     return randomString;
+}
+
+- (BOOL)isEqual:(id)object {
+    if (!object) return NO;
+    if (self == object) return YES;
+    if (![object isKindOfClass:[self class]]) return NO;
+    return [self.identifier isEqualToString:((QQAsset *)object).identifier];
 }
 
 @end

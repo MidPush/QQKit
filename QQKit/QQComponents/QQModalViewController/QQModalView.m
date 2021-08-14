@@ -123,6 +123,9 @@
 }
 
 - (void)dimmingViewTapGestureHandler:(UITapGestureRecognizer *)tapGesture {
+    if ([self.delegate respondsToSelector:@selector(didTapDimmingView:)]) {
+        [self.delegate didTapDimmingView:self];
+    }
     if (!self.dismissWhenTapDimmingView) {
         [self endEditing:YES];
         return;

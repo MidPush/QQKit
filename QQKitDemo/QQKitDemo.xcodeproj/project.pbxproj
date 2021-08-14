@@ -22,11 +22,9 @@
 		042ED42B268AD91E00300BA7 /* QQImageCropViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 042ED38A268AD91E00300BA7 /* QQImageCropViewController.m */; };
 		042ED42C268AD91E00300BA7 /* QQAssetsPickerHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 042ED38C268AD91E00300BA7 /* QQAssetsPickerHelper.m */; };
 		042ED42D268AD91E00300BA7 /* QQAssetsPicker.m in Sources */ = {isa = PBXBuildFile; fileRef = 042ED38D268AD91E00300BA7 /* QQAssetsPicker.m */; };
-		042ED42E268AD91E00300BA7 /* QQAssetsGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 042ED391268AD91E00300BA7 /* QQAssetsGroup.m */; };
 		042ED42F268AD91E00300BA7 /* QQAsset.m in Sources */ = {isa = PBXBuildFile; fileRef = 042ED393268AD91E00300BA7 /* QQAsset.m */; };
 		042ED430268AD91E00300BA7 /* QQAssetPreviewViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 042ED395268AD91E00300BA7 /* QQAssetPreviewViewController.m */; };
 		042ED431268AD91E00300BA7 /* QQAssetPickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 042ED396268AD91E00300BA7 /* QQAssetPickerController.m */; };
-		042ED432268AD91E00300BA7 /* QQAssetGridViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 042ED397268AD91E00300BA7 /* QQAssetGridViewController.m */; };
 		042ED433268AD91E00300BA7 /* QQVideoEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 042ED39E268AD91E00300BA7 /* QQVideoEditViewController.m */; };
 		042ED434268AD91E00300BA7 /* QQVideoRangeSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = 042ED3A1268AD91E00300BA7 /* QQVideoRangeSlider.m */; };
 		042ED435268AD91E00300BA7 /* QQVideoImageFrameCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 042ED3A3268AD91E00300BA7 /* QQVideoImageFrameCell.m */; };
@@ -108,6 +106,8 @@
 		042ED4BA268AD95200300BA7 /* DMFakeNavigationBarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 042ED4A3268AD95200300BA7 /* DMFakeNavigationBarViewController.m */; };
 		042ED4BB268AD95200300BA7 /* DMComponentsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 042ED4A4268AD95200300BA7 /* DMComponentsViewController.m */; };
 		042ED4BC268AD95200300BA7 /* DMCircularProgressViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 042ED4A5268AD95200300BA7 /* DMCircularProgressViewController.m */; };
+		0442B5C526C652EB00D83C2F /* QQAssetsGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 0442B5C426C652EB00D83C2F /* QQAssetsGroup.m */; };
+		0442B5C726C6544900D83C2F /* QQAssetGridViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0442B5C626C6544900D83C2F /* QQAssetGridViewController.m */; };
 		04706D282692D44400474CC4 /* DMViewBorderViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04706D272692D44400474CC4 /* DMViewBorderViewController.m */; };
 		048F3E4826968BAF00DE417B /* QQWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 048F3E4726968BAF00DE417B /* QQWebViewController.m */; };
 		04D8C2B62693EC3700BD5F78 /* CALayer+QQExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 04D8C2B52693EC3600BD5F78 /* CALayer+QQExtension.m */; };
@@ -169,15 +169,12 @@
 		042ED38A268AD91E00300BA7 /* QQImageCropViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QQImageCropViewController.m; sourceTree = "<group>"; };
 		042ED38C268AD91E00300BA7 /* QQAssetsPickerHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QQAssetsPickerHelper.m; sourceTree = "<group>"; };
 		042ED38D268AD91E00300BA7 /* QQAssetsPicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QQAssetsPicker.m; sourceTree = "<group>"; };
-		042ED38E268AD91E00300BA7 /* QQAssetsGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QQAssetsGroup.h; sourceTree = "<group>"; };
 		042ED38F268AD91E00300BA7 /* QQAsset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QQAsset.h; sourceTree = "<group>"; };
 		042ED390268AD91E00300BA7 /* QQAssetsPickerHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QQAssetsPickerHelper.h; sourceTree = "<group>"; };
-		042ED391268AD91E00300BA7 /* QQAssetsGroup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QQAssetsGroup.m; sourceTree = "<group>"; };
 		042ED392268AD91E00300BA7 /* QQAssetsPicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QQAssetsPicker.h; sourceTree = "<group>"; };
 		042ED393268AD91E00300BA7 /* QQAsset.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QQAsset.m; sourceTree = "<group>"; };
 		042ED395268AD91E00300BA7 /* QQAssetPreviewViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QQAssetPreviewViewController.m; sourceTree = "<group>"; };
 		042ED396268AD91E00300BA7 /* QQAssetPickerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QQAssetPickerController.m; sourceTree = "<group>"; };
-		042ED397268AD91E00300BA7 /* QQAssetGridViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QQAssetGridViewController.m; sourceTree = "<group>"; };
 		042ED398268AD91E00300BA7 /* QQAssetPickerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QQAssetPickerController.h; sourceTree = "<group>"; };
 		042ED399268AD91E00300BA7 /* QQAssetPreviewViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QQAssetPreviewViewController.h; sourceTree = "<group>"; };
 		042ED39A268AD91E00300BA7 /* QQAssetGridViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QQAssetGridViewController.h; sourceTree = "<group>"; };
@@ -345,6 +342,9 @@
 		042ED4A4268AD95200300BA7 /* DMComponentsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DMComponentsViewController.m; sourceTree = "<group>"; };
 		042ED4A5268AD95200300BA7 /* DMCircularProgressViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DMCircularProgressViewController.m; sourceTree = "<group>"; };
 		042ED4BD268AD98800300BA7 /* QQKitPrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QQKitPrefixHeader.pch; sourceTree = "<group>"; };
+		0442B5C326C652EB00D83C2F /* QQAssetsGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QQAssetsGroup.h; sourceTree = "<group>"; };
+		0442B5C426C652EB00D83C2F /* QQAssetsGroup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QQAssetsGroup.m; sourceTree = "<group>"; };
+		0442B5C626C6544900D83C2F /* QQAssetGridViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QQAssetGridViewController.m; sourceTree = "<group>"; };
 		04706D262692D44400474CC4 /* DMViewBorderViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DMViewBorderViewController.h; sourceTree = "<group>"; };
 		04706D272692D44400474CC4 /* DMViewBorderViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DMViewBorderViewController.m; sourceTree = "<group>"; };
 		048F3E4626968BAF00DE417B /* QQWebViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QQWebViewController.h; sourceTree = "<group>"; };
@@ -531,8 +531,8 @@
 			children = (
 				042ED38F268AD91E00300BA7 /* QQAsset.h */,
 				042ED393268AD91E00300BA7 /* QQAsset.m */,
-				042ED38E268AD91E00300BA7 /* QQAssetsGroup.h */,
-				042ED391268AD91E00300BA7 /* QQAssetsGroup.m */,
+				0442B5C326C652EB00D83C2F /* QQAssetsGroup.h */,
+				0442B5C426C652EB00D83C2F /* QQAssetsGroup.m */,
 				042ED392268AD91E00300BA7 /* QQAssetsPicker.h */,
 				042ED38D268AD91E00300BA7 /* QQAssetsPicker.m */,
 				042ED390268AD91E00300BA7 /* QQAssetsPickerHelper.h */,
@@ -545,7 +545,7 @@
 			isa = PBXGroup;
 			children = (
 				042ED39A268AD91E00300BA7 /* QQAssetGridViewController.h */,
-				042ED397268AD91E00300BA7 /* QQAssetGridViewController.m */,
+				0442B5C626C6544900D83C2F /* QQAssetGridViewController.m */,
 				042ED398268AD91E00300BA7 /* QQAssetPickerController.h */,
 				042ED396268AD91E00300BA7 /* QQAssetPickerController.m */,
 				042ED399268AD91E00300BA7 /* QQAssetPreviewViewController.h */,
@@ -1057,11 +1057,11 @@
 				04D8C2B62693EC3700BD5F78 /* CALayer+QQExtension.m in Sources */,
 				042ED4AF268AD95200300BA7 /* DMSearchBarViewController.m in Sources */,
 				042ED433268AD91E00300BA7 /* QQVideoEditViewController.m in Sources */,
-				042ED42E268AD91E00300BA7 /* QQAssetsGroup.m in Sources */,
 				042ED447268AD91E00300BA7 /* QQProgressHUD.m in Sources */,
 				042ED442268AD91E00300BA7 /* QQEditedInfoBar.m in Sources */,
 				042ED4B7268AD95200300BA7 /* DMAssetPickerViewController.m in Sources */,
 				042ED463268AD91F00300BA7 /* QQLabel.m in Sources */,
+				0442B5C526C652EB00D83C2F /* QQAssetsGroup.m in Sources */,
 				042ED46A268AD91F00300BA7 /* QQCollectionView.m in Sources */,
 				04DEC3D7269BECD700D39F3E /* QQAlertController.m in Sources */,
 				042ED467268AD91F00300BA7 /* QQSearchBar.m in Sources */,
@@ -1130,6 +1130,7 @@
 				042ED46B268AD91F00300BA7 /* QQTextView.m in Sources */,
 				187C7F42268CD1B600DF007A /* DMUIConfiguration.m in Sources */,
 				042ED4BB268AD95200300BA7 /* DMComponentsViewController.m in Sources */,
+				0442B5C726C6544900D83C2F /* QQAssetGridViewController.m in Sources */,
 				042ED45A268AD91F00300BA7 /* UIScrollView+QQExtension.m in Sources */,
 				042ED4A8268AD95200300BA7 /* UIColor+QQKitDemo.m in Sources */,
 				185B932926996D5700E43DEE /* DMModalViewController.m in Sources */,
@@ -1156,7 +1157,6 @@
 				042ED441268AD91E00300BA7 /* QQPermissionPromptView.m in Sources */,
 				042ED459268AD91F00300BA7 /* NSString+QQExtension.m in Sources */,
 				042ED435268AD91E00300BA7 /* QQVideoImageFrameCell.m in Sources */,
-				042ED432268AD91E00300BA7 /* QQAssetGridViewController.m in Sources */,
 				042ED4B1268AD95200300BA7 /* DMTextFieldViewController.m in Sources */,
 				042ED462268AD91F00300BA7 /* QQTableViewCell.m in Sources */,
 				042ED43B268AD91E00300BA7 /* QQAssetPreviewScrollView.m in Sources */,

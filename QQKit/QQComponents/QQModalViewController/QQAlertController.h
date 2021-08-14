@@ -62,6 +62,12 @@ typedef NS_ENUM(NSInteger, QQAlertControllerStyle) {
 
 @property (nonatomic, assign, readonly) QQAlertControllerStyle preferredStyle;
 
+/**
+ * 控制点击背景时是否隐藏浮层。
+ * 默认为NO
+ */
+@property (nonatomic, assign) BOOL dismissWhenTapDimmingView;
+
 @property (null_resettable, nonatomic, strong) UIView *mainVisualEffectView;
 @property (null_resettable, nonatomic, strong) UIView *cancelButtonVisualEffectView;
 

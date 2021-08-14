@@ -151,7 +151,7 @@
         NSInteger preferredStyle = QQAlertControllerStyleAlert;
         if (indexPath.row == 0) {
             QQAlertController *alert = [QQAlertController alertControllerWithTitle:title message:message preferredStyle:preferredStyle];
-            
+            alert.dismissWhenTapDimmingView = YES;
             QQAlertAction *action2 = [QQAlertAction actionWithTitle:@"取消" style:QQAlertActionStyleCancel handler:^(QQAlertAction * _Nonnull action) {
                 
             }];

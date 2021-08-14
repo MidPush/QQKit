@@ -198,29 +198,6 @@ NSString *const QQPickerUsingOriginalImageKey = @"QQPickerUsingOriginalImageKey"
     
     if (allAssetsGroup) {
         [tempAlbumsArray removeObject:allAssetsGroup];
-    }
-    
-    NSMutableArray *allAssetArray = [NSMutableArray arrayWithCapacity:allAssetsGroup.result.count];
-    for (PHAsset *phAsset in allAssetsGroup.result) {
-        QQAsset *asset = [[QQAsset alloc] initWithPHAsset:phAsset];
-        [allAssetArray addObject:asset];
-    }
-    allAssetsGroup.assets = allAssetArray;
-    
-    for (QQAssetsGroup *group in tempAlbumsArray) {
-        NSMutableArray *assetArray = [NSMutableArray arrayWithCapacity:group.result.count];
-        for (PHAsset *phAsset in group.result) {
-            if ([allAssetsGroup.result containsObject:phAsset]) {
-                NSInteger index = [allAssetsGroup.result indexOfObject:phAsset];
-                [assetArray addObject:allAssetArray[index]];
-            } else {
-                QQAsset *asset = [[QQAsset alloc] initWithPHAsset:phAsset];
-                [assetArray addObject:asset];
-            }
-        }
-        group.assets = assetArray;
-    }
-    if (allAssetsGroup) {
         [tempAlbumsArray insertObject:allAssetsGroup atIndex:0];
     }
     
@@ -235,8 +212,8 @@ NSString *const QQPickerUsingOriginalImageKey = @"QQPickerUsingOriginalImageKey"
                                         completion:(void (^)(QQAssetsGroup *group, UIImage *result))completion {
     PHImageRequestOptions *options = [[PHImageRequestOptions alloc] init];
     options.resizeMode = PHImageRequestOptionsResizeModeFast;
-    QQAsset *asset = group.assets.lastObject;
-    PHImageRequestID requestID = [[PHImageManager defaultManager] requestImageForAsset:asset.phAsset targetSize:CGSizeMake(size.width * [UIScreen mainScreen].scale, size.height * [UIScreen mainScreen].scale) contentMode:PHImageContentModeAspectFill options:nil resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
+    PHAsset *lastAsset = group.result.lastObject;
+    PHImageRequestID requestID = [[PHImageManager defaultManager] requestImageForAsset:lastAsset targetSize:CGSizeMake(size.width * [UIScreen mainScreen].scale, size.height * [UIScreen mainScreen].scale) contentMode:PHImageContentModeAspectFill options:nil resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
         dispatch_async(dispatch_get_main_queue(), ^{
             group.thumbnailImage = result;
             if (completion) {

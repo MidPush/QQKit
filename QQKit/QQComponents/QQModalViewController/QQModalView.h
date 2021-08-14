@@ -26,6 +26,7 @@ typedef NS_ENUM(NSInteger, QQModalAnimationStyle) {
 @optional
 - (void)willDismissModalView:(QQModalView *)modalView;
 - (void)didDismissModalView:(QQModalView *)modalView;
+- (void)didTapDimmingView:(QQModalView *)modalView;
 
 @end
 

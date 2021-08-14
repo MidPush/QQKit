@@ -18,14 +18,6 @@
     if (self = [super init]) {
         _collection = collection;
         _result = result;
-        if (result.count > 0) {
-            NSMutableArray *assetArray = [NSMutableArray arrayWithCapacity:result.count];
-            for (PHAsset *phAsset in result) {
-                QQAsset *asset = [[QQAsset alloc] initWithPHAsset:phAsset];
-                [assetArray addObject:asset];
-            }
-            _assets = assetArray;
-        }
     }
     return self;
 }
@@ -36,6 +28,19 @@
 
 - (NSUInteger)numberOfAssets {
     return self.result.count;
+}
+
+- (void)enumerateAssetsUsingBlock:(void (^)(NSArray<QQAsset *> *assets))enumerationBlock {
+    NSInteger resultCount = self.result.count;
+    NSMutableArray *assetArray = [NSMutableArray arrayWithCapacity:resultCount];
+    for (NSInteger i = 0; i < resultCount; i++) {
+        PHAsset *pHAsset = self.result[i];
+        QQAsset *asset = [[QQAsset alloc] initWithPHAsset:pHAsset];
+        [assetArray addObject:asset];
+    }
+    if (enumerationBlock) {
+        enumerationBlock([assetArray copy]);
+    }
 }
 
 @end

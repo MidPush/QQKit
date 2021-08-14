@@ -25,11 +25,11 @@ NS_ASSUME_NONNULL_BEGIN
 /// 相册内的资源数量
 @property (nonatomic, assign, readonly) NSUInteger numberOfAssets;
 
-/// 相册内所有的资源
-@property (nonatomic, strong) NSMutableArray<QQAsset *> *assets;
-
 /// 相册的缩略图
 @property (nonatomic, strong) UIImage *thumbnailImage;
+
+/// 遍历相册中所有的资源
+- (void)enumerateAssetsUsingBlock:(void (^)(NSArray<QQAsset *> *assets))enumerationBlock;
 
 @end
 

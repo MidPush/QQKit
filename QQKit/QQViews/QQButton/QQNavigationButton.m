@@ -62,11 +62,10 @@
         [barButton addTarget:target action:action forControlEvents:UIControlEventTouchUpInside];
     }
     [barButton sizeToFit];
-    if (barButton.qq_width < (44.0 + configuration.navBarBackMarginOffset)) {
+    barButton.qq_width += configuration.navBarBackMarginOffset;
+    if (barButton.qq_width < 44.0) {
         // 增加响应区域
-        barButton.qq_width = 44.0 + configuration.navBarBackMarginOffset;
-    } else {
-        barButton.qq_width += configuration.navBarBackMarginOffset;
+        barButton.qq_width = 44.0;
     }
     if (barButton.qq_height < QQUIHelper.navigationBarHeight) {
         barButton.qq_height = QQUIHelper.navigationBarHeight;

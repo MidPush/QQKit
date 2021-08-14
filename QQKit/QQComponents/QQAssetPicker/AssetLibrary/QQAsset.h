@@ -97,7 +97,7 @@ typedef NS_ENUM(NSUInteger, QQAssetDownloadStatus) {
 // 资源是PHLivePhoto有值
 @property (nonatomic, strong, nullable) PHLivePhoto *livePhoto API_AVAILABLE(ios(9.1));
 
-//资源是视频有值
+// 资源是视频有值
 @property (nonatomic, strong, nullable) AVAsset *avAsset;
 
 @end

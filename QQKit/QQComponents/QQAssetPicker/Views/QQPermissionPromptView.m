@@ -9,6 +9,7 @@
 #import "UIColor+QQExtension.h"
 #import "UIView+QQExtension.h"
 #import "QQAssetsPicker.h"
+#import "QQUIHelper.h"
 
 @interface QQPermissionPromptView ()
 
@@ -91,7 +92,9 @@
     CGFloat selfWidth = self.frame.size.width;
     CGFloat selfHeight = self.frame.size.height;
     
-    CGFloat titleTop = [UIApplication sharedApplication].statusBarFrame.size.height + 44 + 100 * [UIScreen mainScreen].bounds.size.width / 375.0;
+    _closeButton.frame = CGRectMake(QQUIHelper.deviceSafeAreaInsets.left, QQUIHelper.statusBarHeightConstant, 44, QQUIHelper.navigationBarHeight);
+    CGFloat marginTop = QQUIHelper.isLandscape ? 60 : 100;
+    CGFloat titleTop = QQUIHelper.navigationBarMaxY + marginTop * MIN([UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height) / 375.0;
     [_titleLabel sizeToFit];
     _titleLabel.frame = CGRectMake(0, titleTop, selfWidth, _titleLabel.frame.size.height);
     

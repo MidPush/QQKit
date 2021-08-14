@@ -380,4 +380,20 @@
     _buttonSeparatorLayer.backgroundColor = actionsViewSeparatorColor.CGColor;
 }
 
+#pragma mark - 屏幕旋转
+- (BOOL)shouldAutorotate {
+    // 将屏幕旋转控制权交给 presentingViewController
+    if (self.presentingViewController) {
+        return [self.presentingViewController shouldAutorotate];
+    }
+    return [super shouldAutorotate];
+}
+
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
+    if (self.presentingViewController) {
+        return [self.presentingViewController supportedInterfaceOrientations];
+    }
+    return [super supportedInterfaceOrientations];
+}
+
 @end

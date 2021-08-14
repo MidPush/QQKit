@@ -25,6 +25,7 @@ static NSString * const kQQAssetGridCellReuseID = @"QQAssetGridCell";
 
 @property (nonatomic, strong) QQNavigationBarAlbumTitleView *titleView;
 @property (nonatomic, strong) UICollectionView *collectionView;
+@property (nonatomic, strong) UIActivityIndicatorView *loadingView;
 @property (nonatomic, strong) QQSelectAssetToolBar *toolBar;
 @property (nonatomic, strong) QQPermissionPromptView *promptView;
 @property (nonatomic, strong) QQAlbumsListView *albumsListView;
@@ -32,8 +33,7 @@ static NSString * const kQQAssetGridCellReuseID = @"QQAssetGridCell";
 @property (nonatomic, strong) NSMutableArray<QQAsset *> *selectedAssets;
 @property (nonatomic, strong) NSArray<QQAssetsGroup *> *albums;
 @property (nonatomic, strong) QQAssetsGroup *currentAlbum;
-@property (nonatomic, assign) BOOL alreadyScrollToBottom;
-@property (nonatomic, assign) BOOL isAssetsLoaded;
+@property (nonatomic, strong) NSMutableArray<QQAsset *> *currentAssets;
 
 @property (nonatomic, strong) QQAsset *toEditAsset;
 
@@ -50,7 +50,7 @@ static NSString * const kQQAssetGridCellReuseID = @"QQAssetGridCell";
 
 - (UICollectionView *)collectionView {
     if (!_collectionView) {
-        CGFloat spacing = 1 / [UIScreen mainScreen].scale * 2;
+        CGFloat spacing = 1.0 / [UIScreen mainScreen].scale * 2;
         UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
         layout.sectionInset = UIEdgeInsetsMake(spacing, spacing, spacing, spacing);
         layout.minimumLineSpacing = spacing;
@@ -72,6 +72,14 @@ static NSString * const kQQAssetGridCellReuseID = @"QQAssetGridCell";
     return _collectionView;
 }
 
+- (UIActivityIndicatorView *)loadingView {
+    if (!_loadingView) {
+        _loadingView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+        _loadingView.hidesWhenStopped = YES;
+    }
+    return _loadingView;
+}
+
 - (QQSelectAssetToolBar *)toolBar {
     if (!_toolBar) {
         _toolBar = [[QQSelectAssetToolBar alloc] initWithToolBarType:ToolBarTypePreview];
@@ -80,14 +88,6 @@ static NSString * const kQQAssetGridCellReuseID = @"QQAssetGridCell";
         [_toolBar.doneButton addTarget:self action:@selector(onToolBarDoneButtonClicked) forControlEvents:UIControlEventTouchUpInside];
     }
     return _toolBar;
-}
-
-- (instancetype)init {
-    if (self = [super init]) {
-        self.alreadyScrollToBottom = NO;
-        self.isAssetsLoaded = NO;
-    }
-    return self;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -134,14 +134,19 @@ static NSString * const kQQAssetGridCellReuseID = @"QQAssetGridCell";
     self.view.backgroundColor = [UIColor colorWithRed:50/255.0 green:50/255.0 blue:50/255.0 alpha:1.0];
     [self.view addSubview:self.collectionView];
     
+    [self.view addSubview:self.loadingView];
+    
     if ([QQAssetsPicker sharedPicker].configuration.allowsMultipleSelection) {
         [self.view addSubview:self.toolBar];
     }
 }
 
-- (void)viewWillLayoutSubviews {
-    [super viewWillLayoutSubviews];
+- (void)viewDidLayoutSubviews {
+    [super viewDidLayoutSubviews];
     _collectionView.frame = self.view.bounds;
+    
+    [_loadingView sizeToFit];
+    _loadingView.frame = CGRectMake((self.view.qq_width - _loadingView.qq_width) / 2, QQUIHelper.navigationBarMaxY + 10, _loadingView.qq_width, _loadingView.qq_height);
     
     CGFloat toolBarHeight = 0;
     if ([QQAssetsPicker sharedPicker].configuration.allowsMultipleSelection) {
@@ -159,16 +164,24 @@ static NSString * const kQQAssetGridCellReuseID = @"QQAssetGridCell";
     if (_albumsListView.superview) {
         _albumsListView.frame = CGRectMake(0, navigationBarMaxY, self.view.frame.size.width, self.view.frame.size.height - navigationBarMaxY);
     }
+    
+    if (_promptView) {
+        _promptView.frame = self.view.bounds;
+    }
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    return self.currentAlbum.assets.count;
+    return self.currentAssets.count;
 }
 
 - (__kindof UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     QQAssetGridCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:kQQAssetGridCellReuseID forIndexPath:indexPath];
     cell.delegate = self;
-    QQAsset *asset = self.currentAlbum.assets[indexPath.item];
+    QQAsset *asset = self.currentAssets[indexPath.item];
+    if ([self.selectedAssets containsObject:asset]) {
+        asset.selected = YES;
+        asset.selectedIndex = [self.selectedAssets indexOfObject:asset];
+    }
     BOOL isMaxLimit = (self.selectedAssets.count >= self.selectionLimit);
     [cell renderWithAsset:asset referenceSize:[self referenceImageSize] isMaxLimit:isMaxLimit];
     return cell;
@@ -179,13 +192,13 @@ static NSString * const kQQAssetGridCellReuseID = @"QQAssetGridCell";
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    QQAsset *asset = self.currentAlbum.assets[indexPath.item];
+    QQAsset *asset = self.currentAssets[indexPath.item];
     QQPickerConfiguration *configuration = [QQAssetsPicker sharedPicker].configuration;
     if (configuration.allowsMultipleSelection) {
         if (self.selectedAssets.count >= self.selectionLimit && !asset.selected) {
             return;
         }
-        [self presentToPreviewFromIndex:indexPath.item assets:self.currentAlbum.assets];
+        [self presentToPreviewFromIndex:indexPath.item assets:self.currentAssets];
     } else {
         if (configuration.allowsImageEditing && (asset.assetMediaType == QQAssetMediaTypeStaticImage || asset.assetMediaType == QQAssetMediaTypeBurst)) {
             // 允许编辑
@@ -245,7 +258,7 @@ static NSString * const kQQAssetGridCellReuseID = @"QQAssetGridCell";
 
 - (void)updateEditAsset:(UIImage *)editImage {
     self.toEditAsset.editImage = editImage;
-    [self.collectionView reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:[self.currentAlbum.assets indexOfObject:self.toEditAsset] inSection:0]]];
+    [self.collectionView reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:[self.currentAssets indexOfObject:self.toEditAsset] inSection:0]]];
     [self.selectedAssets addObject:self.toEditAsset];
     [self.navigationController popViewControllerAnimated:NO];
     [[NSNotificationCenter defaultCenter] postNotificationName:QQPickerDidFinishPickingAssetsNotification object:nil userInfo:@{QQPickerSelectedAssetsInfoKey:self.selectedAssets, QQPickerUsingOriginalImageKey:@(self.toolBar.originImageButton.selected)}];
@@ -254,9 +267,9 @@ static NSString * const kQQAssetGridCellReuseID = @"QQAssetGridCell";
 
 #pragma mark - QQAlbumsListViewDelegate
 - (void)albumsListView:(QQAlbumsListView *)albumsListView didSelectAlbum:(QQAssetsGroup *)album {
-    self.currentAlbum = album;
+    if (self.currentAlbum == album) return;
     [self.titleView updateAlbumName:album.name animated:YES];
-    [self.collectionView reloadData];
+    [self refreshDataWithAssetsGroup:album];
 }
 
 - (void)albumsListViewDidShow:(QQAlbumsListView *)albumsListView {
@@ -290,16 +303,13 @@ static NSString * const kQQAssetGridCellReuseID = @"QQAssetGridCell";
     } else {
         [self.selectedAssets removeObject:asset];
     }
-    for (NSInteger i = 0; i < self.selectedAssets.count; i++) {
-        QQAsset *selectedAsset = self.selectedAssets[i];
-        selectedAsset.selectedIndex = i;
-    }
+    
     [self.collectionView reloadData];
     [self.collectionView layoutIfNeeded];
     [self updateToolBar];
     
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.02 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        QQAssetGridCell *currentCell = (QQAssetGridCell *)[self.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:[self.currentAlbum.assets indexOfObject:asset] inSection:0]];
+        QQAssetGridCell *currentCell = (QQAssetGridCell *)[self.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:[self.currentAssets indexOfObject:asset] inSection:0]];
         if (currentCell.asset.selected) {
             [currentCell startSpringAnimation];
         } else {
@@ -326,30 +336,33 @@ static NSString * const kQQAssetGridCellReuseID = @"QQAssetGridCell";
 
 #pragma mark - Load Data
 - (void)loadAssetsData {
+    [self.loadingView startAnimating];
+    [[QQAssetsPicker sharedPicker] fetchAssetsGroupsWithCompletion:^(NSArray<QQAssetsGroup *> *albums) {
+        self.albums = [albums copy];
+        [self refreshDataWithAssetsGroup:self.albums.firstObject];
+        [self.loadingView stopAnimating];
+    }];
+    
+    // 默认选中
+    if (self.defaultSelectedAssets.count > 0) {
+        self.selectedAssets = [self.defaultSelectedAssets mutableCopy];
+    }
+    [self updateToolBar];
+}
+
+- (void)refreshDataWithAssetsGroup:(QQAssetsGroup *)group {
+    self.currentAlbum = group;
+    if (!self.currentAssets) {
+        _currentAssets = [[NSMutableArray alloc] init];
+    } else {
+        [self.currentAssets removeAllObjects];
+    }
+    
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [[QQAssetsPicker sharedPicker] fetchAssetsGroupsWithCompletion:^(NSArray<QQAssetsGroup *> *albums) {
+        [group enumerateAssetsUsingBlock:^(NSArray<QQAsset *> * _Nonnull assets) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                self.isAssetsLoaded = YES;
-                self.albums = [albums copy];
-                self.currentAlbum = self.albums.firstObject;
                 
-                // 默认选中
-                if (self.defaultSelectedAssets.count > 0) {
-                    for (QQAsset *selectedAsset in self.defaultSelectedAssets) {
-                        for (QQAsset *asset in self.currentAlbum.assets) {
-                            if ([asset.identifier isEqualToString:selectedAsset.identifier]) {
-                                asset.selected = YES;
-                                [self.selectedAssets addObject:asset];
-                                break;
-                            }
-                        }
-                    }
-                    for (NSInteger i = 0; i < self.selectedAssets.count; i++) {
-                        QQAsset *selectedAsset = self.selectedAssets[i];
-                        selectedAsset.selectedIndex = i;
-                    }
-                    [self updateToolBar];
-                }
+                self.currentAssets = [assets mutableCopy];
                 
                 // refresh data
                 [self.titleView updateAlbumName:self.currentAlbum.name animated:NO];
@@ -443,7 +456,7 @@ static NSString * const kQQAssetGridCellReuseID = @"QQAssetGridCell";
     vc.selectedOriginImage = self.toolBar.originImageButton.selected;
     [vc updateAssets:assets selectedAssets:self.selectedAssets currentPage:index];
     vc.sourceView = ^UIView *(QQAsset *asset) {
-        NSInteger index = [self.currentAlbum.assets indexOfObject:asset];
+        NSInteger index = [self.currentAssets indexOfObject:asset];
         QQAssetGridCell *cell = (QQAssetGridCell *)[self.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:index inSection:0]];
         return cell;
     };
@@ -517,11 +530,6 @@ static NSString * const kQQAssetGridCellReuseID = @"QQAssetGridCell";
 }
 
 - (BOOL)prefersStatusBarHidden {
-    UIViewController *vc = self.presentedViewController;
-    if ([vc isKindOfClass:[UINavigationController class]]) {
-        UINavigationController *nav = (UINavigationController *)vc;
-        return [nav.topViewController prefersStatusBarHidden];
-    }
     return [super prefersStatusBarHidden];
 }
 

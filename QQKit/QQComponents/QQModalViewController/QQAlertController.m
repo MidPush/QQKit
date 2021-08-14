@@ -105,6 +105,8 @@
         
         BOOL alertStyle = (preferredStyle == QQAlertControllerStyleAlert);
         
+        _dismissWhenTapDimmingView = !alertStyle;
+        
         // 样式
         _alertContainerBackgroundColor = alertStyle ? [UIColor qq_colorWithRGB:@[@247, @247, @247]] : [UIColor clearColor];
         _alertHeaderBackgroundColor = [UIColor qq_colorWithRGB:@[@247, @247, @247]];
@@ -163,6 +165,7 @@
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor clearColor];
     
+    self.modalView.dismissWhenTapDimmingView = self.dismissWhenTapDimmingView;
     [self.view addSubview:self.modalView];
     
     [self.containerView addSubview:self.scrollWrapView];
@@ -510,13 +513,6 @@
     }
     
     self.containerView.frame = containerViewFrame;
-    if (self.preferredStyle == QQAlertControllerStyleAlert) {
-        self.modalView.modalAnimationStyle = QQModalAnimationStyleFade;
-        self.modalView.dismissWhenTapDimmingView = NO;
-    } else if (self.preferredStyle == QQAlertControllerStyleActionSheet) {
-        self.modalView.modalAnimationStyle = QQModalAnimationStyleSheet;
-        self.modalView.dismissWhenTapDimmingView = YES;
-    }
     self.modalView.contentView = self.containerView;
     self.modalView.contentViewMargins = UIEdgeInsetsZero;
     self.modalView.frame = self.view.bounds;
@@ -636,6 +632,12 @@
     _isWillDismissModalView = YES;
 }
 
+- (void)didTapDimmingView:(QQModalView *)modalView {
+    if (self.dismissWhenTapDimmingView) {
+        [self dismiss];
+    }
+}
+
 #pragma mark - QQAlertActionDelegate
 - (void)alertActionClicked:(QQAlertAction *)action {
     if (action.dismissWhenTapButton) {
@@ -696,6 +698,13 @@
         }
     }
     return _buttonScrollView;
+}
+
+- (void)setDismissWhenTapDimmingView:(BOOL)dismissWhenTapDimmingView {
+    if (_dismissWhenTapDimmingView != dismissWhenTapDimmingView) {
+        _dismissWhenTapDimmingView = dismissWhenTapDimmingView;
+        self.modalView.dismissWhenTapDimmingView = dismissWhenTapDimmingView;
+    }
 }
 
 - (void)setMainVisualEffectView:(UIView *)mainVisualEffectView {
@@ -1045,6 +1054,22 @@
         if (self.cancelButtonVisualEffectView) { self.cancelButtonVisualEffectView.layer.cornerRadius = self.alertContentCornerRadius; self.cancelButtonVisualEffectView.clipsToBounds = YES; }
         if (self.scrollWrapView) { self.scrollWrapView.layer.cornerRadius = self.alertContentCornerRadius; self.scrollWrapView.clipsToBounds = YES; }
     }
+}
+
+#pragma mark - 屏幕旋转
+- (BOOL)shouldAutorotate {
+    // 将屏幕旋转控制权交给 presentingViewController
+    if (self.presentingViewController) {
+        return [self.presentingViewController shouldAutorotate];
+    }
+    return [super shouldAutorotate];
+}
+
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
+    if (self.presentingViewController) {
+        return [self.presentingViewController supportedInterfaceOrientations];
+    }
+    return [super supportedInterfaceOrientations];
 }
 
 @end
