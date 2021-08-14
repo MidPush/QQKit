@@ -19,6 +19,7 @@
 #import "QQImageCropViewController.h"
 #import "QQVideoEditViewController.h"
 #import "QQToast.h"
+#import "QQUIHelper.h"
 
 static NSString * const kQQAssetGridCellReuseID = @"QQAssetGridCell";
 @interface QQAssetGridViewController ()<UICollectionViewDelegate, UICollectionViewDataSource, QQAssetGridCellDelegate, QQAlbumsListViewDelegate, QQAssetPreviewViewControllerDelegate, QQImageCropViewControllerDelegate>
